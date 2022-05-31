@@ -1,6 +1,10 @@
 import Fraction from 'fraction.js';
 import {arraysEqual, gcd, mmod, getSemiConvergents} from './utils';
 
+export * from './utils';
+export * from './hardness';
+export * from './names';
+
 /* Distribute subsequences as evenly as possible using Björklund's algorithm */
 function bjorklund(subsequences: any[][]) {
   while (true) {
