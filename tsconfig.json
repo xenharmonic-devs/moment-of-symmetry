@@ -7,6 +7,7 @@
     "esModuleInterop": true
   },
   "include": [
-    "src/index.ts"
+    "src/index.ts",
+    "src/**/*.json"
   ]
 }
