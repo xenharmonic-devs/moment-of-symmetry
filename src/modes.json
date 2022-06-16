@@ -42,6 +42,14 @@
   "sLLLsLL": "Phrygian",
   "sLLsLLL": "Locrian",
 
+  "LLLLLLs": "Ryonian",
+  "LLLLLsL": "Karakalian",
+  "LLLLsLL": "Lobonian",
+  "LLLsLLL": "Horthathian",
+  "LLsLLLL": "Oukranian",
+  "LsLLLLL": "Tamashian",
+  "sLLLLLL": "Zo-Kalarian",
+
   "LLLLLLLs": "Octopus",
   "LLLLLLsL": "Mantis",
   "LLLLLsLL": "Dolphin",
