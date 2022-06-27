@@ -171,8 +171,8 @@ describe('EDO mapper', () => {
     });
     supportedMosses.sort();
     expect(supportedMosses.join(', ')).toBe(
-      'antidiatonic, antipentic, archeotonic, archeotonic, diatonic, dicotonic, joanatonic, kleistonic, m-chromatic, machinoid, ' +
-        'machinoid, manic, mosh, oneirotonic, orwelloid, pentic, pine, pine, sensoid, sephiroid, sinatonic, smitonic, superhappy'
+      'antidiatonic, antipentic, archeotonic, diatonic, dicotonic, joanatonic, m-chromatic, ' +
+        'manic, mosh, oneirotonic, orwelloid, pentic, pine, pine, sensoid, sinatonic'
     );
   });
 });

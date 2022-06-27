@@ -202,44 +202,57 @@ export type EdoInfo = {
   abbreviation?: string;
 };
 
+// One entry in the EDO map for each hardness class
+const STEP_SIZES: [number, number][] = [
+  [2, 1], // basic
+  [3, 2], // soft
+  [3, 1], // hard
+  [4, 3], // supersoft
+  [4, 1], // superhard
+  [5, 3], // semisoft
+  [5, 2], // semihard
+
+  [5, 4], // ultrasoft
+  [5, 1], // ultrahard
+
+  [7, 5], // parasoft
+  [7, 4], // minisoft
+  [7, 3], // minihard
+  [7, 2], // parahard
+
+  [8, 5], // quasisoft
+  [8, 3], // quasihard
+];
+
 export function makeEdoMap(maxSize = 12): Map<number, EdoInfo[]> {
   const result = new Map();
-  for (let sizeOfLargeStep = 2; sizeOfLargeStep <= 8; sizeOfLargeStep++) {
-    for (
-      let sizeOfSmallStep = 1;
-      sizeOfSmallStep < sizeOfLargeStep;
-      ++sizeOfSmallStep
-    ) {
-      if (gcd(sizeOfLargeStep, sizeOfSmallStep) !== 1) {
-        continue;
-      }
-      const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
-      for (let size = 2; size <= maxSize; ++size) {
-        for (
-          let numberOfLargeSteps = 1;
-          numberOfLargeSteps < size;
-          ++numberOfLargeSteps
-        ) {
-          const numberOfSmallSteps = size - numberOfLargeSteps;
-          const pattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
-          const edo =
-            numberOfLargeSteps * sizeOfLargeStep +
-            numberOfSmallSteps * sizeOfSmallStep;
-          const info = {
-            pattern,
-            numberOfLargeSteps,
-            numberOfSmallSteps,
-            sizeOfLargeStep,
-            sizeOfSmallStep,
-            hardness,
-          };
-          Object.assign(info, tamnamsInfo(pattern));
-          const infos = result.get(edo) || [];
-          infos.push(info);
-          result.set(edo, infos);
-        }
+  STEP_SIZES.forEach(([sizeOfLargeStep, sizeOfSmallStep]) => {
+    const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
+    for (let size = 2; size <= maxSize; ++size) {
+      for (
+        let numberOfLargeSteps = 1;
+        numberOfLargeSteps < size;
+        ++numberOfLargeSteps
+      ) {
+        const numberOfSmallSteps = size - numberOfLargeSteps;
+        const pattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+        const edo =
+          numberOfLargeSteps * sizeOfLargeStep +
+          numberOfSmallSteps * sizeOfSmallStep;
+        const info = {
+          pattern,
+          numberOfLargeSteps,
+          numberOfSmallSteps,
+          sizeOfLargeStep,
+          sizeOfSmallStep,
+          hardness,
+        };
+        Object.assign(info, tamnamsInfo(pattern));
+        const infos = result.get(edo) || [];
+        infos.push(info);
+        result.set(edo, infos);
       }
     }
-  }
+  });
   return result;
 }
