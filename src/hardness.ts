@@ -21,7 +21,9 @@ const HARDNESS_RANGES: [string, number, number][] = [
   ['ultrahard', 24, Infinity],
 ];
 
-export function getHardness(l: number, s: number) {
+export function getHardness(sizeOfLargeStep: number, sizeOfSmallStep: number) {
+  let l = sizeOfLargeStep;
+  let s = sizeOfSmallStep;
   let prefix = '';
   // Non-standard
   if (l < 0) {

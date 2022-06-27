@@ -1,4 +1,6 @@
 import Fraction from 'fraction.js';
+import {getHardness} from './hardness';
+import {tamnamsInfo} from './names';
 import {arraysEqual, gcd, mmod, getSemiConvergents} from './utils';
 
 export * from './utils';
@@ -185,4 +187,59 @@ export function mosSizes(
   return mosForms(generatorPerPeriod, maxSize, maxLength).map(
     convergent => convergent.d
   );
+}
+
+export type EdoInfo = {
+  pattern: string;
+  numberOfLargeSteps: number;
+  numberOfSmallSteps: number;
+  sizeOfLargeStep: number;
+  sizeOfSmallStep: number;
+  hardness: string;
+  name?: string;
+  subset?: boolean;
+  prefix?: string;
+  abbreviation?: string;
+};
+
+export function makeEdoMap(maxSize = 12): Map<number, EdoInfo[]> {
+  const result = new Map();
+  for (let sizeOfLargeStep = 2; sizeOfLargeStep <= 8; sizeOfLargeStep++) {
+    for (
+      let sizeOfSmallStep = 1;
+      sizeOfSmallStep < sizeOfLargeStep;
+      ++sizeOfSmallStep
+    ) {
+      if (gcd(sizeOfLargeStep, sizeOfSmallStep) !== 1) {
+        continue;
+      }
+      const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
+      for (let size = 2; size <= maxSize; ++size) {
+        for (
+          let numberOfLargeSteps = 1;
+          numberOfLargeSteps < size;
+          ++numberOfLargeSteps
+        ) {
+          const numberOfSmallSteps = size - numberOfLargeSteps;
+          const pattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+          const edo =
+            numberOfLargeSteps * sizeOfLargeStep +
+            numberOfSmallSteps * sizeOfSmallStep;
+          const info = {
+            pattern,
+            numberOfLargeSteps,
+            numberOfSmallSteps,
+            sizeOfLargeStep,
+            sizeOfSmallStep,
+            hardness,
+          };
+          Object.assign(info, tamnamsInfo(pattern));
+          const infos = result.get(edo) || [];
+          infos.push(info);
+          result.set(edo, infos);
+        }
+      }
+    }
+  }
+  return result;
 }

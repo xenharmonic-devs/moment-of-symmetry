@@ -2,7 +2,7 @@ import {describe, it, expect, test} from 'vitest';
 import Fraction from 'fraction.js';
 
 import {arraysEqual} from '../utils';
-import {mos, mosSizes, euclid, mosForms} from '../index';
+import {mos, mosSizes, euclid, mosForms, makeEdoMap} from '../index';
 
 describe('Moment of Symmetry step generator', () => {
   it('produces the major pentatonic scale for 2L 3s', () => {
@@ -158,4 +158,21 @@ describe('Euclidean pattern generator', () => {
       expect(passed).toBeTruthy();
     }
   );
+});
+
+describe('EDO mapper', () => {
+  it('Produces a comprehensive list of supported MOS patterns for 31EDO', () => {
+    const map = makeEdoMap();
+    const supportedMosses: string[] = [];
+    map.get(31)!.forEach(info => {
+      if (info.name) {
+        supportedMosses.push(info.name);
+      }
+    });
+    supportedMosses.sort();
+    expect(supportedMosses.join(', ')).toBe(
+      'antidiatonic, antipentic, archeotonic, archeotonic, diatonic, dicotonic, joanatonic, kleistonic, m-chromatic, machinoid, ' +
+        'machinoid, manic, mosh, oneirotonic, orwelloid, pentic, pine, pine, sensoid, sephiroid, sinatonic, smitonic, superhappy'
+    );
+  });
 });

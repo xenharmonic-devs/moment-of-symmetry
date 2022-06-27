@@ -13,7 +13,21 @@ const MODE_NAMES: {
   [key: string]: string;
 } = require('./modes.json');
 
-export function tamnamsInfo(pattern: string): TamnamsInfo | undefined {
+export function tamnamsInfo(pattern: string): TamnamsInfo | undefined;
+export function tamnamsInfo(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number
+): TamnamsInfo | undefined;
+export function tamnamsInfo(
+  patternOrLarge: string | number,
+  numberOfSmallSteps?: number
+): TamnamsInfo | undefined {
+  let pattern: string;
+  if (typeof patternOrLarge === 'string') {
+    pattern = patternOrLarge;
+  } else {
+    pattern = `${patternOrLarge}L ${numberOfSmallSteps}s`;
+  }
   if (pattern in TAMNAMS_MOS_NAMES) {
     const result = TAMNAMS_MOS_NAMES[pattern];
     if (!('abbreviation' in result) && 'prefix' in result) {
