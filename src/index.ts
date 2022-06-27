@@ -256,3 +256,82 @@ export function makeEdoMap(maxSize = 12): Map<number, EdoInfo[]> {
   });
   return result;
 }
+
+const STEP_COUNTS: [number, number][] = [
+  [5, 2], // diatonic
+  [4, 3], // smitonic
+  [3, 4], // mosh
+  [2, 5], // antidiatonic
+
+  [3, 5], // sensoid
+  [5, 3], // oneirotonic
+  [6, 2], // echinoid
+  [2, 6], // antiechinoid
+
+  [4, 2], // lemon
+  [2, 4], // antilemon
+  [5, 1], // machinoid
+
+  [2, 3], // pentic
+  [3, 2], // antipentic
+  [1, 4], // machinoid (subset)
+
+  [1, 3], // manic
+
+  [1, 2], // happy
+  [2, 1], // grumpy
+
+  [1, 1], // trivial
+];
+
+export function anyForEdo(edo: number): EdoInfo {
+  if (edo <= 1) {
+    throw new Error('Minimum size is 2');
+  }
+  if (edo === 2) {
+    return {
+      pattern: '1L 1s',
+      numberOfLargeSteps: 1,
+      numberOfSmallSteps: 1,
+      sizeOfLargeStep: 1,
+      sizeOfSmallStep: 1,
+      hardness: 'equalized',
+      name: 'trivial',
+      subset: false,
+    };
+  }
+
+  for (let i = 0; i < STEP_COUNTS.length; ++i) {
+    const [numberOfLargeSteps, numberOfSmallSteps] = STEP_COUNTS[i];
+    let sizeOfLargeStep = 2;
+    while (true) {
+      const largePart = sizeOfLargeStep * numberOfLargeSteps;
+      const smallPart = edo - largePart;
+      if (smallPart <= 0) {
+        break;
+      }
+      if (smallPart % numberOfSmallSteps === 0) {
+        const sizeOfSmallStep = smallPart / numberOfSmallSteps;
+        if (
+          sizeOfLargeStep <= 3 * sizeOfSmallStep &&
+          3 * sizeOfSmallStep <= 2 * sizeOfLargeStep
+        ) {
+          const pattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+          const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
+          const info = {
+            pattern,
+            numberOfLargeSteps,
+            numberOfSmallSteps,
+            sizeOfLargeStep,
+            sizeOfSmallStep,
+            hardness,
+          };
+          Object.assign(info, tamnamsInfo(pattern));
+          return info;
+        }
+      }
+      sizeOfLargeStep++;
+    }
+  }
+  throw new Error(`Failed to find MOS pattern for ${edo}`);
+}

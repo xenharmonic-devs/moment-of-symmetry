@@ -2,7 +2,7 @@ import {describe, it, expect, test} from 'vitest';
 import Fraction from 'fraction.js';
 
 import {arraysEqual} from '../utils';
-import {mos, mosSizes, euclid, mosForms, makeEdoMap} from '../index';
+import {mos, mosSizes, euclid, mosForms, makeEdoMap, anyForEdo} from '../index';
 
 describe('Moment of Symmetry step generator', () => {
   it('produces the major pentatonic scale for 2L 3s', () => {
@@ -174,5 +174,19 @@ describe('EDO mapper', () => {
       'antidiatonic, antipentic, archeotonic, diatonic, dicotonic, joanatonic, m-chromatic, ' +
         'manic, mosh, oneirotonic, orwelloid, pentic, pine, pine, sensoid, sinatonic'
     );
+  });
+});
+
+describe('MOS finder for EDO', () => {
+  it('Can find something reasonable for every EDO under 1000', () => {
+    for (let edo = 2; edo < 1000; ++edo) {
+      const info = anyForEdo(edo);
+      expect(info.sizeOfLargeStep).toBeLessThanOrEqual(
+        3 * info.sizeOfSmallStep
+      );
+      expect(2 * info.sizeOfSmallStep).toBeLessThanOrEqual(
+        3 * info.sizeOfSmallStep
+      );
+    }
   });
 });
