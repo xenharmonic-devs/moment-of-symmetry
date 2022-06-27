@@ -1,6 +1,6 @@
 import Fraction from 'fraction.js';
 import {getHardness} from './hardness';
-import {tamnamsInfo} from './names';
+import {tamnamsInfo, modeName} from './names';
 import {arraysEqual, gcd, mmod, getSemiConvergents} from './utils';
 
 export * from './utils';
@@ -134,6 +134,9 @@ export function mos(
   brightGeneratorsUp = 0
 ) {
   const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+  if (brightGeneratorsUp % numPeriods !== 0) {
+    throw new Error(`Number of generators not a multiple of ${numPeriods}`);
+  }
   const period = (numberOfLargeSteps + numberOfSmallSteps) / numPeriods;
   const l = numberOfLargeSteps / numPeriods;
   const s = numberOfSmallSteps / numPeriods;
@@ -156,6 +159,106 @@ export function mos(
   result.push(numPeriods * p);
 
   return result;
+}
+
+export type ModeInfo = {
+  numberOfPeriods: number;
+  period: number;
+  pattern: string;
+  udp: string;
+  mode?: string;
+};
+
+export function mosModes(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number,
+  extra = false
+): ModeInfo[] {
+  const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+  const period = (numberOfLargeSteps + numberOfSmallSteps) / numberOfPeriods;
+  const l = numberOfLargeSteps / numberOfPeriods;
+  const s = numberOfSmallSteps / numberOfPeriods;
+  const p = l * 2 + s;
+
+  const gMonzo = mosGeneratorMonzo(l, s);
+  const g = gMonzo[0] * 2 + gMonzo[1];
+
+  const result = [];
+  for (let u = 0; u < period; ++u) {
+    const base: number[] = [];
+    for (let i = 0; i < period; ++i) {
+      base.push(mmod((u - i) * g, p));
+    }
+    base.sort((a, b) => a - b);
+    let scale = base;
+    for (let i = 1; i < numberOfPeriods; ++i) {
+      scale = scale.concat(base.map(s => s + i * p));
+    }
+    scale.push(numberOfPeriods * p);
+
+    let pattern = '';
+    for (let i = 1; i < scale.length; ++i) {
+      if (scale[i] - scale[i - 1] === 2) {
+        pattern += 'L';
+      } else {
+        pattern += 's';
+      }
+    }
+    const mode = modeName(pattern, extra);
+    let udp = `${u * numberOfPeriods}|${(period - 1 - u) * numberOfPeriods}`;
+    if (numberOfPeriods > 1) {
+      udp += `(${numberOfPeriods})`;
+    }
+    result.push({
+      numberOfPeriods,
+      period,
+      pattern,
+      udp,
+      mode,
+    });
+  }
+
+  return result;
+}
+
+export function modeInfo(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number,
+  brightGeneratorsUp: number,
+  extra = false
+): ModeInfo {
+  const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+  const period = (numberOfLargeSteps + numberOfSmallSteps) / numberOfPeriods;
+  const scale = mos(
+    numberOfLargeSteps,
+    numberOfSmallSteps,
+    2,
+    1,
+    brightGeneratorsUp
+  );
+  scale.unshift(0);
+  let pattern = '';
+  for (let i = 1; i < scale.length; ++i) {
+    if (scale[i] - scale[i - 1] === 2) {
+      pattern += 'L';
+    } else {
+      pattern += 's';
+    }
+  }
+  const mode = modeName(pattern, extra);
+  let udp = `${brightGeneratorsUp}|${
+    (period - 1) * numberOfPeriods - brightGeneratorsUp
+  }`;
+  if (numberOfPeriods > 1) {
+    udp += `(${numberOfPeriods})`;
+  }
+  return {
+    numberOfPeriods,
+    period,
+    pattern,
+    udp,
+    mode,
+  };
 }
 
 export function mosForms(

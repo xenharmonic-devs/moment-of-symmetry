@@ -2,7 +2,16 @@ import {describe, it, expect, test} from 'vitest';
 import Fraction from 'fraction.js';
 
 import {arraysEqual} from '../utils';
-import {mos, mosSizes, euclid, mosForms, makeEdoMap, anyForEdo} from '../index';
+import {
+  mos,
+  mosSizes,
+  euclid,
+  mosForms,
+  makeEdoMap,
+  anyForEdo,
+  modeInfo,
+  mosModes,
+} from '../index';
 
 describe('Moment of Symmetry step generator', () => {
   it('produces the major pentatonic scale for 2L 3s', () => {
@@ -188,5 +197,40 @@ describe('MOS finder for EDO', () => {
         3 * info.sizeOfSmallStep
       );
     }
+  });
+});
+
+describe('MOS mode describer', () => {
+  it('knows about the modes of lemon', () => {
+    const infos = mosModes(4, 2);
+    expect(infos).toHaveLength(3);
+    expect(infos[0]).toMatchObject({
+      numberOfPeriods: 2,
+      period: 3,
+      pattern: 'sLLsLL',
+      udp: '0|4(2)',
+    });
+  });
+
+  it('knows about phrygian', () => {
+    const info = modeInfo(5, 2, 1);
+    expect(info).toMatchObject({
+      numberOfPeriods: 1,
+      period: 7,
+      pattern: 'sLLLsLL',
+      udp: '1|5',
+      mode: 'Phrygian',
+    });
+  });
+
+  it('knows about tonic in augmented', () => {
+    const info = modeInfo(3, 3, 3);
+    expect(info).toMatchObject({
+      numberOfPeriods: 3,
+      period: 2,
+      pattern: 'LsLsLs',
+      udp: '3|0(3)',
+      mode: 'Tonic',
+    });
   });
 });
