@@ -11,6 +11,7 @@ import {
   anyForEdo,
   modeInfo,
   mosModes,
+  mosPatterns,
 } from '../index';
 
 describe('Moment of Symmetry step generator', () => {
@@ -81,6 +82,32 @@ describe('Moment of Symmetry scale form calculator', () => {
     expect(forms[4].equals('11/19')).toBeTruthy();
     expect(forms[5].equals('18/31')).toBeTruthy();
     expect(forms[6].equals('65/112')).toBeTruthy();
+  });
+});
+
+describe('Moment of Symmetry scale pattern calculator', () => {
+  it('knows pythagorean temperament results in a p-chromatic scale', () => {
+    const patterns = mosPatterns(Math.log(3) / Math.LN2, 1, undefined, 5);
+    expect(patterns).toHaveLength(5);
+    expect(patterns[4].name).toBe('p-chromatic');
+  });
+
+  it('knows quarter-comma meantone results in an m-chromatic scale', () => {
+    const patterns = mosPatterns(Math.log(5) / 4 / Math.LN2, 1, undefined, 4);
+    expect(patterns).toHaveLength(4);
+    expect(patterns[3].name).toBe('m-chromatic');
+  });
+
+  it('knows blackwood corresponds to pentawood', () => {
+    const numPeriods = 5;
+    const patterns = mosPatterns(
+      Math.log(5) / (Math.LN2 / numPeriods),
+      numPeriods,
+      undefined,
+      1
+    );
+    expect(patterns).toHaveLength(1);
+    expect(patterns[0].name).toBe('pentawood');
   });
 });
 

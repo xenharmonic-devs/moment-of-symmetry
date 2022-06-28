@@ -292,6 +292,76 @@ export function mosSizes(
   );
 }
 
+export type MosInfo = {
+  pattern: string;
+  numberOfLargeSteps: number;
+  numberOfSmallSteps: number;
+  name?: string;
+  subset?: boolean;
+  prefix?: string;
+  abbreviation?: string;
+};
+
+export function mosPatterns(
+  generatorPerPeriod: number | Fraction,
+  numberOfPeriods: number,
+  maxSize?: number,
+  maxLength?: number
+) {
+  if (maxLength !== undefined) {
+    maxLength += 1;
+  }
+  const forms = mosForms(generatorPerPeriod, undefined, maxLength);
+  const result: MosInfo[] = [];
+  let size: number | undefined;
+  forms.forEach(form => {
+    if (size !== undefined) {
+      if (size > maxSize!) {
+        return;
+      }
+      // Mathematical correct modulo as recommended by Fraction.js documentation
+      const scale = [...Array(size).keys()].map(i =>
+        form.mul(i).mod(1).add(1).mod(1)
+      );
+      scale.push(new Fraction(1));
+      scale.sort((a, b) => a.compare(b));
+      let s = scale[1];
+      for (let i = 0; i < size; ++i) {
+        const other = scale[i + 1].sub(scale[i]);
+        const cmp = other.compare(s);
+        if (cmp < 0) {
+          s = other;
+          break;
+        } else if (cmp > 0) {
+          break;
+        }
+      }
+      let numberOfSmallSteps = 0;
+      let numberOfLargeSteps = 0;
+      for (let i = 0; i < size; ++i) {
+        if (scale[i].add(s).equals(scale[i + 1])) {
+          numberOfSmallSteps++;
+        } else {
+          numberOfLargeSteps++;
+        }
+      }
+      numberOfLargeSteps *= numberOfPeriods;
+      numberOfSmallSteps *= numberOfPeriods;
+      const pattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+      const info = {
+        numberOfLargeSteps,
+        numberOfSmallSteps,
+        pattern,
+      };
+      Object.assign(info, tamnamsInfo(pattern));
+      result.push(info);
+    }
+    size = form.d;
+  });
+
+  return result;
+}
+
 export type EdoInfo = {
   pattern: string;
   numberOfLargeSteps: number;
