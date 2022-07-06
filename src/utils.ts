@@ -1,5 +1,11 @@
 import Fraction from 'fraction.js';
 
+/**
+ * Check if the contents of two arrays are equal using '==='.
+ * @param a The first array.
+ * @param b The second array.
+ * @returns True if the arrays are component-wise equal.
+ */
 export function arraysEqual(a: any[], b: any[]) {
   if (a === b) {
     return true;
@@ -16,6 +22,12 @@ export function arraysEqual(a: any[], b: any[]) {
 }
 
 // Stolen from fraction.js, because it's not exported.
+/**
+ * Greatest common division of two integers.
+ * @param a The first integer.
+ * @param b The second integer.
+ * @returns The largest integer that divides a and b.
+ */
 export function gcd(a: number, b: number): number {
   if (!a) return b;
   if (!b) return a;
@@ -27,17 +39,35 @@ export function gcd(a: number, b: number): number {
   }
 }
 
+/**
+ * Least common multiple of two integers.
+ * @param a The first integer.
+ * @param b The second integer.
+ * @returns The smallest integer that both a and b divide.
+ */
 export function lcm(a: number, b: number): number {
   return (Math.abs(a) / gcd(a, b)) * Math.abs(b);
 }
 
+/**
+ * Mathematically correct modulo.
+ * @param a The dividend.
+ * @param b The divisor.
+ * @returns The remainder of Euclidean division of a by b.
+ */
 export function mmod(a: number, b: number) {
   return ((a % b) + b) % b;
 }
 
-// Calculate best rational approximations to a given fraction
-// that are closer than any approximation with a smaller or equal denominator
-export function getSemiConvergents(
+/**
+ * Calculate best rational approximations to a given fraction that are
+ * closer than any approximation with a smaller or equal denominator.
+ * @param x The fraction to simplify.
+ * @param maxDenominator Maximum denominator to include.
+ * @param maxLength Maximum length of the array of approximations.
+ * @returns An array of semiconvergents.
+ */
+export function getSemiconvergents(
   x: Fraction,
   maxDenominator?: number,
   maxLength?: number

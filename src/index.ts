@@ -1,13 +1,15 @@
 import Fraction from 'fraction.js';
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
-import {arraysEqual, gcd, mmod, getSemiConvergents} from './utils';
+import {arraysEqual, gcd, mmod, getSemiconvergents} from './utils';
 
 export * from './utils';
 export * from './hardness';
 export * from './names';
 
-/* Distribute subsequences as evenly as possible using Björklund's algorithm */
+/**
+ * Distribute subsequences as evenly as possible using Björklund's algorithm.
+ */
 function bjorklund(subsequences: any[][]) {
   while (true) {
     const remainder = subsequences[subsequences.length - 1];
@@ -28,8 +30,13 @@ function bjorklund(subsequences: any[][]) {
   }
 }
 
-/* Produce an array of booleans that is mixed as evenly as possible */
-export function euclid(numberOfTrue: number, numberOfFalse: number) {
+/**
+ * Produce an array of booleans that is mixed as evenly as possible.
+ * @param numberOfTrue Number of true elements
+ * @param numberOfFalse Number of false elements
+ * @returns The array of evenly mixed booleans
+ */
+export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
   const subsequences = [];
   for (let i = 0; i < numberOfTrue; ++i) {
     subsequences.push([true]);
@@ -40,7 +47,7 @@ export function euclid(numberOfTrue: number, numberOfFalse: number) {
   return bjorklund(subsequences).reduce((a, b) => a.concat(b), []);
 }
 
-const BRIGTH_GENERATORS: {[key: string]: number[]} = {
+const BRIGTH_GENERATORS: {[key: string]: [number, number]} = {
   '2,5': [1, 2],
   '5,2': [3, 1],
   '2,9': [1, 4],
@@ -59,7 +66,13 @@ const BRIGTH_GENERATORS: {[key: string]: number[]} = {
   '7,5': [3, 2],
 };
 
-function mosGeneratorMonzo(l: number, s: number) {
+/**
+ * Find the bright generator for a MOS pattern.
+ * @param l Number of large steps.
+ * @param s Number of small steps.
+ * @returns [generator's number of large steps, generator's number of small steps]
+ */
+function mosGeneratorMonzo(l: number, s: number): [number, number] {
   // Shortcuts
   if (s === 1) {
     return [1, 0];
@@ -103,8 +116,8 @@ function mosGeneratorMonzo(l: number, s: number) {
 
   // Obtain some MOS pattern
   const pattern = euclid(l, s);
-  const current = [0, 0];
-  const euclidScale = [current];
+  const current: [number, number] = [0, 0];
+  const euclidScale: [number, number][] = [current];
   pattern.forEach(e => {
     if (e) {
       current[0] += 1;
@@ -126,6 +139,15 @@ function mosGeneratorMonzo(l: number, s: number) {
   return g1;
 }
 
+/**
+ * Generate MOS pattern as a subset of an EDO.
+ * @param numberOfLargeSteps Number of large steps in the MOS pattern.
+ * @param numberOfSmallSteps Number of small steps in the MOS pattern.
+ * @param sizeOfLargeStep Size of the large step in EDO steps.
+ * @param sizeOfSmallStep Size of the small step in EDO steps.
+ * @param brightGeneratorsUp How many bright generators to go upwards. Also the number of large/major intervals in the resulting scale.
+ * @returns An array of integers representing the EDO subset. The 0 degree is not included, but the final degree representing the size of the EDO is.
+ */
 export function mos(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
@@ -161,14 +183,27 @@ export function mos(
   return result;
 }
 
+/** Information about a MOS mode. */
 export type ModeInfo = {
-  numberOfPeriods: number;
+  /** Number of steps in a period. */
   period: number;
-  pattern: string;
+  /** Number of periods in an octave. */
+  numberOfPeriods: number;
+  /** UDP notation: U|D(P) where U = bright generators going up, D = bright generators going down, P = numberOfPeriods if not 1. */
   udp: string;
-  mode?: string;
+  /** Mode in step pattern format such as "LLsLLLs". */
+  mode: string;
+  /** Name of the mode. */
+  modeName?: string;
 };
 
+/**
+ * Information about the modes of a MOS scale.
+ * @param numberOfLargeSteps Number of large steps in the MOS pattern.
+ * @param numberOfSmallSteps Number of small steps in the MOS pattern.
+ * @param extra If true adds extra mode names in parenthesis such as Ionian (Major).
+ * @returns An array of mode information.
+ */
 export function mosModes(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
@@ -204,23 +239,31 @@ export function mosModes(
         pattern += 's';
       }
     }
-    const mode = modeName(pattern, extra);
+    const modeName_ = modeName(pattern, extra);
     let udp = `${u * numberOfPeriods}|${(period - 1 - u) * numberOfPeriods}`;
     if (numberOfPeriods > 1) {
       udp += `(${numberOfPeriods})`;
     }
     result.push({
-      numberOfPeriods,
       period,
-      pattern,
+      numberOfPeriods,
       udp,
-      mode,
+      mode: pattern,
+      modeName: modeName_,
     });
   }
 
   return result;
 }
 
+/**
+ * Information about a mode of a MOS scale.
+ * @param numberOfLargeSteps Number of large steps in the MOS pattern.
+ * @param numberOfSmallSteps Number of small steps in the MOS pattern.
+ * @param brightGeneratorsUp Number of bright generators going up.
+ * @param extra If true adds extra mode names in parenthesis such as Ionian (Major).
+ * @returns An array of mode information.
+ */
 export function modeInfo(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
@@ -245,7 +288,7 @@ export function modeInfo(
       pattern += 's';
     }
   }
-  const mode = modeName(pattern, extra);
+  const modeName_ = modeName(pattern, extra);
   let udp = `${brightGeneratorsUp}|${
     (period - 1) * numberOfPeriods - brightGeneratorsUp
   }`;
@@ -253,14 +296,21 @@ export function modeInfo(
     udp += `(${numberOfPeriods})`;
   }
   return {
-    numberOfPeriods,
     period,
-    pattern,
+    numberOfPeriods,
     udp,
-    mode,
+    mode: pattern,
+    modeName: modeName_,
   };
 }
 
+/**
+ * An array of fractions that convey information about a MOS scale.
+ * @param generatorPerPeriod Generator divided by period.
+ * @param maxSize Maximum size of a MOS pattern.
+ * @param maxLength Maximum length of the result.
+ * @returns An array of MOS forms.
+ */
 export function mosForms(
   generatorPerPeriod: number | Fraction,
   maxSize?: number,
@@ -271,7 +321,7 @@ export function mosForms(
   }
   generatorPerPeriod = new Fraction(generatorPerPeriod);
   generatorPerPeriod.n = mmod(generatorPerPeriod.n, generatorPerPeriod.d);
-  const convergents = getSemiConvergents(
+  const convergents = getSemiconvergents(
     generatorPerPeriod,
     maxSize,
     maxLength
@@ -282,6 +332,13 @@ export function mosForms(
   return convergents;
 }
 
+/**
+ * An array of sizes of MOS patterns.
+ * @param generatorPerPeriod Generator divided by period.
+ * @param maxSize Maximum size of a MOS pattern.
+ * @param maxLength Maximum length of the result.
+ * @returns An array of MOS sizes.
+ */
 export function mosSizes(
   generatorPerPeriod: number | Fraction,
   maxSize?: number,
@@ -292,16 +349,32 @@ export function mosSizes(
   );
 }
 
+/** Information about a MOS pattern. */
 export type MosInfo = {
-  pattern: string;
+  /** MOS pattern such as "5L 2s". */
+  mosPattern: string;
+  /** Number of large steps in the pattern. */
   numberOfLargeSteps: number;
+  /** Number of small steps in the pattern. */
   numberOfSmallSteps: number;
+  /** TAMNAMS name of the pattern. */
   name?: string;
+  /** True if the pattern is a subset of a larger MOS pattern. */
   subset?: boolean;
+  /** Interval prefix. */
   prefix?: string;
+  /** TAMNAMS name abbreviation. */
   abbreviation?: string;
 };
 
+/**
+ * An array of information about the MOS patterns generated from a generator / period ratio.
+ * @param generatorPerPeriod Generator divided by period.
+ * @param numberOfPeriods Number of periods per octave.
+ * @param maxSize Maximum size of a MOS pattern.
+ * @param maxLength Maximum length of the result.
+ * @returns An array of MOS information.
+ */
 export function mosPatterns(
   generatorPerPeriod: number | Fraction,
   numberOfPeriods: number,
@@ -351,7 +424,7 @@ export function mosPatterns(
       const info = {
         numberOfLargeSteps,
         numberOfSmallSteps,
-        pattern,
+        mosPattern: pattern,
       };
       Object.assign(info, tamnamsInfo(pattern));
       result.push(info);
@@ -362,16 +435,27 @@ export function mosPatterns(
   return result;
 }
 
+/** Information about a MOS scale as a subset of an EDO */
 export type EdoInfo = {
-  pattern: string;
+  /** MOS pattern such as "5L 2s". */
+  mosPattern: string;
+  /** Number of large steps in the pattern. */
   numberOfLargeSteps: number;
+  /** Number of small steps in the pattern. */
   numberOfSmallSteps: number;
+  /** Size of the large step in EDO steps. */
   sizeOfLargeStep: number;
+  /** Size of the small step in EDO steps. */
   sizeOfSmallStep: number;
+  /** Name of the step size ratio or the name of the hardness range it belongs to. */
   hardness: string;
+  /** TAMNAMS name of the MOS pattern. */
   name?: string;
+  /** True if the pattern is a subset of a larger MOS pattern. */
   subset?: boolean;
+  /** Interval prefix. */
   prefix?: string;
+  /** TAMNAMS name abbreviation. */
   abbreviation?: string;
 };
 
@@ -397,6 +481,11 @@ const STEP_SIZES: [number, number][] = [
   [8, 3], // quasihard
 ];
 
+/**
+ * Construct a mapping from EDO size to supported MOS scales.
+ * @param maxSize Maximum size of the MOS patterns to include.
+ * @returns A mapping from EDO size to an array of information about the supported MOS scales.
+ */
 export function makeEdoMap(maxSize = 12): Map<number, EdoInfo[]> {
   const result = new Map();
   STEP_SIZES.forEach(([sizeOfLargeStep, sizeOfSmallStep]) => {
@@ -408,19 +497,19 @@ export function makeEdoMap(maxSize = 12): Map<number, EdoInfo[]> {
         ++numberOfLargeSteps
       ) {
         const numberOfSmallSteps = size - numberOfLargeSteps;
-        const pattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+        const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
         const edo =
           numberOfLargeSteps * sizeOfLargeStep +
           numberOfSmallSteps * sizeOfSmallStep;
         const info = {
-          pattern,
+          mosPattern,
           numberOfLargeSteps,
           numberOfSmallSteps,
           sizeOfLargeStep,
           sizeOfSmallStep,
           hardness,
         };
-        Object.assign(info, tamnamsInfo(pattern));
+        Object.assign(info, tamnamsInfo(mosPattern));
         const infos = result.get(edo) || [];
         infos.push(info);
         result.set(edo, infos);
@@ -457,13 +546,18 @@ const STEP_COUNTS: [number, number][] = [
   [1, 1], // trivial
 ];
 
+/**
+ * Find a MOS scale supported by the given EDO.
+ * @param edo Size of the EDO.
+ * @returns Information about the supported MOS scale.
+ */
 export function anyForEdo(edo: number): EdoInfo {
   if (edo <= 1) {
     throw new Error('Minimum size is 2');
   }
   if (edo === 2) {
     return {
-      pattern: '1L 1s',
+      mosPattern: '1L 1s',
       numberOfLargeSteps: 1,
       numberOfSmallSteps: 1,
       sizeOfLargeStep: 1,
@@ -489,17 +583,17 @@ export function anyForEdo(edo: number): EdoInfo {
           sizeOfLargeStep <= 3 * sizeOfSmallStep &&
           3 * sizeOfSmallStep <= 2 * sizeOfLargeStep
         ) {
-          const pattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+          const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
           const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
           const info = {
-            pattern,
+            mosPattern,
             numberOfLargeSteps,
             numberOfSmallSteps,
             sizeOfLargeStep,
             sizeOfSmallStep,
             hardness,
           };
-          Object.assign(info, tamnamsInfo(pattern));
+          Object.assign(info, tamnamsInfo(mosPattern));
           return info;
         }
       }
