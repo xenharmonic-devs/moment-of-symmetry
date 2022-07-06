@@ -1,7 +1,7 @@
 import Fraction from 'fraction.js';
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
-import {arraysEqual, gcd, mmod, getSemiconvergents} from './utils';
+import {arraysEqual, gcd, mmod, getSemiconvergents, FractionSet} from './utils';
 
 export * from './utils';
 export * from './hardness';
@@ -377,7 +377,7 @@ export type MosInfo = {
  */
 export function mosPatterns(
   generatorPerPeriod: number | Fraction,
-  numberOfPeriods: number,
+  numberOfPeriods = 1,
   maxSize?: number,
   maxLength?: number
 ) {
@@ -387,10 +387,11 @@ export function mosPatterns(
   const forms = mosForms(generatorPerPeriod, undefined, maxLength);
   const result: MosInfo[] = [];
   let size: number | undefined;
-  forms.forEach(form => {
+  for (let j = 0; j < forms.length; ++j) {
+    const form = forms[j];
     if (size !== undefined) {
       if (size > maxSize!) {
-        return;
+        break;
       }
       // Mathematical correct modulo as recommended by Fraction.js documentation
       const scale = [...Array(size).keys()].map(i =>
@@ -420,19 +421,137 @@ export function mosPatterns(
       }
       numberOfLargeSteps *= numberOfPeriods;
       numberOfSmallSteps *= numberOfPeriods;
-      const pattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+      const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
       const info = {
         numberOfLargeSteps,
         numberOfSmallSteps,
-        mosPattern: pattern,
+        mosPattern,
       };
-      Object.assign(info, tamnamsInfo(pattern));
+      Object.assign(info, tamnamsInfo(mosPattern));
       result.push(info);
     }
     size = form.d;
-  });
+  }
 
   return result;
+}
+
+function scalePattern(scale: Fraction[]) {
+  const stepSizes = new FractionSet();
+  for (let i = 1; i < scale.length; ++i) {
+    stepSizes.add(scale[i].sub(scale[i - 1]));
+  }
+  if (stepSizes.size === 1) {
+    return 'M'.repeat(scale.length);
+  }
+  if (stepSizes.size === 2) {
+    const sizes = [...stepSizes];
+    sizes.sort((a, b) => a.compare(b));
+    let pattern = '';
+    for (let i = 1; i < scale.length; ++i) {
+      if (scale[i].sub(scale[i - 1]).equals(sizes[0])) {
+        pattern += 's';
+      } else {
+        pattern += 'L';
+      }
+    }
+    return pattern;
+  }
+  if (stepSizes.size === 3) {
+    const sizes = [...stepSizes];
+    sizes.sort((a, b) => a.compare(b));
+    let pattern = '';
+    for (let i = 1; i < scale.length; ++i) {
+      const interval = scale[i].sub(scale[i - 1]);
+      if (interval.equals(sizes[0])) {
+        pattern += 's';
+      } else if (interval.equals(sizes[1])) {
+        pattern += 'M';
+      } else {
+        pattern += 'L';
+      }
+    }
+    return pattern;
+  }
+  throw new Error(`Too many step sizes (${stepSizes.size})`);
+}
+
+/** Information about a scale. */
+export type ScaleInfo = {
+  /** Steps of the scale L = large, M = medium, s = small */
+  stepPattern: string;
+  /** MOS pattern such as "5L 2s". */
+  mosPattern?: string;
+  /** TAMNAMS name of the pattern. */
+  name?: string;
+  /** True if the pattern is a subset of a larger MOS pattern. */
+  subset?: boolean;
+  /** Interval prefix. */
+  prefix?: string;
+  /** TAMNAMS name abbreviation. */
+  abbreviation?: string;
+  /** Name of the mode. */
+  modeName?: string;
+};
+
+/**
+ * Information about the scale generated from a generator / period ratio of a given size.
+ * @param generatorPerPeriod Generator divided by period.
+ * @param numberOfPeriods Number of periods per octave.
+ * @param size Size of the scale.
+ * @param generatorsDown How many generators to go downwards.
+ * @returns Information about the scale.
+ */
+export function scaleInfo(
+  generatorPerPeriod: number | Fraction,
+  size: number,
+  generatorsDown: number,
+  numberOfPeriods = 1
+): ScaleInfo {
+  if (size % numberOfPeriods) {
+    throw new Error('Size must be divisible by the number of periods');
+  }
+  if (generatorsDown % numberOfPeriods) {
+    throw new Error(
+      'Number of generators must be divisible by the number of periods'
+    );
+  }
+  size /= numberOfPeriods;
+  generatorsDown /= numberOfPeriods;
+
+  const g = new Fraction(generatorPerPeriod);
+  const scale = [...Array(size).keys()].map(i =>
+    g
+      .mul(i - generatorsDown)
+      .mod(1)
+      .add(1)
+      .mod(1)
+  );
+  scale.push(new Fraction(1));
+  scale.sort((a, b) => a.compare(b));
+  const pattern = scalePattern(scale);
+  const info: ScaleInfo = {stepPattern: pattern.repeat(numberOfPeriods)};
+  if (pattern.includes('M')) {
+    return info;
+  }
+
+  let numberOfSmallSteps = 0;
+  let numberOfLargeSteps = 0;
+  [...pattern].forEach(s => {
+    if (s === 's') {
+      numberOfSmallSteps++;
+    } else {
+      numberOfLargeSteps++;
+    }
+  });
+
+  numberOfSmallSteps *= numberOfPeriods;
+  numberOfLargeSteps *= numberOfPeriods;
+  const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+  info.mosPattern = mosPattern;
+  (info.modeName = modeName(pattern.repeat(numberOfPeriods))),
+    Object.assign(info, tamnamsInfo(mosPattern));
+  return info;
 }
 
 /** Information about a MOS scale as a subset of an EDO */

@@ -12,6 +12,7 @@ import {
   modeInfo,
   mosModes,
   mosPatterns,
+  scaleInfo,
 } from '../index';
 
 describe('Moment of Symmetry step generator', () => {
@@ -259,5 +260,24 @@ describe('MOS mode describer', () => {
       udp: '3|0(3)',
       modeName: 'Tonic',
     });
+  });
+});
+
+describe('Scale describer', () => {
+  it('knows about mixolydian', () => {
+    const info = scaleInfo(Math.log(3) / Math.LN2, 7, 2);
+    expect(info.modeName).toBe('Mixolydian');
+  });
+
+  it('can calculate the step pattern of a non-MOS scales', () => {
+    const info = scaleInfo(Math.log(3) / Math.LN2, 9, 2);
+    expect(info.stepPattern).toBe('LLsMsLsMs');
+  });
+
+  it('can handle random arguments', () => {
+    const size = Math.ceil(1 + Math.random() * 10);
+    const down = Math.round(Math.random() * (size - 1));
+    const numPeriods = Math.ceil(Math.random() * 3);
+    scaleInfo(Math.random(), size * numPeriods, down * numPeriods, numPeriods);
   });
 });
