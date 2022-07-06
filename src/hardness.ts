@@ -21,6 +21,12 @@ const HARDNESS_RANGES: [string, number, number][] = [
   ['ultrahard', 24, Infinity],
 ];
 
+/**
+ * Get the TAMNAMS name for a step ratio L:s.
+ * @param sizeOfLargeStep Size of the large step.
+ * @param sizeOfSmallStep Size of the small step.
+ * @returns Name of the step ratio or the name of the hardness range it belongs to.
+ */
 export function getHardness(sizeOfLargeStep: number, sizeOfSmallStep: number) {
   let l = sizeOfLargeStep;
   let s = sizeOfSmallStep;

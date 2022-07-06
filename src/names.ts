@@ -1,7 +1,12 @@
+/** TAMNAMS information about a MOS pattern. */
 export type TamnamsInfo = {
+  /** TAMNAMS name of the MOS pattern. */
   name: string;
+  /** True if the pattern is a subset of a larger MOS pattern. */
   subset: boolean;
+  /** Interval prefix. */
   prefix?: string;
+  /** TAMNAMS name abbreviation. */
   abbreviation?: string;
 };
 
@@ -13,7 +18,18 @@ const MODE_NAMES: {
   [key: string]: string;
 } = require('./modes.json');
 
-export function tamnamsInfo(pattern: string): TamnamsInfo | undefined;
+/**
+ * Retreive TAMNAMS information about a MOS pattern.
+ * @param {string} mosPattern MOS pattern such as "5L 2s".
+ * @returns {TamnamsInfo} Information about the MOS pattern.
+ */
+export function tamnamsInfo(mosPattern: string): TamnamsInfo | undefined;
+/**
+ * Retreive TAMNAMS information about a MOS pattern.
+ * @param numberOfLargeSteps Number of large steps in the MOS pattern.
+ * @param numberOfSmallSteps Number of small steps in the MOS pattern.
+ * @returns {TamnamsInfo} Information about the MOS pattern.
+ */
 export function tamnamsInfo(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number
@@ -46,12 +62,18 @@ export function tamnamsInfo(
   return undefined;
 }
 
-export function modeName(pattern: string, extra = false): string | undefined {
-  let name = MODE_NAMES[pattern];
+/**
+ * Retrieve the name for a MOS mode.
+ * @param mode Mode in step pattern format such as "LLsLLLs".
+ * @param extra If true adds extra mode names in parenthesis such as Ionian (Major).
+ * @returns Name of the mode.
+ */
+export function modeName(mode: string, extra = false): string | undefined {
+  let name = MODE_NAMES[mode];
   if (extra) {
-    if (pattern === 'LLsLLLs') {
+    if (mode === 'LLsLLLs') {
       name = name + ' (Major)';
-    } else if (pattern === 'LsLLsLL') {
+    } else if (mode === 'LsLLsLL') {
       name = name + ' (Minor)';
     }
   }

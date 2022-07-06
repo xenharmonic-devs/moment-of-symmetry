@@ -234,7 +234,7 @@ describe('MOS mode describer', () => {
     expect(infos[0]).toMatchObject({
       numberOfPeriods: 2,
       period: 3,
-      pattern: 'sLLsLL',
+      mode: 'sLLsLL',
       udp: '0|4(2)',
     });
   });
@@ -244,9 +244,9 @@ describe('MOS mode describer', () => {
     expect(info).toMatchObject({
       numberOfPeriods: 1,
       period: 7,
-      pattern: 'sLLLsLL',
+      mode: 'sLLLsLL',
       udp: '1|5',
-      mode: 'Phrygian',
+      modeName: 'Phrygian',
     });
   });
 
@@ -255,9 +255,9 @@ describe('MOS mode describer', () => {
     expect(info).toMatchObject({
       numberOfPeriods: 3,
       period: 2,
-      pattern: 'LsLsLs',
+      mode: 'LsLsLs',
       udp: '3|0(3)',
-      mode: 'Tonic',
+      modeName: 'Tonic',
     });
   });
 });
