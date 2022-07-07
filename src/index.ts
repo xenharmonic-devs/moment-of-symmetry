@@ -229,11 +229,11 @@ export function mosWithParent(
   }
   const edoDegrees = [...base.keys()].sort((a, b) => a - b);
   let result: Map<number, boolean> = new Map();
-  edoDegrees.forEach(degree => {
-    for (let i = 0; i < numPeriods; ++i) {
+  for (let i = 0; i < numPeriods; ++i) {
+    edoDegrees.forEach(degree => {
       result = result.set(degree + i * p, base.get(degree)!);
-    }
-  });
+    });
+  }
   const rootIsParent = result.get(0)!;
   result.delete(0);
   result.set(numPeriods * p, rootIsParent);

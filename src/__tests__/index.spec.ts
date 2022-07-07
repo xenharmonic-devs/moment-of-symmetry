@@ -87,6 +87,13 @@ describe('Moment of Symmetry step generator with parent MOS', () => {
       ])
     ).toBeTruthy();
   });
+  it('works with multiple periods per equave', () => {
+    const map = mosWithParent(4, 2, 3, 1, 2);
+    expect(arraysEqual([...map.keys()], [3, 4, 7, 10, 11, 14])).toBeTruthy();
+    expect(
+      arraysEqual([...map.values()], [true, false, true, true, false, true])
+    ).toBeTruthy();
+  });
 });
 
 describe('Moment of Symmetry step generator with daughter MOS', () => {
