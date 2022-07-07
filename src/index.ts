@@ -183,6 +183,110 @@ export function mos(
   return result;
 }
 
+/**
+ * Generate MOS pattern as a subset of an EDO with parent MOS relationship indicated.
+ * @param numberOfLargeSteps Number of large steps in the MOS pattern.
+ * @param numberOfSmallSteps Number of small steps in the MOS pattern.
+ * @param sizeOfLargeStep Size of the large step in EDO steps.
+ * @param sizeOfSmallStep Size of the small step in EDO steps.
+ * @param brightGeneratorsUp How many bright generators to go upwards. Also the number of large/major intervals in the resulting scale.
+ * @param flats If true the non-parent scale degrees will be dark. Defaults to bright (`false`).
+ * @returns A map of integers representing the EDO subset to booleans indicating if the scale degree belongs to the parent MOS or not.
+ * The 0 degree is not included, but the final degree representing the size of the EDO is.
+ */
+export function mosWithParent(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number,
+  sizeOfLargeStep = 2,
+  sizeOfSmallStep = 1,
+  brightGeneratorsUp = 0,
+  flats = false
+) {
+  const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+  if (brightGeneratorsUp % numPeriods !== 0) {
+    throw new Error(`Number of generators not a multiple of ${numPeriods}`);
+  }
+  const period = (numberOfLargeSteps + numberOfSmallSteps) / numPeriods;
+  const l = numberOfLargeSteps / numPeriods;
+  const s = numberOfSmallSteps / numPeriods;
+  const u = brightGeneratorsUp / numPeriods;
+  const p = l * sizeOfLargeStep + s * sizeOfSmallStep;
+
+  const gMonzo = mosGeneratorMonzo(l, s);
+  const g = gMonzo[0] * sizeOfLargeStep + gMonzo[1] * sizeOfSmallStep;
+
+  const parentPeriod = Math.max(l, s);
+
+  const base: Map<number, boolean> = new Map();
+  for (let i = 0; i < period; ++i) {
+    let isParent: boolean;
+    if (flats) {
+      isParent = period - i <= parentPeriod;
+    } else {
+      isParent = i < parentPeriod;
+    }
+    base.set(mmod((u - i) * g, p), isParent);
+  }
+  const edoDegrees = [...base.keys()].sort((a, b) => a - b);
+  let result: Map<number, boolean> = new Map();
+  edoDegrees.forEach(degree => {
+    for (let i = 0; i < numPeriods; ++i) {
+      result = result.set(degree + i * p, base.get(degree)!);
+    }
+  });
+  const rootIsParent = result.get(0)!;
+  result.delete(0);
+  result.set(numPeriods * p, rootIsParent);
+
+  return result;
+}
+
+/**
+ * Generate the daughter MOS pattern as a subset of an EDO with parent MOS relationship indicated.
+ * @param numberOfLargeSteps Number of large steps in the parent MOS.
+ * @param numberOfSmallSteps Number of small steps in the parent MOS.
+ * @param sizeOfLargeStep Size of the large step in EDO steps.
+ * @param sizeOfSmallStep Size of the small step in EDO steps.
+ * @param brightGeneratorsUp How many bright generators to go upwards. Also the number of large/major intervals in the resulting scale.
+ * @param flats If true the additional scale degrees will be dark. Defaults to bright (`false`).
+ * @returns A map of integers representing the EDO subset to booleans indicating if the scale degree belongs to the parent MOS or not.
+ * The 0 degree is not included, but the final degree representing the size of the EDO is.
+ */
+export function mosWithDaughter(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number,
+  sizeOfLargeStep = 2,
+  sizeOfSmallStep = 1,
+  brightGeneratorsUp = 0,
+  flats = false
+) {
+  const daughter = daughterMos(
+    numberOfLargeSteps,
+    numberOfSmallSteps,
+    sizeOfLargeStep,
+    sizeOfSmallStep
+  );
+  if (flats) {
+    const numPeriods = gcd(
+      daughter.numberOfLargeSteps,
+      daughter.numberOfSmallSteps
+    );
+    brightGeneratorsUp =
+      daughter.numberOfLargeSteps +
+      daughter.numberOfSmallSteps -
+      numPeriods -
+      brightGeneratorsUp;
+  }
+  return mosWithParent(
+    daughter.numberOfLargeSteps,
+    daughter.numberOfSmallSteps,
+    daughter.sizeOfLargeStep,
+    daughter.sizeOfSmallStep,
+    brightGeneratorsUp,
+    flats
+  );
+}
+
 /** Information about a MOS mode. */
 export type ModeInfo = {
   /** Number of steps in a period. */
@@ -367,6 +471,56 @@ export type MosInfo = {
   abbreviation?: string;
 };
 
+function splitMosPattern(mosPattern: string): [number, number] {
+  const [l, s] = mosPattern.split('L');
+  const numberOfLargeSteps = parseInt(l.trim());
+  const numberOfSmallSteps = parseInt(s.split('s')[0].trim());
+  return [numberOfLargeSteps, numberOfSmallSteps];
+}
+
+/**
+ * Calculate the parent MOS of a given MOS pattern.
+ * @param mosPattern MOS pattern such as "5L 2s".
+ * @returns Information about the parent MOS.
+ */
+export function parentMos(mosPattern: string): MosInfo;
+/**
+ * Calculate the parent MOS of a given MOS pattern.
+ * @param numberOfLargeSteps Number of large steps in the MOS pattern.
+ * @param numberOfSmallSteps Number of small steps in the MOS pattern.
+ * @returns Information about the parent MOS.
+ */
+export function parentMos(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number
+): MosInfo;
+export function parentMos(
+  patternOrLarge: string | number,
+  numberOfSmallSteps?: number
+): MosInfo {
+  let numberOfLargeSteps: number;
+  if (typeof patternOrLarge === 'string') {
+    [numberOfLargeSteps, numberOfSmallSteps] = splitMosPattern(patternOrLarge);
+  } else {
+    numberOfLargeSteps = patternOrLarge;
+    if (typeof numberOfSmallSteps !== 'number') {
+      throw new Error('Number of small steps must be given');
+    }
+  }
+  const parentSize = Math.max(numberOfLargeSteps, numberOfSmallSteps);
+  numberOfLargeSteps = Math.min(numberOfLargeSteps, numberOfSmallSteps);
+  numberOfSmallSteps = parentSize - numberOfLargeSteps;
+
+  const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+  const info = {
+    numberOfLargeSteps,
+    numberOfSmallSteps,
+    mosPattern,
+  };
+  Object.assign(info, tamnamsInfo(mosPattern));
+  return info;
+}
+
 /**
  * An array of information about the MOS patterns generated from a generator / period ratio.
  * @param generatorPerPeriod Generator divided by period.
@@ -434,6 +588,61 @@ export function mosPatterns(
   }
 
   return result;
+}
+
+/** Information about a MOS scale. */
+export type MosScaleInfo = {
+  /** MOS pattern such as "5L 2s". */
+  mosPattern: string;
+  /** Number of large steps in the pattern. */
+  numberOfLargeSteps: number;
+  /** Number of small steps in the pattern. */
+  numberOfSmallSteps: number;
+  /** Size of the large step in EDO steps. */
+  sizeOfLargeStep: number;
+  /** Size of the small step in EDO steps. */
+  sizeOfSmallStep: number;
+  /** Name of the step size ratio or the name of the hardness range it belongs to. */
+  hardness: string;
+  /** TAMNAMS name of the pattern. */
+  name?: string;
+  /** True if the pattern is a subset of a larger MOS pattern. */
+  subset?: boolean;
+  /** Interval prefix. */
+  prefix?: string;
+  /** TAMNAMS name abbreviation. */
+  abbreviation?: string;
+};
+
+export function daughterMos(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number,
+  sizeOfLargeStep: number,
+  sizeOfSmallStep: number
+): MosScaleInfo {
+  const size = numberOfLargeSteps + numberOfSmallSteps;
+  if (sizeOfLargeStep >= 2 * sizeOfSmallStep) {
+    numberOfSmallSteps = size;
+    sizeOfLargeStep -= sizeOfSmallStep;
+  } else {
+    numberOfSmallSteps = numberOfLargeSteps;
+    numberOfLargeSteps = size;
+    const temp = sizeOfSmallStep;
+    sizeOfSmallStep = sizeOfLargeStep - sizeOfSmallStep;
+    sizeOfLargeStep = temp;
+  }
+
+  const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+  const info = {
+    numberOfLargeSteps,
+    numberOfSmallSteps,
+    sizeOfLargeStep,
+    sizeOfSmallStep,
+    mosPattern,
+    hardness: getHardness(sizeOfLargeStep, sizeOfSmallStep),
+  };
+  Object.assign(info, tamnamsInfo(mosPattern));
+  return info;
 }
 
 function scalePattern(scale: Fraction[]) {
@@ -554,30 +763,6 @@ export function scaleInfo(
   return info;
 }
 
-/** Information about a MOS scale as a subset of an EDO */
-export type EdoInfo = {
-  /** MOS pattern such as "5L 2s". */
-  mosPattern: string;
-  /** Number of large steps in the pattern. */
-  numberOfLargeSteps: number;
-  /** Number of small steps in the pattern. */
-  numberOfSmallSteps: number;
-  /** Size of the large step in EDO steps. */
-  sizeOfLargeStep: number;
-  /** Size of the small step in EDO steps. */
-  sizeOfSmallStep: number;
-  /** Name of the step size ratio or the name of the hardness range it belongs to. */
-  hardness: string;
-  /** TAMNAMS name of the MOS pattern. */
-  name?: string;
-  /** True if the pattern is a subset of a larger MOS pattern. */
-  subset?: boolean;
-  /** Interval prefix. */
-  prefix?: string;
-  /** TAMNAMS name abbreviation. */
-  abbreviation?: string;
-};
-
 // One entry in the EDO map for each hardness class
 const STEP_SIZES: [number, number][] = [
   [2, 1], // basic
@@ -605,7 +790,7 @@ const STEP_SIZES: [number, number][] = [
  * @param maxSize Maximum size of the MOS patterns to include.
  * @returns A mapping from EDO size to an array of information about the supported MOS scales.
  */
-export function makeEdoMap(maxSize = 12): Map<number, EdoInfo[]> {
+export function makeEdoMap(maxSize = 12): Map<number, MosScaleInfo[]> {
   const result = new Map();
   STEP_SIZES.forEach(([sizeOfLargeStep, sizeOfSmallStep]) => {
     const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
@@ -670,7 +855,7 @@ const STEP_COUNTS: [number, number][] = [
  * @param edo Size of the EDO.
  * @returns Information about the supported MOS scale.
  */
-export function anyForEdo(edo: number): EdoInfo {
+export function anyForEdo(edo: number): MosScaleInfo {
   if (edo <= 1) {
     throw new Error('Minimum size is 2');
   }

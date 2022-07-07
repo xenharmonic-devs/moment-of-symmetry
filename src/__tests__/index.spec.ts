@@ -13,6 +13,10 @@ import {
   mosModes,
   mosPatterns,
   scaleInfo,
+  parentMos,
+  daughterMos,
+  mosWithParent,
+  mosWithDaughter,
 } from '../index';
 
 describe('Moment of Symmetry step generator', () => {
@@ -31,6 +35,109 @@ describe('Moment of Symmetry step generator', () => {
   });
   it('produces the sothic mode for semihard smitonic scale in 26edo', () => {
     expect(arraysEqual(mos(4, 3, 5, 2), [5, 7, 12, 14, 19, 21, 26]));
+  });
+});
+
+describe('Moment of Symmetry step generator with parent MOS', () => {
+  it('produces the major scale as the parent of 12EDO 7L 5s (sharps)', () => {
+    const map = mosWithParent(7, 5, 1, 1, 1);
+    expect(map.size).toBe(12);
+    const colors = [...map.keys()].map(step =>
+      map.get(step) ? 'white' : 'black'
+    );
+    colors.unshift(colors.pop()!);
+    expect(
+      arraysEqual(colors, [
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+      ])
+    ).toBeTruthy();
+  });
+  it('produces the major scale as the parent of 29EDO 5L 7s (flats)', () => {
+    const map = mosWithParent(5, 7, 3, 2, 10, true);
+    expect(map.size).toBe(12);
+    const colors = [...map.keys()].map(step =>
+      map.get(step) ? 'white' : 'black'
+    );
+    colors.unshift(colors.pop()!);
+    expect(
+      arraysEqual(colors, [
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+      ])
+    ).toBeTruthy();
+  });
+});
+
+describe('Moment of Symmetry step generator with daughter MOS', () => {
+  it('produces the chromatic scale as the daughter of 12EDO major scale (sharps)', () => {
+    const map = mosWithDaughter(5, 2, 2, 1, 5);
+    expect(map.size).toBe(12);
+    const colors = [...map.keys()].map(step =>
+      map.get(step) ? 'white' : 'black'
+    );
+    colors.unshift(colors.pop()!);
+    expect(
+      arraysEqual(colors, [
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+      ])
+    ).toBeTruthy();
+  });
+
+  it('produces the m-chromatic scale as the daughter of 31EDO major scale (flats)', () => {
+    const map = mosWithDaughter(5, 2, 5, 3, 5, true);
+    expect(map.size).toBe(12);
+    const colors = [...map.keys()].map(step =>
+      map.get(step) ? 'white' : 'black'
+    );
+    colors.unshift(colors.pop()!);
+    expect(
+      arraysEqual(colors, [
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+        'black',
+        'white',
+      ])
+    ).toBeTruthy();
   });
 });
 
@@ -87,6 +194,12 @@ describe('Moment of Symmetry scale form calculator', () => {
 });
 
 describe('Moment of Symmetry scale pattern calculator', () => {
+  it('knows 12EDO has a diatonic scale', () => {
+    const patterns = mosPatterns(new Fraction(7, 12));
+    expect(patterns).toHaveLength(3);
+    expect(patterns[2].name).toBe('diatonic');
+  });
+
   it('knows pythagorean temperament results in a p-chromatic scale', () => {
     const patterns = mosPatterns(Math.log(3) / Math.LN2, 1, undefined, 5);
     expect(patterns).toHaveLength(5);
@@ -279,5 +392,30 @@ describe('Scale describer', () => {
     const down = Math.round(Math.random() * (size - 1));
     const numPeriods = Math.ceil(Math.random() * 3);
     scaleInfo(Math.random(), size * numPeriods, down * numPeriods, numPeriods);
+  });
+});
+
+describe('Parent MOS finder', () => {
+  it('knows that pentic is the parent of diatonic', () => {
+    const info = parentMos('5L 2s');
+    expect(info.name).toBe('pentic');
+  });
+  it('knows that antilemon is the parent of echinoid', () => {
+    const info = parentMos('6L 2s');
+    expect(info.name).toBe('antilemon');
+  });
+});
+
+describe('Daughter MOS finder', () => {
+  it('knows that the daughter of diatonic 19EDO is m-chromatic', () => {
+    const info = daughterMos(5, 2, 3, 2);
+    expect(info.name).toBe('m-chromatic');
+    expect(info.hardness).toBe('basic');
+  });
+
+  it('is opinionated in calling the daughter of diatonic 12EDO p-chromatic', () => {
+    const info = daughterMos(5, 2, 2, 1);
+    expect(info.name).toBe('p-chromatic');
+    expect(info.hardness).toBe('equalized');
   });
 });
