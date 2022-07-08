@@ -453,6 +453,44 @@ export function mosSizes(
   );
 }
 
+/**
+ * Flip a generator / period ratio to a bright version if necessary.
+ * @param generatorPerPeriod Generator divided by period.
+ * @param size Size of the scale.
+ * @returns The first parameter. Flipped if it was dark.
+ */
+export function toBrightGeneratorPerPeriod(
+  generatorPerPeriod: number,
+  size: number
+) {
+  const one = new Fraction(1);
+  const generator = new Fraction(generatorPerPeriod).mod(one).add(one).mod(one);
+  const negativeGenerator = one.sub(generator);
+  const range = [...Array(size).keys()];
+  const positive = range.map(i => generator.mul(i).mod(one));
+  positive.sort((a, b) => a.compare(b));
+  positive.push(one);
+  const negative = range.map(i => negativeGenerator.mul(i).mod(one));
+  negative.sort((a, b) => a.compare(b));
+  negative.push(one);
+
+  // Check which scale has brighter intervals
+  for (let i = 1; i < positive.length; ++i) {
+    const positiveInterval = positive[i].sub(positive[0]);
+    const negativeInterval = negative[i].sub(negative[0]);
+    const cmp = positiveInterval.compare(negativeInterval);
+    if (cmp > 0) {
+      return mmod(generatorPerPeriod, 1);
+    }
+    if (cmp < 0) {
+      return mmod(-generatorPerPeriod, 1);
+    }
+  }
+
+  // Ambiguous generator
+  return mmod(generatorPerPeriod, 1);
+}
+
 /** Information about a MOS pattern. */
 export type MosInfo = {
   /** MOS pattern such as "5L 2s". */

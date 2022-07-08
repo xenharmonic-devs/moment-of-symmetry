@@ -17,6 +17,7 @@ import {
   daughterMos,
   mosWithParent,
   mosWithDaughter,
+  toBrightGeneratorPerPeriod,
 } from '../index';
 
 describe('Moment of Symmetry step generator', () => {
@@ -424,5 +425,14 @@ describe('Daughter MOS finder', () => {
     const info = daughterMos(5, 2, 2, 1);
     expect(info.name).toBe('p-chromatic');
     expect(info.hardness).toBe('equalized');
+  });
+});
+
+describe('Generator / period brightener', () => {
+  it('knows that fourths are dark in diatonic', () => {
+    const fourth = 5 / 12;
+    const bright = toBrightGeneratorPerPeriod(fourth, 7);
+    const fifth = 7 / 12;
+    expect(bright).toBeCloseTo(fifth);
   });
 });
