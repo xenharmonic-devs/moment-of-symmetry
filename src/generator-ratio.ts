@@ -23,7 +23,8 @@ export function mosForms(
   const convergents = getSemiconvergents(
     generatorPerPeriod,
     maxSize,
-    maxLength
+    maxLength,
+    true
   );
   // Get rid of the first two
   convergents.shift();

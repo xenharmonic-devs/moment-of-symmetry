@@ -65,12 +65,14 @@ export function mmod(a: number, b: number) {
  * @param x The fraction to simplify.
  * @param maxDenominator Maximum denominator to include.
  * @param maxLength Maximum length of the array of approximations.
+ * @param includeNonMonotonic Include non-monotonically improving approximations.
  * @returns An array of semiconvergents.
  */
 export function getSemiconvergents(
   x: Fraction,
   maxDenominator?: number,
-  maxLength?: number
+  maxLength?: number,
+  includeNonMonotonic = false
 ) {
   /*
     Glossary
@@ -94,22 +96,27 @@ export function getSemiconvergents(
       num += den * cf[i - 1];
     }
     if (d > 0) {
-      for (let i = Math.ceil(cfDigit / 2); i < cfDigit; i++) {
+      const lowerBound = includeNonMonotonic ? 1 : Math.ceil(cfDigit / 2);
+      for (let i = lowerBound; i < cfDigit; i++) {
         const scnum = num - (cfDigit - i) * result[cind[d - 1]].n;
         const scden = den - (cfDigit - i) * result[cind[d - 1]].d;
         if (scden > maxDenominator!) break;
         const convergent = new Fraction(scnum, scden);
-        // See https://en.wikipedia.org/wiki/Continued_fraction#Semiconvergents
-        // for the origin of this half-rule
-        if (2 * i > cfDigit) {
+        if (includeNonMonotonic) {
           result.push(convergent);
-        } else if (
-          convergent
-            .sub(x)
-            .abs()
-            .compare(result[result.length - 1].sub(x).abs()) < 0
-        ) {
-          result.push(convergent);
+        } else {
+          // See https://en.wikipedia.org/wiki/Continued_fraction#Semiconvergents
+          // for the origin of this half-rule
+          if (2 * i > cfDigit) {
+            result.push(convergent);
+          } else if (
+            convergent
+              .sub(x)
+              .abs()
+              .compare(result[result.length - 1].sub(x).abs()) < 0
+          ) {
+            result.push(convergent);
+          }
         }
         if (result.length >= maxLength!) {
           return result;
