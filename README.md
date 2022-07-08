@@ -11,5 +11,5 @@ Documentation is hosted at the project [Github pages](https://xenharmonic-devs.g
 
 To generate documentation locally run:
 ```bash
-npx typedoc --name moment-of-symmetry --entryPointStrategy packages .
+npm run doc
 ```

@@ -1,9 +1,8 @@
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
-import {arraysEqual, gcd, mmod} from './utils';
 import {ModeInfo, MosInfo, MosScaleInfo} from './info';
+import {arraysEqual, gcd, mmod} from 'xen-dev-utils';
 
-export * from './utils';
 export * from './hardness';
 export * from './names';
 export * from './generator-ratio';

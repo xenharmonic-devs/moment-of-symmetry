@@ -42,9 +42,10 @@
     "prepare": "npm run compile",
     "pretest": "npm run compile",
     "posttest": "npm run lint",
-    "test": "vitest"
+    "test": "vitest",
+    "doc": "typedoc --entryPointStrategy packages . --name moment-of-symmetry"
   },
   "dependencies": {
-    "fraction.js": "^4.2.0"
+    "xen-dev-utils": "github:xenharmonic-devs/xen-dev-utils"
   }
 }

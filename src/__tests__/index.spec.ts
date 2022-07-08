@@ -1,5 +1,5 @@
 import {describe, it, expect, test} from 'vitest';
-import {arraysEqual} from '../utils';
+import {arraysEqual} from 'xen-dev-utils';
 import {
   mos,
   euclid,

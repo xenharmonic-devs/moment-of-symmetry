@@ -1,5 +1,5 @@
-import Fraction from 'fraction.js';
 import {describe, it, expect} from 'vitest';
+import {arraysEqual, Fraction} from 'xen-dev-utils';
 import {
   mosForms,
   mosPatterns,
@@ -7,7 +7,6 @@ import {
   scaleInfo,
   toBrightGeneratorPerPeriod,
 } from '../generator-ratio';
-import {arraysEqual} from '../utils';
 
 describe('Moment of Symmetry scale size calculator', () => {
   it('produces the correct pattern for pythagorean temperament', () => {

@@ -1,7 +1,6 @@
-import Fraction from 'fraction.js';
+import {Fraction, FractionSet, getSemiconvergents, mmod} from 'xen-dev-utils';
 import {MosInfo, ScaleInfo} from './info';
 import {modeName, tamnamsInfo} from './names';
-import {FractionSet, getSemiconvergents, mmod} from './utils';
 
 /**
  * An array of fractions that convey information about a MOS scale.
