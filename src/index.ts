@@ -249,7 +249,7 @@ export function mosWithParent(
  * @param numberOfSmallSteps Number of small steps in the parent MOS.
  * @param sizeOfLargeStep Size of the large step in EDO steps.
  * @param sizeOfSmallStep Size of the small step in EDO steps.
- * @param brightGeneratorsUp How many bright generators to go upwards. Also the number of large/major intervals in the resulting scale.
+ * @param brightGeneratorsUp How many bright generators to go upwards. Also the number of large/major intervals in the parent scale.
  * @param flats If true the additional scale degrees will be dark. Defaults to bright (`false`).
  * @returns A map of integers representing the EDO subset to booleans indicating if the scale degree belongs to the parent MOS or not.
  * The 0 degree is not included, but the final degree representing the size of the EDO is.
@@ -262,31 +262,46 @@ export function mosWithDaughter(
   brightGeneratorsUp = 0,
   flats = false
 ) {
-  const daughter = daughterMos(
-    numberOfLargeSteps,
-    numberOfSmallSteps,
-    sizeOfLargeStep,
-    sizeOfSmallStep
-  );
-  if (flats) {
-    const numPeriods = gcd(
-      daughter.numberOfLargeSteps,
-      daughter.numberOfSmallSteps
-    );
-    brightGeneratorsUp =
-      daughter.numberOfLargeSteps +
-      daughter.numberOfSmallSteps -
-      numPeriods -
-      brightGeneratorsUp;
+  const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+  if (brightGeneratorsUp % numPeriods !== 0) {
+    throw new Error(`Number of generators not a multiple of ${numPeriods}`);
   }
-  return mosWithParent(
-    daughter.numberOfLargeSteps,
-    daughter.numberOfSmallSteps,
-    daughter.sizeOfLargeStep,
-    daughter.sizeOfSmallStep,
-    brightGeneratorsUp,
-    flats
-  );
+  const period = (numberOfLargeSteps + numberOfSmallSteps) / numPeriods;
+  const l = numberOfLargeSteps / numPeriods;
+  const s = numberOfSmallSteps / numPeriods;
+  const u = brightGeneratorsUp / numPeriods;
+  const p = l * sizeOfLargeStep + s * sizeOfSmallStep;
+
+  const gMonzo = mosGeneratorMonzo(l, s);
+  const g = gMonzo[0] * sizeOfLargeStep + gMonzo[1] * sizeOfSmallStep;
+
+  const daughterPeriod = 2 * l + s;
+
+  const base: Map<number, boolean> = new Map();
+  for (let i = 0; i < period; ++i) {
+    base.set(mmod((u - i) * g, p), true);
+  }
+  if (flats) {
+    for (let i = period; i < daughterPeriod; ++i) {
+      base.set(mmod((u - i) * g, p), false);
+    }
+  } else {
+    for (let i = period - daughterPeriod; i < 0; ++i) {
+      base.set(mmod((u - i) * g, p), false);
+    }
+  }
+  const edoDegrees = [...base.keys()].sort((a, b) => a - b);
+  let result: Map<number, boolean> = new Map();
+  for (let i = 0; i < numPeriods; ++i) {
+    edoDegrees.forEach(degree => {
+      result = result.set(degree + i * p, base.get(degree)!);
+    });
+  }
+  const rootIsParent = result.get(0)!;
+  result.delete(0);
+  result.set(numPeriods * p, rootIsParent);
+
+  return result;
 }
 
 /**

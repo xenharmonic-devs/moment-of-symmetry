@@ -140,6 +140,33 @@ describe('Moment of Symmetry step generator with daughter MOS', () => {
       ])
     ).toBeTruthy();
   });
+
+  it('produces the pentatonic scale as the non-parent for 17EDO major scale with both flats and sharps', () => {
+    const sharps = mosWithDaughter(5, 2, 3, 1, 5, false);
+    const flats = mosWithDaughter(5, 2, 3, 1, 5, true);
+
+    const diatonicSharps = [...sharps.keys()].filter(key => sharps.get(key));
+    const diatonicFlats = [...flats.keys()].filter(key => flats.get(key));
+    const diatonic = [3, 6, 7, 10, 13, 16, 17];
+    expect(arraysEqual(diatonicSharps, diatonic)).toBeTruthy();
+    expect(arraysEqual(diatonicFlats, diatonic)).toBeTruthy();
+
+    const pentatonicSharps = [...sharps.keys()].filter(key => !sharps.get(key));
+    const pentatonicFlats = [...flats.keys()].filter(key => !flats.get(key));
+    const pentatonic = [0, 3, 7, 10, 13];
+    expect(
+      arraysEqual(
+        pentatonicSharps.map(key => key - pentatonicSharps[0]),
+        pentatonic
+      )
+    ).toBeTruthy();
+    expect(
+      arraysEqual(
+        pentatonicFlats.map(key => key - pentatonicFlats[0]),
+        pentatonic
+      )
+    ).toBeTruthy();
+  });
 });
 
 const MOS_PATTERNS = {
