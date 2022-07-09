@@ -446,12 +446,14 @@ export function parentMos(
       throw new Error('Number of small steps must be given');
     }
   }
-  const parentSize = Math.max(numberOfLargeSteps, numberOfSmallSteps);
+  // Calculate the parent's size.
+  const size = Math.max(numberOfLargeSteps, numberOfSmallSteps);
   numberOfLargeSteps = Math.min(numberOfLargeSteps, numberOfSmallSteps);
-  numberOfSmallSteps = parentSize - numberOfLargeSteps;
+  numberOfSmallSteps = size - numberOfLargeSteps;
 
   const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
   const info = {
+    size,
     numberOfLargeSteps,
     numberOfSmallSteps,
     mosPattern,

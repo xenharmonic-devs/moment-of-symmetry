@@ -6,6 +6,8 @@ export type MosInfo = {
   numberOfLargeSteps: number;
   /** Number of small steps in the pattern. */
   numberOfSmallSteps: number;
+  /** Size of the pattern. */
+  size: number;
   /** TAMNAMS name of the pattern. */
   name?: string;
   /** True if the pattern is a subset of a larger MOS pattern. */

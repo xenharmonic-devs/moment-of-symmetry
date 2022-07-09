@@ -129,7 +129,7 @@ export function mosPatterns(
   for (let j = 0; j < forms.length; ++j) {
     const form = forms[j];
     if (size !== undefined) {
-      if (size > maxSize!) {
+      if (size * numberOfPeriods > maxSize!) {
         break;
       }
       // Mathematical correct modulo as recommended by Fraction.js documentation
@@ -158,10 +158,12 @@ export function mosPatterns(
           numberOfLargeSteps++;
         }
       }
+      size *= numberOfPeriods;
       numberOfLargeSteps *= numberOfPeriods;
       numberOfSmallSteps *= numberOfPeriods;
       const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
       const info = {
+        size,
         numberOfLargeSteps,
         numberOfSmallSteps,
         mosPattern,

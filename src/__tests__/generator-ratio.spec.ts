@@ -95,6 +95,12 @@ describe('Moment of Symmetry scale pattern calculator', () => {
     expect(patterns).toHaveLength(1);
     expect(patterns[0].name).toBe('pentawood');
   });
+
+  it('obeys size limits', () => {
+    mosPatterns((Math.log(3) / Math.LN2) * 2, 2, 22).forEach(pattern => {
+      expect(pattern.size).toBeLessThanOrEqual(22);
+    });
+  });
 });
 
 describe('Scale describer', () => {
