@@ -1,4 +1,4 @@
-import {Fraction, FractionSet, getSemiconvergents, mmod} from 'xen-dev-utils';
+import {Fraction, FractionSet, getConvergents, mmod} from 'xen-dev-utils';
 import {MosInfo, ScaleInfo} from './info';
 import {modeName, tamnamsInfo} from './names';
 
@@ -19,10 +19,11 @@ export function mosForms(
   }
   generatorPerPeriod = new Fraction(generatorPerPeriod);
   generatorPerPeriod.n = mmod(generatorPerPeriod.n, generatorPerPeriod.d);
-  const convergents = getSemiconvergents(
+  const convergents = getConvergents(
     generatorPerPeriod,
     maxSize,
     maxLength,
+    true,
     true
   );
   // Get rid of the first two
