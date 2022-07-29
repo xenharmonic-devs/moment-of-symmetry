@@ -50,6 +50,41 @@ export function mosSizes(
 }
 
 /**
+ * Determine if a generator / period ratio is bright.
+ * @param generatorPerPeriod Generator divided by period.
+ * @param size Size of the scale.
+ * @returns `true` if the generator creates large intervals when stacked.
+ */
+export function isBright(generatorPerPeriod: number | Fraction, size: number) {
+  const one = new Fraction(1);
+  const generator = new Fraction(generatorPerPeriod).mod(one).add(one).mod(one);
+  const negativeGenerator = one.sub(generator);
+  const range = [...Array(size).keys()];
+  const positive = range.map(i => generator.mul(i).mod(one));
+  positive.sort((a, b) => a.compare(b));
+  positive.push(one);
+  const negative = range.map(i => negativeGenerator.mul(i).mod(one));
+  negative.sort((a, b) => a.compare(b));
+  negative.push(one);
+
+  // Check which scale has brighter intervals
+  for (let i = 1; i < positive.length; ++i) {
+    const positiveInterval = positive[i].sub(positive[0]);
+    const negativeInterval = negative[i].sub(negative[0]);
+    const cmp = positiveInterval.compare(negativeInterval);
+    if (cmp > 0) {
+      return true;
+    }
+    if (cmp < 0) {
+      return false;
+    }
+  }
+
+  // Ambiguous generator
+  return true;
+}
+
+/**
  * Flip a generator / period ratio to a bright version if necessary.
  * @param generatorPerPeriod Generator divided by period.
  * @param size Size of the scale.
@@ -69,41 +104,17 @@ export function toBrightGeneratorPerPeriod(
 ): number | Fraction {
   const one = new Fraction(1);
   const generator = new Fraction(generatorPerPeriod).mod(one).add(one).mod(one);
-  const negativeGenerator = one.sub(generator);
-  const range = [...Array(size).keys()];
-  const positive = range.map(i => generator.mul(i).mod(one));
-  positive.sort((a, b) => a.compare(b));
-  positive.push(one);
-  const negative = range.map(i => negativeGenerator.mul(i).mod(one));
-  negative.sort((a, b) => a.compare(b));
-  negative.push(one);
-
-  // Check which scale has brighter intervals
-  for (let i = 1; i < positive.length; ++i) {
-    const positiveInterval = positive[i].sub(positive[0]);
-    const negativeInterval = negative[i].sub(negative[0]);
-    const cmp = positiveInterval.compare(negativeInterval);
-    if (cmp > 0) {
-      if (typeof generatorPerPeriod === 'number') {
-        return mmod(generatorPerPeriod, 1);
-      } else {
-        return generator;
-      }
-    }
-    if (cmp < 0) {
-      if (typeof generatorPerPeriod === 'number') {
-        return mmod(-generatorPerPeriod, 1);
-      } else {
-        return negativeGenerator;
-      }
+  if (isBright(generatorPerPeriod, size)) {
+    if (typeof generatorPerPeriod === 'number') {
+      return mmod(generatorPerPeriod, 1);
+    } else {
+      return generator;
     }
   }
-
-  // Ambiguous generator
   if (typeof generatorPerPeriod === 'number') {
-    return mmod(generatorPerPeriod, 1);
+    return mmod(-generatorPerPeriod, 1);
   } else {
-    return generator;
+    return one.sub(generator);
   }
 }
 
