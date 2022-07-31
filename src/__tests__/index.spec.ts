@@ -11,6 +11,7 @@ import {
   daughterMos,
   mosWithParent,
   mosWithDaughter,
+  allForEdo,
 } from '../index';
 
 describe('Moment of Symmetry step generator', () => {
@@ -282,6 +283,13 @@ describe('MOS finder for EDO', () => {
         3 * info.sizeOfSmallStep
       );
     }
+  });
+});
+
+describe('Exhaustive MOS finder for EDO', () => {
+  it('Can find everything reasonable supported by 31EDO', () => {
+    const scales = allForEdo(31, 5, 12, 4.5);
+    expect(scales).toHaveLength(18);
   });
 });
 

@@ -636,3 +636,66 @@ export function anyForEdo(edo: number): MosScaleInfo {
   }
   throw new Error(`Failed to find MOS pattern for ${edo}`);
 }
+
+/**
+ * Find all MOS scales supported by the given EDO within the given constraints.
+ * @param edo Size of the EDO.
+ * @param minSize Minimum size of a MOS scale in the result.
+ * @param maxSize Maximum size of a MOS scale in the result.
+ * @param maxHardness Maximum hardness of the step ratio L/s.
+ * @returns Array of information about the supported MOS scales.
+ */
+export function allForEdo(
+  edo: number,
+  minSize: number,
+  maxSize: number,
+  maxHardness?: number
+): MosScaleInfo[] {
+  const result: MosScaleInfo[] = [];
+  for (
+    let numberOfLargeSteps = 1;
+    numberOfLargeSteps < maxSize;
+    ++numberOfLargeSteps
+  ) {
+    for (
+      let numberOfSmallSteps = minSize - 1;
+      numberOfSmallSteps <= maxSize - numberOfLargeSteps;
+      numberOfSmallSteps++
+    ) {
+      for (
+        let sizeOfLargeStep = 2;
+        sizeOfLargeStep <= edo - numberOfSmallSteps;
+        sizeOfLargeStep++
+      ) {
+        for (
+          let sizeOfSmallStep = 1;
+          sizeOfSmallStep < sizeOfLargeStep;
+          ++sizeOfSmallStep
+        ) {
+          if (maxHardness && sizeOfLargeStep > sizeOfSmallStep * maxHardness) {
+            continue;
+          }
+          if (
+            numberOfLargeSteps * sizeOfLargeStep +
+              numberOfSmallSteps * sizeOfSmallStep ===
+            edo
+          ) {
+            const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+            const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
+            const info = {
+              mosPattern,
+              numberOfLargeSteps,
+              numberOfSmallSteps,
+              sizeOfLargeStep,
+              sizeOfSmallStep,
+              hardness,
+            };
+            Object.assign(info, tamnamsInfo(mosPattern));
+            result.push(info);
+          }
+        }
+      }
+    }
+  }
+  return result;
+}
