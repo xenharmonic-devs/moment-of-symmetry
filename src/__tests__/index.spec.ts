@@ -287,6 +287,11 @@ describe('MOS finder for EDO', () => {
 });
 
 describe('Exhaustive MOS finder for EDO', () => {
+  it('Can find everything supported by 12EDO', () => {
+    const scales = allForEdo(12, 2, 12);
+    expect(scales).toHaveLength(21);
+  });
+
   it('Can find everything reasonable supported by 31EDO', () => {
     const scales = allForEdo(31, 5, 12, 4.5);
     expect(scales).toHaveLength(18);

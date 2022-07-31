@@ -672,6 +672,9 @@ export function allForEdo(
           sizeOfSmallStep < sizeOfLargeStep;
           ++sizeOfSmallStep
         ) {
+          if (gcd(sizeOfLargeStep, sizeOfSmallStep) !== 1) {
+            continue;
+          }
           if (maxHardness && sizeOfLargeStep > sizeOfSmallStep * maxHardness) {
             continue;
           }
