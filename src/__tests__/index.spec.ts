@@ -266,8 +266,7 @@ describe('EDO mapper', () => {
     });
     supportedMosses.sort();
     expect(supportedMosses.join(', ')).toBe(
-      'antidiatonic, antipentic, archeotonic, diatonic, dicotonic, joanatonic, m-chromatic, ' +
-        'manic, mosh, oneirotonic, orwelloid, pentic, pine, pine, sensoid, sinatonic'
+      'antidiatonic, antipentic, antisinatonic, antisubneutralic, archeotonic, balzano, checkertonic, diatonic, dicoid, gramitonic, m-chro antisinatonic, m-chro balzano, m-chromatic, manic, mosh, oneirotonic, onyx, p-chro checkertonic, p-chro machinoid, pentic, pine'
     );
   });
 });
@@ -338,9 +337,9 @@ describe('Parent MOS finder', () => {
     const info = parentMos('5L 2s');
     expect(info.name).toBe('pentic');
   });
-  it('knows that antilemon is the parent of echinoid', () => {
+  it('knows that malic is the parent of echinoid', () => {
     const info = parentMos('6L 2s');
-    expect(info.name).toBe('antilemon');
+    expect(info.name).toBe('malic');
   });
 });
 
