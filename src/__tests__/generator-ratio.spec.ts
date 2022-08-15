@@ -72,16 +72,16 @@ describe('Moment of Symmetry scale pattern calculator', () => {
     expect(patterns[3].name).toBe('diatonic');
   });
 
-  it('knows pythagorean temperament results in a p-chromatic scale', () => {
+  it('knows pythagorean temperament results in a pyth-chromatic scale', () => {
     const patterns = mosPatterns(Math.log(3) / Math.LN2, 1, undefined, 5);
     expect(patterns).toHaveLength(5);
-    expect(patterns[4].name).toBe('p-chromatic');
+    expect(patterns[4].name).toBe('pyth-chromatic');
   });
 
-  it('knows quarter-comma meantone results in an m-chromatic scale', () => {
+  it('knows quarter-comma meantone results in an mean-chromatic scale', () => {
     const patterns = mosPatterns(Math.log(5) / 4 / Math.LN2, 1, undefined, 5);
     expect(patterns).toHaveLength(5);
-    expect(patterns[4].name).toBe('m-chromatic');
+    expect(patterns[4].name).toBe('mean-chromatic');
   });
 
   it('knows blackwood corresponds to pentawood', () => {

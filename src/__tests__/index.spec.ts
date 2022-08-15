@@ -266,8 +266,7 @@ describe('EDO mapper', () => {
     });
     supportedMosses.sort();
     expect(supportedMosses.join(', ')).toBe(
-      'antidiatonic, antipentic, archeotonic, diatonic, dicotonic, joanatonic, m-chromatic, ' +
-        'manic, mosh, oneirotonic, orwelloid, pentic, pine, pine, sensoid, sinatonic'
+      'antidiatonic, antipentic, antisinatonic, antisubneutralic, archeotonic, asinamechromic, balomechromic, balzano, checkepechromic, checkertonic, diatonic, dicoid, gramitonic, manic, mean-chromatic, mechapechromic, mosh, oneirotonic, onyx, pentic, pine'
     );
   });
 });
@@ -338,22 +337,22 @@ describe('Parent MOS finder', () => {
     const info = parentMos('5L 2s');
     expect(info.name).toBe('pentic');
   });
-  it('knows that antilemon is the parent of echinoid', () => {
+  it('knows that malic is the parent of echinoid', () => {
     const info = parentMos('6L 2s');
-    expect(info.name).toBe('antilemon');
+    expect(info.name).toBe('malic');
   });
 });
 
 describe('Daughter MOS finder', () => {
-  it('knows that the daughter of diatonic 19EDO is m-chromatic', () => {
+  it('knows that the daughter of diatonic 19EDO is mean-chromatic', () => {
     const info = daughterMos(5, 2, 3, 2);
-    expect(info.name).toBe('m-chromatic');
+    expect(info.name).toBe('mean-chromatic');
     expect(info.hardness).toBe('basic');
   });
 
-  it('is opinionated in calling the daughter of diatonic 12EDO p-chromatic', () => {
+  it('is opinionated in calling the daughter of diatonic 12EDO pyth-chromatic', () => {
     const info = daughterMos(5, 2, 2, 1);
-    expect(info.name).toBe('p-chromatic');
+    expect(info.name).toBe('pyth-chromatic');
     expect(info.hardness).toBe('equalized');
   });
 });

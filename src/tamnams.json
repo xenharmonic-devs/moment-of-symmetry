@@ -1,47 +1,87 @@
 {
   "1L 1s": {
-      "name": "trivial"
+      "name": "monowood",
+      "prefix": "monowd",
+      "abbreviation": "wood",
+      "familyPrefix": "monowood",
+      "nonOctaveName": "trivial",
+      "nonOctavePrefix": "triv",
+      "nonOctaveAbbreviation": "trv"
   },
+
   "1L 2s": {
-      "name": "happy"
+    "name": "antrial",
+    "prefix": "atri"
   },
   "2L 1s": {
-      "name": "grumpy"
+      "name": "trial",
+      "prefix": "tri"
+  },
+  "1L 3s": {
+    "name": "antetric",
+    "prefix": "atetra",
+    "abbreviation": "att"
   },
   "2L 2s": {
-      "name": "bi-equal"
+      "name": "biwood",
+      "prefix": "biwd",
+      "abbreviation": "bw",
+      "familyPrefix": "biwood"
   },
   "3L 1s": {
-      "name": "superhappy"
+      "name": "tetric",
+      "prefix": "tetra",
+      "abbreviation": "tt"
+  },
+
+  "1L 4s": {
+    "name": "pedal",
+    "prefix": "ped"
   },
   "2L 3s": {
       "name": "pentic",
-      "prefix": "pent"
+      "prefix": "pent",
+      "abbreviation": "pt"
   },
   "3L 2s": {
       "name": "antipentic",
-      "prefix": "apent"
+      "prefix": "apent",
+      "abbreviation": "apt"
   },
   "4L 1s": {
       "name": "manic",
-      "prefix": "man"
+      "prefix": "manu"
+  },
+
+  "1L 5s": {
+    "name": "antimachinoid",
+    "prefix": "amech"
   },
   "2L 4s": {
-      "name": "antilemon",
-      "prefix": "alem"
+      "name": "malic",
+      "prefix": "mal",
+      "abbreviation": "mal"
   },
   "3L 3s": {
-      "name": "triwood; augmented",
-      "prefix": "triwood",
-      "abbreviation": "trw"
+      "name": "triwood",
+      "prefix": "triwd",
+      "abbreviation": "trw",
+      "familyPrefix": "triwood"
   },
   "4L 2s": {
-      "name": "lemon",
-      "prefix": "lem"
+      "name": "citric",
+      "prefix": "citro",
+      "abbreviation": "cit"
   },
   "5L 1s": {
       "name": "machinoid",
-      "prefix": "mech"
+      "prefix": "mech",
+      "familyPrefix": "mecha"
+  },
+
+  "1L 6s": {
+    "name": "onyx",
+    "prefix": "on"
   },
   "2L 5s": {
       "name": "antidiatonic",
@@ -60,117 +100,286 @@
   },
   "6L 1s": {
       "name": "archeotonic",
-      "prefix": "archeo",
-      "abbreviation": "arch"
+      "prefix": "arch",
+      "familyPrefix": "archeo"
+  },
+
+  "1L 7s": {
+    "name": "antipine",
+    "prefix": "apine"
   },
   "2L 6s": {
-      "name": "antiechinoid",
-      "prefix": "anech"
+      "name": "subaric",
+      "prefix": "subar"
   },
   "3L 5s": {
-      "name": "sensoid",
-      "prefix": "sen"
+      "name": "checkertonic",
+      "prefix": "check",
+      "abbreviation": "chk",
+      "familyPrefix": "checke"
   },
   "4L 4s": {
-      "name": "tetrawood; diminished",
-      "prefix": "tetwood",
-      "abbreviation": "ttw"
+      "name": "tetrawood",
+      "prefix": "tetwd",
+      "abbreviation": "ttw",
+      "familyPrefix": "tetwood"
   },
   "5L 3s": {
       "name": "oneirotonic",
-      "prefix": "oneiro",
-      "abbreviation": "on"
+      "prefix": "neiro",
+      "abbreviation": "neiro"
   },
   "6L 2s": {
-      "name": "echinoid",
-      "prefix": "ech"
+      "name": "ekic",
+      "prefix": "ek",
+      "familyPrefix": "eki"
   },
   "7L 1s": {
       "name": "pine",
       "prefix": "pine"
   },
+
+  "1L 8s": {
+    "name": "antisubneutralic",
+    "prefix": "ablu"
+  },
   "2L 7s": {
-      "name": "joanatonic",
-      "prefix": "jo"
+      "name": "balzano",
+      "prefix": "bal",
+      "familyPrefix": "balo"
   },
   "3L 6s": {
       "name": "tcherepnin",
-      "prefix": "tcher",
-      "abbreviation": "tch"
+      "prefix": "cher",
+      "abbreviation": "ch",
+      "familyPrefix": "chere"
   },
   "4L 5s": {
-      "name": "orwelloid",
-      "prefix": "or"
+      "name": "gramitonic",
+      "prefix": "gram",
+      "familyPrefix": "grami"
   },
   "5L 4s": {
       "name": "semiquartal",
-      "prefix": "sequar",
-      "abbreviation": "seq"
+      "prefix": "cthon",
+      "abbreviation": "cth",
+      "familyPrefix": "chtono"
   },
   "6L 3s": {
       "name": "hyrulic",
       "prefix": "hyru",
-      "abbreviation": "hy"
+      "abbreviation": "hyru"
   },
   "7L 2s": {
       "name": "superdiatonic",
-      "prefix": "arm"
+      "prefix": "arm",
+      "familyPrefix": "armo"
   },
   "8L 1s": {
       "name": "subneutralic",
       "prefix": "blu"
   },
+
+  "1L 9s": {
+    "name": "antisinatonic",
+    "prefix": "asina",
+    "abbreviation": "asi"
+  },
   "2L 8s": {
-      "name": "antidimanic",
-      "prefix": "adiman",
-      "abbreviation": "adman"
+      "name": "jaric",
+      "prefix": "jara",
+      "abbreviation": "jar"
   },
   "3L 7s": {
       "name": "sephiroid",
-      "prefix": "sephi",
-      "abbreviation": "seph"
+      "prefix": "seph",
+      "familyPrefix": "sephi"
   },
   "4L 6s": {
-      "name": "dipentic",
-      "prefix": "dipen",
-      "abbreviation": "dpen"
+      "name": "lime",
+      "prefix": "lime"
   },
   "5L 5s": {
       "name": "pentawood",
-      "prefix": "penwood",
-      "abbreviation": "pw"
+      "prefix": "penwd",
+      "abbreviation": "pw",
+      "familyPrefix": "penwood"
   },
   "6L 4s": {
-      "name": "antidipentic",
-      "prefix": "adipen",
-      "abbreviation": "adpen"
+      "name": "lemon",
+      "prefix": "lem",
+      "familyPrefix": "lemo"
   },
   "7L 3s": {
-      "name": "dicotonic",
+      "name": "dicoid",
       "prefix": "dico"
   },
   "8L 2s": {
-      "name": "dimanic",
-      "prefix": "diman",
-      "abbreviation": "dman"
+      "name": "taric",
+      "prefix": "tara",
+      "abbreviation": "tar"
   },
   "9L 1s": {
       "name": "sinatonic",
       "prefix": "sina",
       "abbreviation": "si"
   },
-  "4L 7s": {
-      "name": "kleistonic",
-      "prefix": "klei"
-  },
-  "7L 4s": {
-      "name": "suprasmitonic",
-      "prefix": "ssmi"
-  },
   "5L 7s": {
-      "name": "p-chromatic"
+      "name": "pyth-chromatic",
+      "prefix": "pychro"
+  },
+  "6L 6s": {
+    "name": "hexawood",
+    "prefix": "hexwd",
+    "abbreviation": "hw",
+    "familyPrefix": "hexwood"
   },
   "7L 5s": {
-      "name": "m-chromatic"
+      "name": "mean-chromatic",
+      "prefix": "mellow"
+  },
+  "1L 13s": {
+    "name": "antrollic",
+    "prefix": "antro"
+  },
+  "13L 1s": {
+    "name": "trollic",
+    "prefix": "tro"
+  },
+  "7L 7s": {
+    "name": "septawood",
+    "prefix": "septwd",
+    "abbreviation": "sw",
+    "familyPrefix": "septwood"
+  },
+  "8L 8s": {
+    "name": "octawood",
+    "prefix": "otcwd",
+    "abbreviation": "ow",
+    "familyPrefix": "octwood"
+  },
+  "2L 15s": {
+    "name": "liesic",
+    "prefix": "lisa"
+  },
+  "15L 2s": {
+    "name": "antiliesic",
+    "prefix": "alisa"
+  },
+  "9L 9s": {
+    "name": "nonawood",
+    "prefix": "nonwd",
+    "abbreviation": "nw",
+    "familyPrefix": "nonwood"
+  },
+  "10L 10s": {
+    "name": "decawood",
+    "prefix": "decwd",
+    "abbreviation": "dw",
+    "familyPrefix": "decwood"
+  },
+
+  "19L 3s": {
+    "name": "giedraitic",
+    "prefix": "kai"
+  },
+  "3L 19s": {
+    "name": "zheligowskic",
+    "prefix": "zheli"
+  },
+
+  "5L 12s": {
+    "name": "supy-enharmonic",
+    "prefix": "supen"
+  },
+  "12L 5s": {
+    "name": "pyth-enharmonic",
+    "prefix": "pyen"
+  },
+  "7L 12s": {
+    "name": "mean-enharmonic",
+    "prefix": "meen"
+  },
+  "12L 7s": {
+    "name": "flat-enharmonic",
+    "prefix": "flaen"
+  },
+
+  "12L 17s": {
+    "name": "pythagotonic"
+  },
+  "17L 12s": {
+    "name": "gothitonic"
+  },
+  "12L 19s": {
+    "name": "fauxrussian"
+  },
+  "19L 12s": {
+    "name": "fauxarabian"
+  },
+  "17L 5s": {
+    "name": "protofractalic"
+  },
+  "5L 17s": {
+    "name": "reinhardic"
+  },
+  "19L 7s": {
+    "name": "velic"
+  },
+  "7L 19s": {
+    "name": "siskoic"
+  },
+
+  "12L 29s": {
+    "name": "pythamystonic"
+  },
+  "29L 12s": {
+    "name": "antipythamystonic"
+  },
+  "12L 31s": {
+    "name": "fauxmuscovian"
+  },
+  "31L 12s": {
+    "name": "fauxsiberian"
+  },
+  "19L 31s": {
+    "name": "fauxsaudi"
+  },
+  "31L 19s": {
+    "name": "fauxomani"
+  },
+  "17L 22s": {
+    "name": "antifractalic"
+  },
+  "22L 17s": {
+    "name": "fractalic"
+  },
+  "17L 29s": {
+    "name": "perotinic"
+  },
+  "29L 17s": {
+    "name": "martinic"
+  },
+  "19L 26s": {
+    "name": "veljentyttonic"
+  },
+  "26L 19s": {
+    "name": "veljenpoikanic"
+  },
+  "7L 26s": {
+    "name": "siskontyttonic"
+  },
+  "26L 7s": {
+    "name": "siskonpoikanic"
+  },
+  "5L 22s": {
+    "name": "reinatonic"
+  },
+  "22L 5s": {
+    "name": "antireinatonic"
+  },
+
+  "41L 12s": {
+    "name": "pythomerc"
   }
 }
