@@ -2,12 +2,12 @@
 export type TamnamsInfo = {
   /** TAMNAMS name of the MOS pattern. */
   name: string;
-  /** True if the pattern is a subset of a larger MOS pattern. */
-  subset: boolean;
   /** Interval prefix. */
   prefix?: string;
   /** TAMNAMS name abbreviation. */
   abbreviation?: string;
+  /** Family tree prefix. */
+  familyPrefix?: string;
 };
 
 const TAMNAMS_MOS_NAMES: {
@@ -17,6 +17,32 @@ const TAMNAMS_MOS_NAMES: {
 const MODE_NAMES: {
   [key: string]: string;
 } = require('./modes.json');
+
+function isRootScale(countL: number, countS: number) {
+  if (countL + countS <= 10) {
+    return true;
+  }
+  if (countL === countS && countL <= 10) {
+    return true;
+  }
+
+  if (countL < countS) {
+    [countL, countS] = [countS, countL];
+  }
+
+  if (
+    (countL === 7 && countS === 5) || // mellow / pychro
+    (countL === 12 && countS === 5) || // pyen / supen
+    (countL === 12 && countS === 7) || // flaen / meen
+    (countL === 13 && countS === 1) || // tro / antro
+    (countL === 15 && countS === 2) || // alisa / lisa
+    (countL === 19 && countS === 3) // kai / zheli
+  ) {
+    return true;
+  }
+
+  return false;
+}
 
 /**
  * Retreive TAMNAMS information about a MOS pattern.
@@ -38,27 +64,106 @@ export function tamnamsInfo(
   patternOrLarge: string | number,
   numberOfSmallSteps?: number
 ): TamnamsInfo | undefined {
+  let numberOfLargeSteps;
   let pattern: string;
   if (typeof patternOrLarge === 'string') {
     pattern = patternOrLarge;
+    numberOfLargeSteps = parseInt(pattern.split('L')[0]);
+    numberOfSmallSteps = parseInt(pattern.split('L')[1].slice(1, -1));
   } else {
     pattern = `${patternOrLarge}L ${numberOfSmallSteps}s`;
+    numberOfLargeSteps = patternOrLarge;
+  }
+  if (numberOfLargeSteps < 1 || numberOfSmallSteps! < 1) {
+    return undefined;
   }
   if (pattern in TAMNAMS_MOS_NAMES) {
     const result = TAMNAMS_MOS_NAMES[pattern];
     if (!('abbreviation' in result) && 'prefix' in result) {
       result.abbreviation = result.prefix;
     }
-    result.subset = false;
+    if (!('familyPrefix' in result) && 'prefix' in result) {
+      result.familyPrefix = result.prefix;
+    }
     return result;
   }
-  if (pattern.startsWith('1L')) {
-    const countS = parseInt(pattern.slice(3, -1));
-    const superMos = `${countS + 1}L 1s`;
-    const result = Object.assign({}, tamnamsInfo(superMos));
-    result.subset = true;
-    return result;
+
+  if (numberOfLargeSteps === numberOfSmallSteps) {
+    return {name: `${numberOfLargeSteps}-wood`};
   }
+
+  const parentCountL = Math.min(numberOfLargeSteps, numberOfSmallSteps!);
+  const parentCountS = Math.abs(numberOfLargeSteps - numberOfSmallSteps!);
+  if (isRootScale(parentCountL, parentCountS)) {
+    const parentInfo = tamnamsInfo(parentCountL, parentCountS);
+    if (numberOfLargeSteps > numberOfSmallSteps!) {
+      return {name: 'm-chro ' + parentInfo!.name};
+    } else {
+      return {name: 'p-chro ' + parentInfo!.name};
+    }
+  }
+
+  const grandparentCountL = Math.min(parentCountL, parentCountS);
+  const grandparentCountS = Math.abs(parentCountL - parentCountS);
+  if (isRootScale(grandparentCountL, grandparentCountS)) {
+    const grandparentInfo = tamnamsInfo(grandparentCountL, grandparentCountS);
+    const name = grandparentInfo!.name;
+    if (parentCountL > parentCountS) {
+      if (numberOfLargeSteps > numberOfSmallSteps!) {
+        return {name: 'f-enhar ' + name};
+      } else {
+        return {name: 'm-enhar ' + name};
+      }
+    } else {
+      if (numberOfLargeSteps > numberOfSmallSteps!) {
+        return {name: 'p-enhar ' + name};
+      } else {
+        return {name: 's-enhar ' + name};
+      }
+    }
+  }
+
+  const greatGrandparentCountL = Math.min(grandparentCountL, grandparentCountS);
+  const greatGrandparentCountS = Math.abs(
+    grandparentCountL - grandparentCountS
+  );
+  if (isRootScale(greatGrandparentCountL, greatGrandparentCountS)) {
+    const greatGrandparentInfo = tamnamsInfo(
+      greatGrandparentCountL,
+      greatGrandparentCountS
+    );
+    const name = greatGrandparentInfo!.name;
+    if (grandparentCountL > grandparentCountS) {
+      if (parentCountL > parentCountS) {
+        if (numberOfLargeSteps > numberOfSmallSteps!) {
+          return {name: 'quso-' + name};
+        } else {
+          return {name: 'miso-' + name};
+        }
+      } else {
+        if (numberOfLargeSteps > numberOfSmallSteps!) {
+          return {name: 'paso-' + name};
+        } else {
+          return {name: 'uso-' + name};
+        }
+      }
+    } else {
+      if (parentCountL > parentCountS) {
+        if (numberOfLargeSteps > numberOfSmallSteps!) {
+          return {name: 'quha-' + name};
+        } else {
+          return {name: 'miha-' + name};
+        }
+      } else {
+        if (numberOfLargeSteps > numberOfSmallSteps!) {
+          return {name: 'paha-' + name};
+        } else {
+          return {name: 'uha-' + name};
+        }
+      }
+    }
+  }
+
   return undefined;
 }
 
