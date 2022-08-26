@@ -224,6 +224,10 @@
       "prefix": "sina",
       "abbreviation": "si"
   },
+  "4L 7s": {
+    "name": "p-chro smitonic",
+    "prefix": "klei"
+  },
   "5L 7s": {
       "name": "p-chromatic",
       "prefix": "pychro"
