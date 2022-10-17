@@ -49,7 +49,7 @@
       "abbreviation": "apt"
   },
   "4L 1s": {
-      "name": "manic",
+      "name": "manual",
       "prefix": "manu"
   },
 
@@ -59,8 +59,7 @@
   },
   "2L 4s": {
       "name": "malic",
-      "prefix": "mal",
-      "abbreviation": "mal"
+      "prefix": "mal"
   },
   "3L 3s": {
       "name": "triwood",
@@ -126,8 +125,8 @@
   },
   "5L 3s": {
       "name": "oneirotonic",
-      "prefix": "neiro",
-      "abbreviation": "neiro"
+      "prefix": "oneiro",
+      "abbreviation": "onei"
   },
   "6L 2s": {
       "name": "ekic",
@@ -167,8 +166,7 @@
   },
   "6L 3s": {
       "name": "hyrulic",
-      "prefix": "hyru",
-      "abbreviation": "hyru"
+      "prefix": "hyru"
   },
   "7L 2s": {
       "name": "superdiatonic",
