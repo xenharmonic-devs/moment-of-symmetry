@@ -647,10 +647,13 @@ export function anyForEdo(edo: number): MosScaleInfo {
  */
 export function allForEdo(
   edo: number,
-  minSize: number,
-  maxSize: number,
+  minSize = 2,
+  maxSize?: number,
   maxHardness?: number
 ): MosScaleInfo[] {
+  if (maxSize === undefined) {
+    maxSize = edo;
+  }
   if (minSize < 2) {
     throw new Error('Minimum size must be at least 2');
   }
