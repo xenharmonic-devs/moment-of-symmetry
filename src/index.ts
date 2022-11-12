@@ -651,6 +651,12 @@ export function allForEdo(
   maxSize: number,
   maxHardness?: number
 ): MosScaleInfo[] {
+  if (minSize < 2) {
+    throw new Error('Minimum size must be at least 2');
+  }
+  if (maxSize > edo) {
+    throw new Error(`Maximum size must be smaller or equal to edo (${edo})`);
+  }
   const result: MosScaleInfo[] = [];
   for (
     let numberOfLargeSteps = 1;

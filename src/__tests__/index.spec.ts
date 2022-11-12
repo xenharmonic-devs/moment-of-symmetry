@@ -295,6 +295,10 @@ describe('Exhaustive MOS finder for EDO', () => {
     const scales = allForEdo(31, 5, 12, 4.5);
     expect(scales).toHaveLength(18);
   });
+
+  it('It throws an error when arguments are out of range', () => {
+    expect(() => allForEdo(9, 1, 10)).toThrow();
+  });
 });
 
 describe('MOS mode describer', () => {
