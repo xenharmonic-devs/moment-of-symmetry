@@ -5,7 +5,7 @@ MOS scales consist of two intervals that are distributed as evenly as possible
 
 ## Installation ##
 ```bash
-npm i
+npm i moment-of-symmetry
 ```
 
 ## Documentation ##
