@@ -7,7 +7,7 @@ const HARDNESS_RATIOS: [string, number, number][] = [
   ['semihard', 5, 2],
   ['hard', 3, 1],
   ['superhard', 4, 1],
-  ['paucitonic', 1, 0],
+  ['collapsed', 1, 0],
 ];
 
 const HARDNESS_RANGES: [string, number, number][] = [

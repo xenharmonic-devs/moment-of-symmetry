@@ -11,7 +11,7 @@ describe('Hardness namer', () => {
     expect(getHardness(5, 2)).toBe('semihard');
     expect(getHardness(3, 1)).toBe('hard');
     expect(getHardness(4, 1)).toBe('superhard');
-    expect(getHardness(1, 0)).toBe('paucitonic');
+    expect(getHardness(1, 0)).toBe('collapsed');
   });
 
   it('knows the intermediate ranges', () => {
