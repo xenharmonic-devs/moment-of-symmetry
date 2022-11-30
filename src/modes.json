@@ -1,4 +1,22 @@
 {
+  "ssLsL": "Pentatonic Ionian",
+  "sLssL": "Pentatonic Mixolydian",
+  "sLsLs": "Pentatonic Dorian",
+  "LssLs": "Pentatonic Aeolian",
+  "LsLss": "Pentatonic Phrygian",
+
+  "LLsLs": "Pentatonic Anti-Ionian",
+  "LsLLs": "Pentatonic Anti-Mixolydian",
+  "LsLsL": "Pentatonic Anti-Dorian",
+  "sLLsL": "Pentatonic Anti-Aeolian",
+  "sLsLL": "Pentatonic Anti-Phrygian",
+
+  "LLLLs": "Minimal",
+  "LLLsL": "Medicinal",
+  "LLsLL": "Medial",
+  "LsLLL": "Indical",
+  "sLLLL": "Pollical",
+
   "LsLsLs": "Tonic",
   "sLsLsL": "Dominant",
 
@@ -100,6 +118,16 @@
   "sLLsLsLL": "Hlanithian",
   "sLsLLsLL": "Sarnathian",
 
+  "LLsLsLsLs": "Cristatan",
+  "LsLLsLsLs": "Pican",
+  "LsLsLLsLs": "Stellerian",
+  "LsLsLsLLs": "Cornician",
+  "LsLsLsLsL": "Nucifragan",
+  "sLLsLsLsL": "Coracian",
+  "sLsLLsLsL": "Frugilegian",
+  "sLsLsLLsL": "Coloean",
+  "sLsLsLsLL": "Pyrrhocoracian",
+
   "sssLssLssL": "Keter",
   "ssLssLssLs": "Chesed",
   "sLssLssLss": "Netzach",
@@ -110,6 +138,9 @@
   "ssLsssLssL": "Chokmah",
   "sLsssLssLs": "Gevurah",
   "LsssLssLss": "Hod",
+
+  "LsLsLsLsLs": "Major",
+  "sLsLsLsLsL": "Minor",
 
   "LsLssLssLss": "Supernerevarine",
   "LssLsLssLss": "Supervivecan",
