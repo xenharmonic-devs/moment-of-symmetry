@@ -1,6 +1,6 @@
 import {tamnamsInfo} from '../src';
 
-for (let size = 11; size <= 22; ++size) {
+for (let size = 11; size <= 24; ++size) {
   console.log(`!colspan=3| ${size}-note mosses`);
   console.log('|-');
   console.log('! Pattern !! Name !! Prefix');

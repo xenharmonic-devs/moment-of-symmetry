@@ -110,9 +110,9 @@ export function tamnamsInfo(
     const name = grandparentInfo!.name;
     if (parentCountL > parentCountS) {
       if (numberOfLargeSteps > numberOfSmallSteps!) {
-        return {name: 'f-enhar ' + name};
-      } else {
         return {name: 'm-enhar ' + name};
+      } else {
+        return {name: 'f-enhar ' + name};
       }
     } else {
       if (numberOfLargeSteps > numberOfSmallSteps!) {

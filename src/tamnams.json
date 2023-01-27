@@ -299,12 +299,12 @@
     "prefix": "pyen"
   },
   "7L 12s": {
-    "name": "m-enharmonic",
-    "prefix": "meen"
-  },
-  "12L 7s": {
     "name": "f-enharmonic",
     "prefix": "flaen"
+  },
+  "12L 7s": {
+    "name": "m-enharmonic",
+    "prefix": "meen"
   },
 
   "12L 17s": {

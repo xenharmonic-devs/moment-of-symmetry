@@ -1,5 +1,6 @@
 import {describe, it, expect} from 'vitest';
 import {tamnamsInfo, modeName} from '../names';
+import {mosPatterns} from '../generator-ratio';
 
 describe('MOS pattern namer', () => {
   it('knows about smitonic', () => {
@@ -16,13 +17,49 @@ describe('MOS pattern namer', () => {
   });
 
   it('has a special names for diachromic', () => {
+    const meantoneGeneratorRatio = 696.239 / 1200.0;
+    const pythagoreanGeneratorRatio = Math.log(1.5) / Math.LN2;
+
+    const meantonePattern = mosPatterns(meantoneGeneratorRatio, 1, 12).pop()!
+      .mosPattern;
+    const pythagoreanPattern = mosPatterns(
+      pythagoreanGeneratorRatio,
+      1,
+      12
+    ).pop()!.mosPattern;
+
+    expect(meantonePattern).toBe('7L 5s');
+    expect(pythagoreanPattern).toBe('5L 7s');
+
     expect(tamnamsInfo('7L 5s')!.name).toBe('m-chromatic');
     expect(tamnamsInfo('5L 7s')!.name).toBe('p-chromatic');
   });
 
   it('has a special names for diaenharmic', () => {
-    expect(tamnamsInfo('12L 7s')!.name).toBe('f-enharmonic');
-    expect(tamnamsInfo('7L 12s')!.name).toBe('m-enharmonic');
+    const flattoneGeneratorRatio = 693.058 / 1200.0;
+    const meantoneGeneratorRatio = 696.239 / 1200.0;
+    const pythagoreanGeneratorRatio = Math.log(1.5) / Math.LN2;
+    const superpythGeneratorRatio = 710.175 / 1200.0;
+
+    const flattonePattern = mosPatterns(flattoneGeneratorRatio, 1, 19).pop()!
+      .mosPattern;
+    const meantonePattern = mosPatterns(meantoneGeneratorRatio, 1, 19).pop()!
+      .mosPattern;
+    const pythagoreanPattern = mosPatterns(
+      pythagoreanGeneratorRatio,
+      1,
+      19
+    ).pop()!.mosPattern;
+    const superpythPattern = mosPatterns(superpythGeneratorRatio, 1, 19).pop()!
+      .mosPattern;
+
+    expect(flattonePattern).toBe('7L 12s');
+    expect(meantonePattern).toBe('12L 7s');
+    expect(pythagoreanPattern).toBe('12L 5s');
+    expect(superpythPattern).toBe('5L 12s');
+
+    expect(tamnamsInfo('7L 12s')!.name).toBe('f-enharmonic');
+    expect(tamnamsInfo('12L 7s')!.name).toBe('m-enharmonic');
     expect(tamnamsInfo('12L 5s')!.name).toBe('p-enharmonic');
     expect(tamnamsInfo('5L 12s')!.name).toBe('s-enharmonic');
   });
@@ -45,8 +82,8 @@ describe('MOS pattern namer', () => {
   it('has a consistent scheme for asina-enharmics', () => {
     expect(tamnamsInfo('1L 11s')!.name).toBe('s-enhar antisinatonic');
     expect(tamnamsInfo('11L 1s')!.name).toBe('p-enhar antisinatonic');
-    expect(tamnamsInfo('10L 11s')!.name).toBe('m-enhar antisinatonic');
-    expect(tamnamsInfo('11L 10s')!.name).toBe('f-enhar antisinatonic');
+    expect(tamnamsInfo('10L 11s')!.name).toBe('f-enhar antisinatonic');
+    expect(tamnamsInfo('11L 10s')!.name).toBe('m-enhar antisinatonic');
 
     expect(1 * 2 + 11).toBe(1 * 4 + 9 * 1);
     expect(11 * 2 + 1).toBe(1 * 5 + 9 * 2);
