@@ -2,6 +2,15 @@ import {Fraction, FractionSet, getConvergents, mmod} from 'xen-dev-utils';
 import {MosInfo, ScaleInfo} from './info';
 import {modeName, tamnamsInfo} from './names';
 
+const ONE = new Fraction(1);
+
+function wrapGeneratorPerPeriod(x: number | Fraction) {
+  if (typeof x === 'number') {
+    return new Fraction(x).simplify(1e-12).mmod(ONE);
+  }
+  return x.mmod(ONE);
+}
+
 /**
  * An array of fractions that convey information about a MOS scale.
  * @param generatorPerPeriod Generator divided by period.
@@ -17,8 +26,7 @@ export function mosForms(
   if (maxLength !== undefined) {
     maxLength += 2;
   }
-  generatorPerPeriod = new Fraction(generatorPerPeriod);
-  generatorPerPeriod.n = mmod(generatorPerPeriod.n, generatorPerPeriod.d);
+  generatorPerPeriod = wrapGeneratorPerPeriod(generatorPerPeriod);
   const convergents = getConvergents(
     generatorPerPeriod,
     maxSize,
@@ -56,16 +64,15 @@ export function mosSizes(
  * @returns `true` if the generator creates large intervals when stacked.
  */
 export function isBright(generatorPerPeriod: number | Fraction, size: number) {
-  const one = new Fraction(1);
-  const generator = new Fraction(generatorPerPeriod).mod(one).add(one).mod(one);
-  const negativeGenerator = one.sub(generator);
+  const generator = wrapGeneratorPerPeriod(generatorPerPeriod);
+  const negativeGenerator = ONE.sub(generator);
   const range = [...Array(size).keys()];
-  const positive = range.map(i => generator.mul(i).mod(one));
+  const positive = range.map(i => generator.mul(i).mmod(ONE));
   positive.sort((a, b) => a.compare(b));
-  positive.push(one);
-  const negative = range.map(i => negativeGenerator.mul(i).mod(one));
+  positive.push(ONE);
+  const negative = range.map(i => negativeGenerator.mul(i).mmod(ONE));
   negative.sort((a, b) => a.compare(b));
-  negative.push(one);
+  negative.push(ONE);
 
   // Check which scale has brighter intervals
   for (let i = 1; i < positive.length; ++i) {
@@ -102,8 +109,7 @@ export function toBrightGeneratorPerPeriod(
   generatorPerPeriod: number | Fraction,
   size: number
 ): number | Fraction {
-  const one = new Fraction(1);
-  const generator = new Fraction(generatorPerPeriod).mod(one).add(one).mod(one);
+  const generator = wrapGeneratorPerPeriod(generatorPerPeriod);
   if (isBright(generatorPerPeriod, size)) {
     if (typeof generatorPerPeriod === 'number') {
       return mmod(generatorPerPeriod, 1);
@@ -114,7 +120,7 @@ export function toBrightGeneratorPerPeriod(
   if (typeof generatorPerPeriod === 'number') {
     return mmod(-generatorPerPeriod, 1);
   } else {
-    return one.sub(generator);
+    return ONE.sub(generator);
   }
 }
 
@@ -144,10 +150,7 @@ export function mosPatterns(
       if (size * numberOfPeriods > maxSize!) {
         break;
       }
-      // Mathematical correct modulo as recommended by Fraction.js documentation
-      const scale = [...Array(size).keys()].map(i =>
-        form.mul(i).mod(1).add(1).mod(1)
-      );
+      const scale = [...Array(size).keys()].map(i => form.mul(i).mmod(ONE));
       scale.push(new Fraction(1));
       scale.sort((a, b) => a.compare(b));
       let s = scale[1];
@@ -254,13 +257,11 @@ export function scaleInfo(
   size /= numberOfPeriods;
   generatorsDown /= numberOfPeriods;
 
-  const g = new Fraction(generatorPerPeriod);
+  generatorPerPeriod = wrapGeneratorPerPeriod(generatorPerPeriod);
+
+  const g = generatorPerPeriod.clone();
   const scale = [...Array(size).keys()].map(i =>
-    g
-      .mul(i - generatorsDown)
-      .mod(1)
-      .add(1)
-      .mod(1)
+    g.mul(i - generatorsDown).mmod(ONE)
   );
   scale.push(new Fraction(1));
   scale.sort((a, b) => a.compare(b));
