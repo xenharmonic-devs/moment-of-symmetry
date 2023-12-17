@@ -12,148 +12,189 @@ import {
   mosWithParent,
   mosWithDaughter,
   allForEdo,
+  brightGeneratorMonzo,
 } from '../index';
 
+describe('Bright generator calculator', () => {
+  it('gives the perfect fifth for 5L 2s', () => {
+    const [numLarge, numSmall] = brightGeneratorMonzo(5, 2);
+    expect(numLarge).toBe(3);
+    expect(numSmall).toBe(1);
+    expect(2 * numLarge + 1 * numSmall).toBe(7);
+  });
+});
+
 describe('Moment of Symmetry step generator', () => {
-  it('produces the major pentatonic scale for 2L 3s', () => {
-    expect(arraysEqual(mos(2, 3), [1, 2, 4, 5, 7])).toBeTruthy();
+  it('produces a pentatonic scale for 2L 3s', () => {
+    expect(mos(2, 3)).toEqual([2, 3, 5, 6, 7]);
   });
   it('supports UDP modes with 2L 4s', () => {
     // Observe how the numbers in the array keep getting bigger and "brighter"
-    expect(arraysEqual(mos(2, 4, 2, 1, 0), [1, 2, 4, 5, 6, 8])).toBeTruthy();
-    expect(arraysEqual(mos(2, 4, 2, 1, 2), [1, 3, 4, 5, 7, 8])).toBeTruthy();
-    expect(arraysEqual(mos(2, 4, 2, 1, 4), [2, 3, 4, 6, 7, 8])).toBeTruthy();
-    expect(arraysEqual(mos(2, 4, 2, 1, 6), [2, 3, 5, 6, 7, 8])).toBeTruthy();
+    expect(mos(2, 4, {up: 0})).toEqual([1, 2, 4, 5, 6, 8]);
+    expect(mos(2, 4, {up: 2})).toEqual([1, 3, 4, 5, 7, 8]);
+    expect(mos(2, 4, {up: 4})).toEqual([2, 3, 4, 6, 7, 8]);
   });
-  it('produces the locrian scale for 5L 2s', () => {
-    expect(arraysEqual(mos(5, 2), [1, 3, 5, 6, 8, 10, 12])).toBeTruthy();
+  it('throws for UDP mode 6|-2 with 2L 4s', () => {
+    expect(() => mos(2, 4, {up: 6})).toThrow();
+  });
+  it('produces the lydian scale for 5L 2s', () => {
+    expect(mos(5, 2)).toEqual([2, 4, 6, 7, 9, 11, 12]);
   });
   it('produces the sothic mode for semihard smitonic scale in 26edo', () => {
-    expect(arraysEqual(mos(4, 3, 5, 2), [5, 7, 12, 14, 19, 21, 26]));
+    expect(
+      arraysEqual(
+        mos(4, 3, {sizeOfLargeStep: 5, sizeOfSmallStep: 2}),
+        [5, 7, 12, 14, 19, 21, 26]
+      )
+    );
   });
 });
 
 describe('Moment of Symmetry step generator with parent MOS', () => {
   it('produces the major scale as the parent of 12EDO 7L 5s (sharps)', () => {
-    const map = mosWithParent(7, 5, 1, 1, 1);
+    const map = mosWithParent(7, 5, {
+      sizeOfLargeStep: 1,
+      sizeOfSmallStep: 1,
+      down: 5,
+    });
     expect(map.size).toBe(12);
     const colors = [...map.keys()].map(step =>
       map.get(step) ? 'white' : 'black'
     );
     colors.unshift(colors.pop()!);
-    expect(
-      arraysEqual(colors, [
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-      ])
-    ).toBeTruthy();
+    expect(colors).toEqual([
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+    ]);
   });
   it('produces the major scale as the parent of 29EDO 5L 7s (flats)', () => {
-    const map = mosWithParent(5, 7, 3, 2, 10, true);
+    const map = mosWithParent(5, 7, {
+      sizeOfLargeStep: 3,
+      sizeOfSmallStep: 2,
+      down: 6,
+      accidentals: 'flat',
+    });
     expect(map.size).toBe(12);
     const colors = [...map.keys()].map(step =>
       map.get(step) ? 'white' : 'black'
     );
     colors.unshift(colors.pop()!);
-    expect(
-      arraysEqual(colors, [
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-      ])
-    ).toBeTruthy();
+    expect(colors).toEqual([
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+    ]);
   });
   it('works with multiple periods per equave', () => {
-    const map = mosWithParent(4, 2, 3, 1, 2);
-    expect(arraysEqual([...map.keys()], [3, 4, 7, 10, 11, 14])).toBeTruthy();
-    expect(
-      arraysEqual([...map.values()], [true, false, true, true, false, true])
-    ).toBeTruthy();
+    const map = mosWithParent(4, 2, {sizeOfLargeStep: 3});
+    expect(map).toEqual(
+      new Map([
+        [3, true],
+        [6, false],
+        [7, true],
+        [10, true],
+        [13, false],
+        [14, true],
+      ])
+    );
   });
 });
 
 describe('Moment of Symmetry step generator with daughter MOS', () => {
   it('produces the chromatic scale as the daughter of 12EDO major scale (sharps)', () => {
-    const map = mosWithDaughter(5, 2, 2, 1, 5);
+    const map = mosWithDaughter(5, 2, {down: 1});
     expect(map.size).toBe(12);
     const colors = [...map.keys()].map(step =>
-      map.get(step) ? 'white' : 'black'
+      map.get(step) === 'parent' ? 'white' : 'black'
     );
     colors.unshift(colors.pop()!);
-    expect(
-      arraysEqual(colors, [
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-      ])
-    ).toBeTruthy();
+    expect(colors).toEqual([
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+    ]);
   });
 
   it('produces the m-chromatic scale as the daughter of 31EDO major scale (flats)', () => {
-    const map = mosWithDaughter(5, 2, 5, 3, 5, true);
+    const map = mosWithDaughter(5, 2, {
+      sizeOfLargeStep: 5,
+      sizeOfSmallStep: 3,
+      down: 1,
+      accidentals: 'flat',
+    });
     expect(map.size).toBe(12);
     const colors = [...map.keys()].map(step =>
-      map.get(step) ? 'white' : 'black'
+      map.get(step) === 'parent' ? 'white' : 'black'
     );
     colors.unshift(colors.pop()!);
-    expect(
-      arraysEqual(colors, [
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-        'black',
-        'white',
-      ])
-    ).toBeTruthy();
+    expect(colors).toEqual([
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+      'black',
+      'white',
+    ]);
   });
 
   it('produces the pentatonic scale as the non-parent for 17EDO major scale with both flats and sharps', () => {
-    const sharps = mosWithDaughter(5, 2, 3, 1, 5, false);
-    const flats = mosWithDaughter(5, 2, 3, 1, 5, true);
+    const sharps = mosWithDaughter(5, 2, {sizeOfLargeStep: 3, down: 1});
+    const flats = mosWithDaughter(5, 2, {
+      sizeOfLargeStep: 3,
+      down: 1,
+      accidentals: 'flat',
+    });
 
-    const diatonicSharps = [...sharps.keys()].filter(key => sharps.get(key));
-    const diatonicFlats = [...flats.keys()].filter(key => flats.get(key));
+    const diatonicSharps = [...sharps.keys()].filter(
+      key => sharps.get(key) === 'parent'
+    );
+    const diatonicFlats = [...flats.keys()].filter(
+      key => flats.get(key) === 'parent'
+    );
     const diatonic = [3, 6, 7, 10, 13, 16, 17];
     expect(arraysEqual(diatonicSharps, diatonic)).toBeTruthy();
     expect(arraysEqual(diatonicFlats, diatonic)).toBeTruthy();
 
-    const pentatonicSharps = [...sharps.keys()].filter(key => !sharps.get(key));
-    const pentatonicFlats = [...flats.keys()].filter(key => !flats.get(key));
+    const pentatonicSharps = [...sharps.keys()].filter(
+      key => sharps.get(key) === 'sharp'
+    );
+    const pentatonicFlats = [...flats.keys()].filter(
+      key => flats.get(key) === 'flat'
+    );
     const pentatonic = [0, 3, 7, 10, 13];
     expect(
       arraysEqual(
@@ -314,7 +355,7 @@ describe('MOS mode describer', () => {
   });
 
   it('knows about phrygian', () => {
-    const info = modeInfo(5, 2, 1);
+    const info = modeInfo(5, 2, {down: 5});
     expect(info).toMatchObject({
       numberOfPeriods: 1,
       period: 7,
@@ -325,13 +366,24 @@ describe('MOS mode describer', () => {
   });
 
   it('knows about tonic in augmented', () => {
-    const info = modeInfo(3, 3, 3);
+    const info = modeInfo(3, 3);
     expect(info).toMatchObject({
       numberOfPeriods: 3,
       period: 2,
       mode: 'LsLsLs',
       udp: '3|0(3)',
       modeName: 'Tonic',
+    });
+  });
+
+  it('knows about minor', () => {
+    const info = modeInfo(5, 2, {down: 4, extraNames: true});
+    expect(info).toMatchObject({
+      period: 7,
+      numberOfPeriods: 1,
+      udp: '2|4',
+      mode: 'LsLLsLL',
+      modeName: 'Aeolian (Minor)',
     });
   });
 });

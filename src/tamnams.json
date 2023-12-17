@@ -95,7 +95,8 @@
       "prefix": "smi"
   },
   "5L 2s": {
-      "name": "diatonic"
+      "name": "diatonic",
+      "prefix": "dia"
   },
   "6L 1s": {
       "name": "archeotonic",
