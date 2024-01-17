@@ -1,6 +1,7 @@
 import {describe, it, expect} from 'vitest';
 import {arraysEqual, Fraction} from 'xen-dev-utils';
 import {
+  isBright,
   mosForms,
   mosPatterns,
   mosSizes,
@@ -134,5 +135,13 @@ describe('Generator / period brightener', () => {
     const dark = new Fraction(6, 11);
     const bright = toBrightGeneratorPerPeriod(dark, 7);
     expect(bright.equals(new Fraction(5, 11))).toBeTruthy();
+  });
+});
+
+describe('Brightness detector', () => {
+  it('knows that fifths are bright', () => {
+    for (let g = (1200 * 4) / 7; g < 720; g += 1.17) {
+      expect(isBright(g / 1200.0, 7)).toBe(true);
+    }
   });
 });
