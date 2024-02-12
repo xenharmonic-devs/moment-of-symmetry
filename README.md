@@ -21,32 +21,58 @@ Generate a musical scale with 3 large steps and 4 small steps (3L 4s). The resul
 ```typescript
 import {mos} from 'moment-of-symmetry';
 
-mos(3, 4);  // [1, 2, 4, 5, 7, 8, 10]
+mos(3, 4);  // [2, 3,  5, 6, 8, 9, 10]
 ```
 
 Generate a diatonic (5L 2s) scale as a subset of 31edo. The large step is 5 edo-steps while the small step is 3 edo-steps.
 ```typescript
-mos(5, 2, 5, 3);  // [3, 8, 13, 16, 21, 26, 31]
+mos(5, 2, {sizeOfLargeStep: 5, sizeOfSmallStep: 3, down: 1});  // [5, 10, 13, 18, 23, 28, 31]
 ```
 
-Generate the whole chromatic scale in 12edo with a diatonic scale marked by `true` values.
+Generate the whole chromatic scale in 12edo with a diatonic scale marked by `'parent'` values.
 ```typescript
 mosWithDaughter(5, 2);
 /*
   Map(12) {
-    1 => true,
-    2 => false,
-    3 => true,
-    4 => false,
-    5 => true,
-    6 => true,
-    7 => false,
-    8 => true,
-    9 => false,
-    10 => true,
-    11 => false,
-    12 => true
+    1 => 'both',
+    2 => 'parent',
+    3 => 'both',
+    4 => 'parent',
+    5 => 'both',
+    6 => 'parent',
+    7 => 'parent',
+    8 => 'both',
+    9 => 'parent',
+    10 => 'both',
+    11 => 'parent',
+    12 => 'parent'
   }
+*/
+```
+
+Generate the whole chromatic scale in 17edo.
+```typescript
+mosWithDaughter(5, 2, {sizeOfLargeStep: 3, accidentals: 'both'});
+/*
+  Map(17) {
+    1 => 'flat',
+    2 => 'sharp',
+    3 => 'parent',
+    4 => 'flat',
+    5 => 'sharp',
+    6 => 'parent',
+    7 => 'flat',
+    8 => 'sharp',
+    9 => 'parent',
+    10 => 'parent',
+    11 => 'flat',
+    12 => 'sharp',
+    13 => 'parent',
+    14 => 'flat',
+    15 => 'sharp',
+    16 => 'parent',
+    17 => 'parent'
+}
 */
 ```
 

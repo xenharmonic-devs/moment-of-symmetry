@@ -9,6 +9,50 @@ export * from './generator-ratio';
 export * from './info';
 
 /**
+ * Parameters for various function.
+ */
+export type BaseOptions = {
+  /** How many bright generators to go downwards. Also the number of small/minor intervals in the resulting scale. Default = 0. */
+  down?: number;
+  /** How many bright generators to go upwards. Also the number of large/major intervals in the resulting scale. Defaults to the maximum possible. */
+  up?: number;
+};
+
+/**
+ * Parameters for the {@link modeInfo} function.
+ */
+export interface ModeInfoOptions extends BaseOptions {
+  /** If true adds extra mode names in parenthesis such as Ionian (Major). */
+  extraNames?: boolean;
+}
+
+/**
+ * Parameters for the {@link mos} function.
+ */
+export interface MosOptions extends BaseOptions {
+  /** Size of the large step. Default = 2.*/
+  sizeOfLargeStep?: number;
+  /** Size of small step. Default = 1. */
+  sizeOfSmallStep?: number;
+}
+
+/**
+ * Parameters for the {@link mosWithParent} function.
+ */
+export interface MosWithParentOptions extends MosOptions {
+  /** How the main scale relates to the parent. Defaults to 'sharp'. */
+  accidentals?: 'flat' | 'sharp';
+}
+
+/**
+ * Parameters for the {@link mosWithDaughter} function.
+ */
+export interface MosWithDaughterOptions extends MosOptions {
+  /** How the daughter scale(s) relates to the main scale. Defaults to 'sharp'. */
+  accidentals?: 'flat' | 'sharp' | 'both';
+}
+
+/**
  * Distribute subsequences as evenly as possible using Björklund's algorithm.
  */
 function bjorklund(subsequences: any[][]) {
@@ -48,7 +92,7 @@ export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
   return bjorklund(subsequences).reduce((a, b) => a.concat(b), []);
 }
 
-const BRIGTH_GENERATORS: {[key: string]: [number, number]} = {
+const BRIGHT_GENERATORS: {[key: string]: [number, number]} = {
   '2,5': [1, 2],
   '5,2': [3, 1],
   '2,9': [1, 4],
@@ -90,8 +134,8 @@ function mosGeneratorMonzo(l: number, s: number): [number, number] {
 
   // Pre-calculated
   const key = `${l},${s}`;
-  if (key in BRIGTH_GENERATORS) {
-    return BRIGTH_GENERATORS[key];
+  if (key in BRIGHT_GENERATORS) {
+    return BRIGHT_GENERATORS[key];
   }
 
   // Degenerate cases
@@ -141,29 +185,70 @@ function mosGeneratorMonzo(l: number, s: number): [number, number] {
 }
 
 /**
+ * Obtain the bright generator of the MOS scale expressed as multipliers of the size of the large and small steps.
+ * @param numberOfLargeSteps Number of large steps in the MOS pattern.
+ * @param numberOfSmallSteps Number of small steps in the MOS pattern.
+ * @returns An array of [number of large steps in the bright generator, number of small steps in the bright generator].
+ */
+export function brightGeneratorMonzo(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number
+): [number, number] {
+  const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+  return [
+    ...mosGeneratorMonzo(
+      numberOfLargeSteps / numPeriods,
+      numberOfSmallSteps / numPeriods
+    ),
+  ];
+}
+
+function getDown(options: ModeInfoOptions, period: number, numPeriods: number) {
+  let down = 0;
+  if (options.up !== undefined) {
+    down = period * numPeriods - numPeriods - options.up;
+    if (options.down !== undefined && down !== options.down) {
+      throw new Error('Incompatible up and down with the scale size');
+    }
+  } else if (options.down !== undefined) {
+    down = options.down;
+  }
+  if (down < 0) {
+    throw new Error('Down must not be negative');
+  }
+  if (down >= period * numPeriods) {
+    throw new Error('Up must not be negative');
+  }
+  if (down % numPeriods !== 0) {
+    throw new Error('Up/down must be divisible by the number of periods');
+  }
+  return down;
+}
+
+/**
  * Generate MOS pattern as a subset of an EDO.
  * @param numberOfLargeSteps Number of large steps in the MOS pattern.
  * @param numberOfSmallSteps Number of small steps in the MOS pattern.
- * @param sizeOfLargeStep Size of the large step in EDO steps.
- * @param sizeOfSmallStep Size of the small step in EDO steps.
- * @param brightGeneratorsUp How many bright generators to go upwards. Also the number of large/major intervals in the resulting scale.
+ * @param options Options for sizes of the steps and brightness of the scale.
  * @returns An array of integers representing the EDO subset. The 0 degree is not included, but the final degree representing the size of the EDO is.
  */
 export function mos(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  sizeOfLargeStep = 2,
-  sizeOfSmallStep = 1,
-  brightGeneratorsUp = 0
+  options?: MosOptions
 ) {
+  options ??= {};
   const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
-  if (brightGeneratorsUp % numPeriods !== 0) {
-    throw new Error(`Number of generators not a multiple of ${numPeriods}`);
-  }
   const period = (numberOfLargeSteps + numberOfSmallSteps) / numPeriods;
+
+  const sizeOfLargeStep = options.sizeOfLargeStep ?? 2;
+  const sizeOfSmallStep = options.sizeOfSmallStep ?? 1;
+
+  const brightGeneratorsDown = getDown(options, period, numPeriods);
+
   const l = numberOfLargeSteps / numPeriods;
   const s = numberOfSmallSteps / numPeriods;
-  const u = brightGeneratorsUp / numPeriods;
+  const d = brightGeneratorsDown / numPeriods;
   const p = l * sizeOfLargeStep + s * sizeOfSmallStep;
 
   const gMonzo = mosGeneratorMonzo(l, s);
@@ -171,7 +256,7 @@ export function mos(
 
   const base: number[] = [];
   for (let i = 0; i < period; ++i) {
-    base.push(mmod((u - i) * g, p));
+    base.push(mmod((i - d) * g, p));
   }
   base.sort((a, b) => a - b);
   let result = base;
@@ -188,29 +273,27 @@ export function mos(
  * Generate MOS pattern as a subset of an EDO with parent MOS relationship indicated.
  * @param numberOfLargeSteps Number of large steps in the MOS pattern.
  * @param numberOfSmallSteps Number of small steps in the MOS pattern.
- * @param sizeOfLargeStep Size of the large step in EDO steps.
- * @param sizeOfSmallStep Size of the small step in EDO steps.
- * @param brightGeneratorsUp How many bright generators to go upwards. Also the number of large/major intervals in the resulting scale.
- * @param flats If true the non-parent scale degrees will be dark. Defaults to bright (`false`).
+ * @param options Options for sizes of the steps, brightness of the scale and flat/sharp relationship.
  * @returns A map of integers representing the EDO subset to booleans indicating if the scale degree belongs to the parent MOS or not.
  * The 0 degree is not included, but the final degree representing the size of the EDO is.
  */
 export function mosWithParent(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  sizeOfLargeStep = 2,
-  sizeOfSmallStep = 1,
-  brightGeneratorsUp = 0,
-  flats = false
+  options?: MosWithParentOptions
 ) {
+  options ??= {};
   const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
-  if (brightGeneratorsUp % numPeriods !== 0) {
-    throw new Error(`Number of generators not a multiple of ${numPeriods}`);
-  }
   const period = (numberOfLargeSteps + numberOfSmallSteps) / numPeriods;
+
+  const sizeOfLargeStep = options.sizeOfLargeStep ?? 2;
+  const sizeOfSmallStep = options.sizeOfSmallStep ?? 1;
+
+  const brightGeneratorsDown = getDown(options, period, numPeriods);
+
   const l = numberOfLargeSteps / numPeriods;
   const s = numberOfSmallSteps / numPeriods;
-  const u = brightGeneratorsUp / numPeriods;
+  const d = brightGeneratorsDown / numPeriods;
   const p = l * sizeOfLargeStep + s * sizeOfSmallStep;
 
   const gMonzo = mosGeneratorMonzo(l, s);
@@ -221,12 +304,12 @@ export function mosWithParent(
   const base: Map<number, boolean> = new Map();
   for (let i = 0; i < period; ++i) {
     let isParent: boolean;
-    if (flats) {
+    if (options.accidentals === 'flat') {
       isParent = period - i <= parentPeriod;
     } else {
       isParent = i < parentPeriod;
     }
-    base.set(mmod((u - i) * g, p), isParent);
+    base.set(mmod((i - d) * g, p), isParent);
   }
   const edoDegrees = [...base.keys()].sort((a, b) => a - b);
   let result: Map<number, boolean> = new Map();
@@ -246,29 +329,27 @@ export function mosWithParent(
  * Generate the daughter MOS pattern as a subset of an EDO with parent MOS relationship indicated.
  * @param numberOfLargeSteps Number of large steps in the parent MOS.
  * @param numberOfSmallSteps Number of small steps in the parent MOS.
- * @param sizeOfLargeStep Size of the large step in EDO steps.
- * @param sizeOfSmallStep Size of the small step in EDO steps.
- * @param brightGeneratorsUp How many bright generators to go upwards. Also the number of large/major intervals in the parent scale.
- * @param flats If true the additional scale degrees will be dark. Defaults to bright (`false`).
+ * @param options Options for sizes of the steps, brightness of the scale and flat/sharp relationship.
  * @returns A map of integers representing the EDO subset to booleans indicating if the scale degree belongs to the parent MOS or not.
  * The 0 degree is not included, but the final degree representing the size of the EDO is.
  */
 export function mosWithDaughter(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  sizeOfLargeStep = 2,
-  sizeOfSmallStep = 1,
-  brightGeneratorsUp = 0,
-  flats = false
+  options?: MosWithDaughterOptions
 ) {
+  options ??= {};
   const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
-  if (brightGeneratorsUp % numPeriods !== 0) {
-    throw new Error(`Number of generators not a multiple of ${numPeriods}`);
-  }
   const period = (numberOfLargeSteps + numberOfSmallSteps) / numPeriods;
+
+  const sizeOfLargeStep = options.sizeOfLargeStep ?? 2;
+  const sizeOfSmallStep = options.sizeOfSmallStep ?? 1;
+
+  const brightGeneratorsDown = getDown(options, period, numPeriods);
+
   const l = numberOfLargeSteps / numPeriods;
   const s = numberOfSmallSteps / numPeriods;
-  const u = brightGeneratorsUp / numPeriods;
+  const d = brightGeneratorsDown / numPeriods;
   const p = l * sizeOfLargeStep + s * sizeOfSmallStep;
 
   const gMonzo = mosGeneratorMonzo(l, s);
@@ -276,21 +357,24 @@ export function mosWithDaughter(
 
   const daughterPeriod = 2 * l + s;
 
-  const base: Map<number, boolean> = new Map();
+  const base: Map<number, 'parent' | 'flat' | 'sharp' | 'both'> = new Map();
   for (let i = 0; i < period; ++i) {
-    base.set(mmod((u - i) * g, p), true);
+    base.set(mmod((i - d) * g, p), 'parent');
   }
-  if (flats) {
-    for (let i = period; i < daughterPeriod; ++i) {
-      base.set(mmod((u - i) * g, p), false);
-    }
-  } else {
+  const accs = options.accidentals ?? 'sharp';
+  if (accs === 'flat' || (accs === 'both' && sizeOfLargeStep > 2)) {
     for (let i = period - daughterPeriod; i < 0; ++i) {
-      base.set(mmod((u - i) * g, p), false);
+      base.set(mmod((i - d) * g, p), 'flat');
+    }
+  }
+  if (accs === 'sharp' || accs === 'both') {
+    const acc = sizeOfLargeStep === 2 ? 'both' : 'sharp';
+    for (let i = period; i < daughterPeriod; ++i) {
+      base.set(mmod((i - d) * g, p), acc);
     }
   }
   const edoDegrees = [...base.keys()].sort((a, b) => a - b);
-  let result: Map<number, boolean> = new Map();
+  let result: Map<number, 'parent' | 'flat' | 'sharp' | 'both'> = new Map();
   for (let i = 0; i < numPeriods; ++i) {
     edoDegrees.forEach(degree => {
       result = result.set(degree + i * p, base.get(degree)!);
@@ -307,13 +391,13 @@ export function mosWithDaughter(
  * Information about the modes of a MOS scale.
  * @param numberOfLargeSteps Number of large steps in the MOS pattern.
  * @param numberOfSmallSteps Number of small steps in the MOS pattern.
- * @param extra If true adds extra mode names in parenthesis such as Ionian (Major).
+ * @param extraNames If true adds extra mode names in parenthesis such as Ionian (Major).
  * @returns An array of mode information.
  */
 export function mosModes(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  extra = false
+  extraNames = false
 ): ModeInfo[] {
   const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
   const period = (numberOfLargeSteps + numberOfSmallSteps) / numberOfPeriods;
@@ -345,7 +429,7 @@ export function mosModes(
         pattern += 's';
       }
     }
-    const modeName_ = modeName(pattern, extra);
+    const modeName_ = modeName(pattern, extraNames);
     let udp = `${u * numberOfPeriods}|${(period - 1 - u) * numberOfPeriods}`;
     if (numberOfPeriods > 1) {
       udp += `(${numberOfPeriods})`;
@@ -366,25 +450,19 @@ export function mosModes(
  * Information about a mode of a MOS scale.
  * @param numberOfLargeSteps Number of large steps in the MOS pattern.
  * @param numberOfSmallSteps Number of small steps in the MOS pattern.
- * @param brightGeneratorsUp Number of bright generators going up.
- * @param extra If true adds extra mode names in parenthesis such as Ionian (Major).
+ * @param options Options for brightness of the scale and for adding extra names like Ionian (Major).
  * @returns An array of mode information.
  */
 export function modeInfo(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  brightGeneratorsUp: number,
-  extra = false
+  options?: ModeInfoOptions
 ): ModeInfo {
+  options ??= {};
   const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
   const period = (numberOfLargeSteps + numberOfSmallSteps) / numberOfPeriods;
-  const scale = mos(
-    numberOfLargeSteps,
-    numberOfSmallSteps,
-    2,
-    1,
-    brightGeneratorsUp
-  );
+  const brightGeneratorsDown = getDown(options, period, numberOfPeriods);
+  const scale = mos(numberOfLargeSteps, numberOfSmallSteps, options);
   scale.unshift(0);
   let pattern = '';
   for (let i = 1; i < scale.length; ++i) {
@@ -394,10 +472,11 @@ export function modeInfo(
       pattern += 's';
     }
   }
-  const modeName_ = modeName(pattern, extra);
-  let udp = `${brightGeneratorsUp}|${
-    (period - 1) * numberOfPeriods - brightGeneratorsUp
-  }`;
+  const modeName_ = modeName(pattern, options.extraNames);
+  const brightGeneratorsUp =
+    (period - 1) * numberOfPeriods - brightGeneratorsDown;
+
+  let udp = `${brightGeneratorsUp}|${brightGeneratorsDown}`;
   if (numberOfPeriods > 1) {
     udp += `(${numberOfPeriods})`;
   }
