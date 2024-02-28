@@ -334,11 +334,25 @@ describe('Exhaustive MOS finder for EDO', () => {
 
   it('Can find everything reasonable supported by 31EDO', () => {
     const scales = allForEdo(31, 5, 12, 4.5);
-    expect(scales).toHaveLength(18);
+    expect(scales).toHaveLength(29);
+    for (const scale of scales) {
+      const size = scale.numberOfLargeSteps + scale.numberOfSmallSteps;
+      expect(size).toBeGreaterThanOrEqual(5);
+      expect(size).toBeLessThanOrEqual(12);
+      expect(scale.sizeOfLargeStep / scale.sizeOfSmallStep).toBeLessThanOrEqual(
+        4.5
+      );
+    }
   });
 
   it('It throws an error when arguments are out of range', () => {
     expect(() => allForEdo(9, 1, 10)).toThrow();
+  });
+
+  it('includes 4L 3s for 53EDO', () => {
+    const scales = allForEdo(53, 5, 12);
+    expect(4 * 11 + 3 * 3).toBe(53);
+    expect(scales.map(s => s.mosPattern)).toContain('4L 3s');
   });
 });
 

@@ -285,7 +285,7 @@ export function scaleInfo(
   numberOfLargeSteps *= numberOfPeriods;
   const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
   info.mosPattern = mosPattern;
-  (info.modeName = modeName(pattern.repeat(numberOfPeriods))),
-    Object.assign(info, tamnamsInfo(mosPattern));
+  info.modeName = modeName(pattern.repeat(numberOfPeriods));
+  Object.assign(info, tamnamsInfo(mosPattern));
   return info;
 }

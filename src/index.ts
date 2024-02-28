@@ -746,7 +746,7 @@ export function allForEdo(
     ++numberOfLargeSteps
   ) {
     for (
-      let numberOfSmallSteps = minSize - 1;
+      let numberOfSmallSteps = Math.max(1, minSize - numberOfLargeSteps);
       numberOfSmallSteps <= maxSize - numberOfLargeSteps;
       numberOfSmallSteps++
     ) {
