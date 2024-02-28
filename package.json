@@ -52,6 +52,6 @@
     "tamnams-extension": "node dist/scripts/tamnams-extension"
   },
   "dependencies": {
-    "xen-dev-utils": "^0.2.6"
+    "xen-dev-utils": "^0.2.7"
   }
 }
