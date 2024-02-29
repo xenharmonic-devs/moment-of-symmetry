@@ -1,7 +1,7 @@
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
-import {ModeInfo, MosInfo, MosScaleInfo} from './info';
-import {arraysEqual, fareyInterior, gcd, mmod} from 'xen-dev-utils';
+import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
+import {Fraction, arraysEqual, fareyInterior, gcd, mmod} from 'xen-dev-utils';
 
 export * from './hardness';
 export * from './names';
@@ -489,10 +489,15 @@ export function modeInfo(
   };
 }
 
-function splitMosPattern(mosPattern: string): [number, number] {
+/**
+ * Split a string like "5L 2s" into [5, 2].
+ * @param mosPattern MOS pattern such as "5L 2s".
+ * @returns A pair of intergers representing the number of large and small steps.
+ */
+export function splitMosPattern(mosPattern: string): [number, number] {
   const [l, s] = mosPattern.split('L');
-  const numberOfLargeSteps = parseInt(l.trim());
-  const numberOfSmallSteps = parseInt(s.split('s')[0].trim());
+  const numberOfLargeSteps = parseInt(l.trim(), 10);
+  const numberOfSmallSteps = parseInt(s.split('s')[0].trim(), 10);
   return [numberOfLargeSteps, numberOfSmallSteps];
 }
 
@@ -776,5 +781,66 @@ export function allForEdo(
       }
     }
   }
+  return result;
+}
+
+/**
+ * Find the ranges of all (equally tempered) fractions of the equave that span MOS scales.
+ * @param size Size of the scales to consider.
+ * @param includeMultiPeriods Include scales that split the equave into multiple periods.
+ * @returns Information about the ranges of generator that span MOS. Ranges are grouped by period and otherwise sorted in ascending order.
+ */
+export function generatorRanges(size: number, includeMultiPeriods = false) {
+  const result: RangeInfo[] = [];
+  for (
+    let numberOfLargeSteps = 1;
+    numberOfLargeSteps < size;
+    numberOfLargeSteps++
+  ) {
+    const numberOfSmallSteps = size - numberOfLargeSteps;
+
+    const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+
+    if (!includeMultiPeriods && numPeriods !== 1) {
+      continue;
+    }
+
+    const period = new Fraction(1, numPeriods);
+
+    const monzo = mosGeneratorMonzo(
+      numberOfLargeSteps / numPeriods,
+      numberOfSmallSteps / numPeriods
+    );
+
+    // Collapsed endpoint
+    let lowerBound = new Fraction(monzo[0], numberOfLargeSteps);
+    // Equalized endpoint
+    let upperBound = new Fraction(monzo[0] + monzo[1], size);
+
+    if (lowerBound.compare(upperBound) > 0) {
+      [lowerBound, upperBound] = [upperBound, lowerBound];
+    }
+
+    result.push({
+      period,
+      lowerBound,
+      upperBound,
+      numberOfLargeSteps,
+      numberOfSmallSteps,
+      bright: true,
+    });
+
+    result.push({
+      period,
+      lowerBound: period.sub(upperBound),
+      upperBound: period.sub(lowerBound),
+      numberOfLargeSteps,
+      numberOfSmallSteps,
+      bright: false,
+    });
+  }
+  result.sort(
+    (a, b) => a.period.compare(b.period) || a.lowerBound.compare(b.lowerBound)
+  );
   return result;
 }
