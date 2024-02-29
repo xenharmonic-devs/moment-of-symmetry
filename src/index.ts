@@ -1,7 +1,7 @@
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo} from './info';
-import {arraysEqual, gcd, mmod} from 'xen-dev-utils';
+import {arraysEqual, fareyInterior, gcd, mmod} from 'xen-dev-utils';
 
 export * from './hardness';
 export * from './names';
@@ -750,40 +750,28 @@ export function allForEdo(
       numberOfSmallSteps <= maxSize - numberOfLargeSteps;
       numberOfSmallSteps++
     ) {
-      for (
-        let sizeOfLargeStep = 2;
-        sizeOfLargeStep <= edo - numberOfSmallSteps;
-        sizeOfLargeStep++
-      ) {
-        for (
-          let sizeOfSmallStep = 1;
-          sizeOfSmallStep < sizeOfLargeStep;
-          ++sizeOfSmallStep
+      for (const hardness of fareyInterior(edo - numberOfSmallSteps)) {
+        const {n: sizeOfSmallStep, d: sizeOfLargeStep} = hardness;
+        if (maxHardness && sizeOfLargeStep > sizeOfSmallStep * maxHardness) {
+          continue;
+        }
+        if (
+          numberOfLargeSteps * sizeOfLargeStep +
+            numberOfSmallSteps * sizeOfSmallStep ===
+          edo
         ) {
-          if (gcd(sizeOfLargeStep, sizeOfSmallStep) !== 1) {
-            continue;
-          }
-          if (maxHardness && sizeOfLargeStep > sizeOfSmallStep * maxHardness) {
-            continue;
-          }
-          if (
-            numberOfLargeSteps * sizeOfLargeStep +
-              numberOfSmallSteps * sizeOfSmallStep ===
-            edo
-          ) {
-            const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
-            const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
-            const info = {
-              mosPattern,
-              numberOfLargeSteps,
-              numberOfSmallSteps,
-              sizeOfLargeStep,
-              sizeOfSmallStep,
-              hardness,
-            };
-            Object.assign(info, tamnamsInfo(mosPattern));
-            result.push(info);
-          }
+          const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+          const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
+          const info = {
+            mosPattern,
+            numberOfLargeSteps,
+            numberOfSmallSteps,
+            sizeOfLargeStep,
+            sizeOfSmallStep,
+            hardness,
+          };
+          Object.assign(info, tamnamsInfo(mosPattern));
+          result.push(info);
         }
       }
     }
