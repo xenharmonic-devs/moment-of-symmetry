@@ -1,3 +1,5 @@
+import {Fraction} from 'xen-dev-utils';
+
 /** Information about a MOS pattern. */
 export type MosInfo = {
   /** MOS pattern such as "5L 2s". */
@@ -72,4 +74,20 @@ export type ScaleInfo = {
   abbreviation?: string;
   /** Name of the mode. */
   modeName?: string;
+};
+
+/** Information about a generator range. */
+export type RangeInfo = {
+  /** Size of the period as a fraction of the equave. */
+  period: Fraction;
+  /** Lower bound of the generator range as a fraction of the equave. */
+  lowerBound: Fraction;
+  /** Upper bound of the generator range as a fraction of the equave. */
+  upperBound: Fraction;
+  /** Number of large steps in the pattern. */
+  numberOfLargeSteps: number;
+  /** Number of small steps in the pattern. */
+  numberOfSmallSteps: number;
+  /** Indicate if the generators are bright inside this range. */
+  bright: boolean;
 };

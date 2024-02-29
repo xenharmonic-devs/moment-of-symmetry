@@ -13,6 +13,7 @@ import {
   mosWithDaughter,
   allForEdo,
   brightGeneratorMonzo,
+  generatorRanges,
 } from '../index';
 
 describe('Bright generator calculator', () => {
@@ -424,5 +425,144 @@ describe('Daughter MOS finder', () => {
     const info = daughterMos(5, 2, 2, 1);
     expect(info.name).toBe('p-chromatic');
     expect(info.hardness).toBe('equalized');
+  });
+});
+
+describe('Generator range calculator', () => {
+  it('knows the ranges of tetratonic scales', () => {
+    const ranges = generatorRanges(4, true);
+    expect(ranges).toEqual([
+      {
+        period: {s: 1, n: 1, d: 2},
+        lowerBound: {s: 0, n: 0, d: 1},
+        upperBound: {s: 1, n: 1, d: 4},
+        numberOfLargeSteps: 2,
+        numberOfSmallSteps: 2,
+        bright: false,
+      },
+      {
+        period: {s: 1, n: 1, d: 2},
+        lowerBound: {s: 1, n: 1, d: 4},
+        upperBound: {s: 1, n: 1, d: 2},
+        numberOfLargeSteps: 2,
+        numberOfSmallSteps: 2,
+        bright: true,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 0, n: 0, d: 1},
+        upperBound: {s: 1, n: 1, d: 4},
+        numberOfLargeSteps: 1,
+        numberOfSmallSteps: 3,
+        bright: false,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 1, d: 4},
+        upperBound: {s: 1, n: 1, d: 3},
+        numberOfLargeSteps: 3,
+        numberOfSmallSteps: 1,
+        bright: true,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 2, d: 3},
+        upperBound: {s: 1, n: 3, d: 4},
+        numberOfLargeSteps: 3,
+        numberOfSmallSteps: 1,
+        bright: false,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 3, d: 4},
+        upperBound: {s: 1, n: 1, d: 1},
+        numberOfLargeSteps: 1,
+        numberOfSmallSteps: 3,
+        bright: true,
+      },
+    ]);
+  });
+
+  it('knows the ranges of pentatonic scales', () => {
+    const ranges = generatorRanges(5);
+    expect(ranges).toEqual([
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 0, n: 0, d: 1},
+        upperBound: {s: 1, n: 1, d: 5},
+        numberOfLargeSteps: 1,
+        numberOfSmallSteps: 4,
+        bright: false,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 1, d: 5},
+        upperBound: {s: 1, n: 1, d: 4},
+        numberOfLargeSteps: 4,
+        numberOfSmallSteps: 1,
+        bright: true,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 1, d: 3},
+        upperBound: {s: 1, n: 2, d: 5},
+        numberOfLargeSteps: 3,
+        numberOfSmallSteps: 2,
+        bright: false,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 2, d: 5},
+        upperBound: {s: 1, n: 1, d: 2},
+        numberOfLargeSteps: 2,
+        numberOfSmallSteps: 3,
+        bright: true,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 1, d: 2},
+        upperBound: {s: 1, n: 3, d: 5},
+        numberOfLargeSteps: 2,
+        numberOfSmallSteps: 3,
+        bright: false,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 3, d: 5},
+        upperBound: {s: 1, n: 2, d: 3},
+        numberOfLargeSteps: 3,
+        numberOfSmallSteps: 2,
+        bright: true,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 3, d: 4},
+        upperBound: {s: 1, n: 4, d: 5},
+        numberOfLargeSteps: 4,
+        numberOfSmallSteps: 1,
+        bright: false,
+      },
+      {
+        period: {s: 1, n: 1, d: 1},
+        lowerBound: {s: 1, n: 4, d: 5},
+        upperBound: {s: 1, n: 1, d: 1},
+        numberOfLargeSteps: 1,
+        numberOfSmallSteps: 4,
+        bright: true,
+      },
+    ]);
+  });
+
+  it('gives only four single-period hexatonic scales', () => {
+    expect(generatorRanges(6)).toHaveLength(4);
+  });
+
+  it('gives all ten multi-period hexatonic scales when specified', () => {
+    expect(generatorRanges(6, true)).toHaveLength(10);
+  });
+
+  it('gives all 12 heptatonic scales regardless', () => {
+    expect(generatorRanges(7)).toHaveLength(12);
+    expect(generatorRanges(7, true)).toHaveLength(12);
   });
 });
