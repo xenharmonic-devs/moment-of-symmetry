@@ -85,7 +85,7 @@ export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
   const d = gcd(numberOfTrue, numberOfFalse);
   if (d === 1) { /// Algorithm is based on following the closest approximation of the line y = b/a*x that is strictly below the line.
     let result = [];
-    let [xHere, yHere] = [0, 0]; // `x` = current number of `True`, `y` = current number of `False`; start at (0, 0).
+    let [xHere, yHere] = [0, 0]; // `xHere` = current number of `True`, `yHere` = current number of `False`; start at (0, 0).
     while (xHere < numberOfTrue || yHere < numberOfFalse) {
       if (a*(yHere+1) <= b*x) { // If going north (taking a (0, 1) step) doesn't lead to going north of the line y = b/a*x,
         result.append(false);
@@ -100,30 +100,6 @@ export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
   else {
     return euclid(numberOfTrue/d, numberOfFalse/d).repeat(d);
   }
-}
-  /**
-  pub fn darkest_mos_mode_and_gen(a: i64, b: i64) -> (String, ParikhVector) {
-    let d = gcd(a, b);
-    if d == 1 {
-        let mut result_scale: String = String::from("");
-        let (mut current_x, mut current_y) = (0i64, 0i64); // Start from the (0, 0) and walk until the dark generator is reached; we now know how many steps to walk.
-        while current_x < a || current_y < b {
-            if a * (current_y) >= b * (current_x+1) { // If going east (making a (1, 0) step) doesn't lead to going below the line y == b/a*x,
-                current_x += 1; // append the x step and reflect that in the plane vector.
-                result_scale.push('x');
-            } else { // Else, make a (0, 1) step.
-                current_y += 1;
-                result_scale.push('y');
-            }
-        }
-        let result_gen = abelianize(&result_scale.chars().take(count_gen_steps.try_into().unwrap()).collect::<String>());
-        (result_scale, result_gen)
-    } else {
-        let (prim_mos, gen) = darkest_mos_mode_and_gen(a/d, b/d);
-        (std::iter::repeat(prim_mos).take(d.try_into().unwrap()).collect::<String>(), gen)
-    }
-}
-**/
 }
 
 const BRIGHT_GENERATORS: {[key: string]: [number, number]} = {
