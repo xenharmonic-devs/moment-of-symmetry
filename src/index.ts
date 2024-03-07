@@ -79,17 +79,51 @@ function bjorklund(subsequences: any[][]) {
  * Produce an array of booleans that is mixed as evenly as possible.
  * @param numberOfTrue Number of true elements
  * @param numberOfFalse Number of false elements
- * @returns The array of evenly mixed booleans
+ * @returns The array of evenly mixed booleans in the "brightest" mode when treating True as a "larger step" than False.
  */
 export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
-  const subsequences = [];
-  for (let i = 0; i < numberOfTrue; ++i) {
-    subsequences.push([true]);
+  const d = gcd(numberOfTrue, numberOfFalse);
+  if (d === 1) { /// Algorithm is based on following the closest approximation of the line y = b/a*x that is strictly below the line.
+    let result = [];
+    let [xHere, yHere] = [0, 0]; // `x` = current number of `True`, `y` = current number of `False`; start at (0, 0).
+    while (xHere < numberOfTrue || yHere < numberOfFalse) {
+      if (a*(yHere+1) <= b*x) { // If going north (taking a (0, 1) step) doesn't lead to going north of the line y = b/a*x,
+        result.append(false);
+        yHere += 1; // append `false` to `resultScale` and update the current location.
+      } else { // Else, take one step to the east.
+        result.append(true);
+        xHere += 1;
+      }
+    }
+    return result;
   }
-  for (let i = 0; i < numberOfFalse; ++i) {
-    subsequences.push([false]);
+  else {
+    return euclid(numberOfTrue/d, numberOfFalse/d).repeat(d);
   }
-  return bjorklund(subsequences).reduce((a, b) => a.concat(b), []);
+}
+  /**
+  pub fn darkest_mos_mode_and_gen(a: i64, b: i64) -> (String, ParikhVector) {
+    let d = gcd(a, b);
+    if d == 1 {
+        let mut result_scale: String = String::from("");
+        let (mut current_x, mut current_y) = (0i64, 0i64); // Start from the (0, 0) and walk until the dark generator is reached; we now know how many steps to walk.
+        while current_x < a || current_y < b {
+            if a * (current_y) >= b * (current_x+1) { // If going east (making a (1, 0) step) doesn't lead to going below the line y == b/a*x,
+                current_x += 1; // append the x step and reflect that in the plane vector.
+                result_scale.push('x');
+            } else { // Else, make a (0, 1) step.
+                current_y += 1;
+                result_scale.push('y');
+            }
+        }
+        let result_gen = abelianize(&result_scale.chars().take(count_gen_steps.try_into().unwrap()).collect::<String>());
+        (result_scale, result_gen)
+    } else {
+        let (prim_mos, gen) = darkest_mos_mode_and_gen(a/d, b/d);
+        (std::iter::repeat(prim_mos).take(d.try_into().unwrap()).collect::<String>(), gen)
+    }
+}
+**/
 }
 
 const BRIGHT_GENERATORS: {[key: string]: [number, number]} = {
@@ -110,6 +144,36 @@ const BRIGHT_GENERATORS: {[key: string]: [number, number]} = {
   '5,7': [3, 4],
   '7,5': [3, 2],
 };
+
+/**
+ * The extended Euclidean algorithm
+ * @param a: a positive integer
+ * @param b: a positive integer 
+ * @returns [x0, y0, g] s.t. x0*a + y0*b == g == gcd(a, b)
+ */
+function extendedEuclideanAlgorithm(a: number, b: number): [number, number, number] {
+  let [old_r, r, old_s, s, old_t, t] = [a, b, 1, 0, 0, 1];
+  while (r != 0) {
+    const q = Math.floor(old_r/r);
+    [old_r, r] = [r, old_r - q*r];
+    [old_s, s] = [s, old_s - q*s];
+    [old_t, t] = [t, old_t - q*t];
+  }
+  return [old_r, old_s, old_t];
+}
+
+/**
+ * Find the modular inverse of a mod b, provided gcd(a,b) == 1.
+ */
+function modInv(a: number, b: number): number {
+  const [g, x, _] = extendedEuclideanAlgorithm(a, b);
+  if (g === 1) {
+    return ((x % b) + b) % b; // to ensure remainder is always in {0, 1, ..., b-1}
+  } else {
+    throw new Error("`a` does not have a modular inverse mod `b` since `a` and `b` are not coprime");
+  }
+}
+
 
 /**
  * Find the bright generator for a MOS pattern.
@@ -151,15 +215,9 @@ function mosGeneratorMonzo(l: number, s: number): [number, number] {
   // https://en.xen.wiki/w/UDP
   // "The bright generator will always be s⁻¹ mod T...",
   const t = l + s;
-  let brightGeneratorSteps = -1;
-  for (let i = 1; i < t; ++i) {
-    if ((s * i) % t === 1) {
-      brightGeneratorSteps = i;
-      break;
-    }
-  }
+  let brightGeneratorSteps = modInv(s, t);
 
-  // Obtain some MOS pattern
+  // Obtain the brightest mode of the MOS pattern
   const pattern = euclid(l, s);
   const current: [number, number] = [0, 0];
   const euclidScale: [number, number][] = [current];
