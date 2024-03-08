@@ -1,0 +1,57 @@
+{
+  "name": "moment-of-symmetry",
+  "author": "Lumi Pakkanen",
+  "version": "0.4.1",
+  "description": "Moment of Symmetry (MOS) musical scale generation and analysis for Javascript",
+  "license": "MIT",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/frostburn"
+  },
+  "main": "dist/src/index",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xenharmonic-devs/moment-of-symmetry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xenharmonic-devs/moment-of-symmetry/issues"
+  },
+  "homepage": "https://github.com/xenharmonic-devs/moment-of-symmetry#readme",
+  "keywords": [
+    "Microtonal",
+    "Music",
+    "Xenharmonic",
+    "MOS",
+    "Moment of Symmetry",
+    "Musical Scale",
+    "Scale Generation",
+    "Scale"
+  ],
+  "files": [
+    "dist"
+  ],
+  "types": "dist/src/index.d.ts",
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "gts": "^5.2.0",
+    "typedoc": "^0.25.9",
+    "typescript": "^5.3.3",
+    "vitest": "^1.3.1"
+  },
+  "scripts": {
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint",
+    "test": "vitest",
+    "doc": "typedoc src/index.ts . --name moment-of-symmetry",
+    "pretamnams-extension": "npm run compile",
+    "tamnams-extension": "node dist/scripts/tamnams-extension"
+  },
+  "dependencies": {
+    "xen-dev-utils": "^0.2.7"
+  }
+}
