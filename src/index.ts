@@ -1,7 +1,14 @@
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
-import {Fraction, arraysEqual, fareyInterior, gcd, mmod} from 'xen-dev-utils';
+import {
+  Fraction,
+  arraysEqual,
+  fareyInterior,
+  gcd,
+  mmod,
+  extendedEuclid,
+} from 'xen-dev-utils';
 
 export * from './hardness';
 export * from './names';
@@ -82,6 +89,7 @@ function bjorklund(subsequences: any[][]) {
  * @returns The array of evenly mixed booleans
  */
 export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
+  // return bresenham(numberOfTrue, numberOfFalse, true, false);
   const subsequences = [];
   for (let i = 0; i < numberOfTrue; ++i) {
     subsequences.push([true]);
@@ -90,6 +98,36 @@ export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
     subsequences.push([false]);
   }
   return bjorklund(subsequences).reduce((a, b) => a.concat(b), []);
+}
+
+// This algorithm, a variant of the Bresenham line algorithm, returns the "brightest mode" of
+// the "scale" where `first` is treated as larger than `second`.
+// It's based on following the closest approximation of the line y = b/a*x that is strictly below the line.
+function bresenham(a: number, b: number, first: any, second: any): any[] {
+  const d = gcd(a, b);
+  if (d === 1) {
+    const result: boolean[] = [];
+    // `xHere` = current number of `first`, `yHere` = current number of `second`; start at (0, 0).
+    let [xHere, yHere] = [0, 0];
+    while (xHere < a || yHere < b) {
+      // If going north (taking a (0, 1) step) doesn't lead to going north of the line y = b/a*x,
+      if (a * (yHere + 1) <= b * xHere) {
+        // append `second` to `resultScale` and update the current location.
+        result.push(second);
+        yHere += 1;
+      } else {
+        // Else, append `first` and take one step to the east.
+        result.push(first);
+        xHere += 1;
+      }
+    }
+    return result;
+  } else {
+    // aLbs is a d-period MOS, so we concatenate `d` copies of the primitive MOS a/d*L b/d*s.
+    return Array(d)
+      .fill(bresenham(a / d, b / d, first, second))
+      .flat();
+  }
 }
 
 const BRIGHT_GENERATORS: {[key: string]: [number, number]} = {
@@ -110,6 +148,21 @@ const BRIGHT_GENERATORS: {[key: string]: [number, number]} = {
   '5,7': [3, 4],
   '7,5': [3, 2],
 };
+
+/**
+ * Find the modular inverse of a mod b, provided gcd(a,b) == 1.
+ */
+function modInv(a: number, b: number): number {
+  const ee = extendedEuclid(a, b);
+  const {gcd, coefA} = ee;
+  if (gcd === 1) {
+    return ((coefA % b) + b) % b; // to ensure remainder is always in {0, 1, ..., b-1}
+  } else {
+    throw new Error(
+      '`a` does not have a modular inverse mod `b` since `a` and `b` are not coprime'
+    );
+  }
+}
 
 /**
  * Find the bright generator for a MOS pattern.
@@ -151,13 +204,7 @@ function mosGeneratorMonzo(l: number, s: number): [number, number] {
   // https://en.xen.wiki/w/UDP
   // "The bright generator will always be s⁻¹ mod T...",
   const t = l + s;
-  let brightGeneratorSteps = -1;
-  for (let i = 1; i < t; ++i) {
-    if ((s * i) % t === 1) {
-      brightGeneratorSteps = i;
-      break;
-    }
-  }
+  const brightGeneratorSteps = modInv(s, t);
 
   // Obtain some MOS pattern
   const pattern = euclid(l, s);
@@ -175,6 +222,7 @@ function mosGeneratorMonzo(l: number, s: number): [number, number] {
   // Take the bright generator
   const g1 = euclidScale[brightGeneratorSteps];
   // Use a back-up in case euclid generated a dark scale
+  // Use this when using Björklund
   const g2 = euclidScale[brightGeneratorSteps + 1];
   g2[0] -= euclidScale[1][0];
   g2[1] -= euclidScale[1][1];
