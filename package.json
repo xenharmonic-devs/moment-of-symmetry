@@ -32,7 +32,9 @@
   ],
   "types": "dist/src/index.d.ts",
   "devDependencies": {
+    "@types/benchmark": "^2.1.5",
     "@types/node": "^20.11.24",
+    "benchmark": "^2.1.4",
     "gts": "^5.2.0",
     "typedoc": "^0.25.9",
     "typescript": "^5.3.3",
@@ -49,7 +51,9 @@
     "test": "vitest",
     "doc": "typedoc src/index.ts . --name moment-of-symmetry",
     "pretamnams-extension": "npm run compile",
-    "tamnams-extension": "node dist/scripts/tamnams-extension"
+    "tamnams-extension": "node dist/scripts/tamnams-extension",
+    "preeuclid-benchmark": "tsc -p tsconfig-benchmark.json",
+    "euclid-benchmark": "node benchmarks/__benchmarks__/euclid.mark.js"
   },
   "dependencies": {
     "xen-dev-utils": "^0.2.7"
