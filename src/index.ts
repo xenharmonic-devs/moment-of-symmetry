@@ -1,7 +1,7 @@
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
-import {bjorklund, modInv} from './helpers';
+import {bresenham, modInv} from './helpers';
 import {Fraction, fareyInterior, gcd, mmod} from 'xen-dev-utils';
 
 export * from './hardness';
@@ -60,15 +60,7 @@ export interface MosWithDaughterOptions extends MosOptions {
  * @returns The array of evenly mixed booleans
  */
 export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
-  // return bresenham(numberOfTrue, numberOfFalse, true, false);
-  const subsequences = [];
-  for (let i = 0; i < numberOfTrue; ++i) {
-    subsequences.push([true]);
-  }
-  for (let i = 0; i < numberOfFalse; ++i) {
-    subsequences.push([false]);
-  }
-  return bjorklund(subsequences).reduce((a, b) => a.concat(b), []);
+  return bresenham(numberOfTrue, numberOfFalse, true, false);
 }
 
 const BRIGHT_GENERATORS: {[key: string]: [number, number]} = {
@@ -146,16 +138,7 @@ function mosGeneratorMonzo(l: number, s: number): [number, number] {
   });
 
   // Take the bright generator
-  const g1 = euclidScale[brightGeneratorSteps];
-  // Use a back-up in case euclid generated a dark scale
-  // Use this when using Björklund
-  const g2 = euclidScale[brightGeneratorSteps + 1];
-  g2[0] -= euclidScale[1][0];
-  g2[1] -= euclidScale[1][1];
-  if (g2[0] > g1[0]) {
-    return g2;
-  }
-  return g1;
+  return euclidScale[brightGeneratorSteps];
 }
 
 /**
