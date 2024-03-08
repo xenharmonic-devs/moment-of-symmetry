@@ -7,10 +7,10 @@ import {arraysEqual, extendedEuclid, gcd} from 'xen-dev-utils';
 /**
  * Distribute subsequences as evenly as possible using Björklund's algorithm.
  */
-export function bjorklund(subsequences: any[][]) {
+export function bjorklund<T>(subsequences: T[][]) {
   while (true) {
     const remainder = subsequences[subsequences.length - 1];
-    const distributed: any[][] = [];
+    const distributed: T[][] = [];
     while (
       subsequences.length &&
       arraysEqual(subsequences[subsequences.length - 1], remainder)
@@ -21,7 +21,7 @@ export function bjorklund(subsequences: any[][]) {
       return subsequences.concat(distributed);
     }
     for (let i = 0; distributed.length && i < subsequences.length; ++i) {
-      subsequences[i] = subsequences[i].concat(distributed.pop());
+      subsequences[i] = subsequences[i].concat(distributed.pop()!);
     }
     subsequences = subsequences.concat(distributed);
   }
@@ -30,15 +30,10 @@ export function bjorklund(subsequences: any[][]) {
 // This algorithm, a variant of the Bresenham line algorithm, returns the "brightest mode" of
 // the "scale" where `first` is treated as larger than `second`.
 // It's based on following the closest approximation of the line y = b/a*x that is strictly below the line.
-export function bresenham(
-  a: number,
-  b: number,
-  first: any,
-  second: any
-): any[] {
+export function bresenham<T>(a: number, b: number, first: T, second: T): T[] {
   const d = gcd(a, b);
   if (d === 1) {
-    const result: boolean[] = [];
+    const result: T[] = [];
     // `xHere` = current number of `first`, `yHere` = current number of `second`; start at (0, 0).
     let [xHere, yHere] = [0, 0];
     while (xHere < a || yHere < b) {
