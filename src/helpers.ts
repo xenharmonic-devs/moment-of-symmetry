@@ -22,35 +22,43 @@ export function bjorklundStr(a: number, b: number): string {
   const d = gcd(a, b);
   if (d === 1) {
     let [countFirst, countSecond] = [a, b];
-    // '0' is brighter; '0' < '1' in js.
+    // These are the seed strings we build the brightest MOS word from.
+    // The algorithm uses two subwords at each step, iteratively appending the
+    // lexicographically second subword to the lexicographically first subword to ensure
+    // that the lexicographically first mode is returned.
+    // Note that '0' is brighter; '0' < '1' in js.
     let first = '0';
     let second = '1';
     while (countSecond !== 1) {
       // Possibly after switching, are there more copies of `first` than `second`?
-      // Then all the `second`s go below the first `countSecond` copies of `first`s.
+      // Then all the `second`s get appended to the first `countSecond` copies of `first`s,
+      // and the new `second`s are the remaining copies of `first`s.
       if (countFirst > countSecond) {
         [countFirst, countSecond] = [countSecond, countFirst - countSecond];
         [first, second] = [first.concat(second), first];
       }
       // Otherwise, there are strictly fewer `first`s than `second`s (as gcd(a, b) === 1),
-      // and all the `first`s get modified, whereas `second` is unchanged.
-      // `countFirst` is unchanged.
+      // and *all* the `first`s get modified, whereas `second` is unchanged since copies of it remain.
+      // `countFirst` is also unchanged.
       else {
         countSecond = countSecond - countFirst;
         first = first.concat(second);
       }
       // At the current step we have `countFirst` `first` substrings and `countSecond` `second` substrings,
       // where we must guarantee that `first < second`.
-      // Thus if first > second, then switch them and the count variables.
+      // Thus if `first > second`, then swap them and swap the count variables.
       // Do this step before checking the while condition; we know the desired lex. ordering holds for the first step,
-      // and our stopping condition requires that `first` < `second` actually hold to really behave correctly.
+      // and our stopping condition requires that `first < second` actually hold to really behave correctly.
       if (first > second) {
         [countFirst, countSecond] = [countSecond, countFirst];
         [first, second] = [second, first];
       }
     }
+    // At the end, we have `countFirst`-many `first`s and 1 `second`s,
+    // so return (`first`)^`countFirst` `second` (in standard mathematical word notation).
     return first.repeat(countFirst).concat(second);
   } else {
+    // multiperiod MOS
     return bjorklundStr(a / d, b / d).repeat(d);
   }
 }
