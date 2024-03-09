@@ -1,29 +1,57 @@
 /**
  * Internal helper functions not intended to be published.
  */
-
-import {arraysEqual, extendedEuclid, gcd} from 'xen-dev-utils';
+import {extendedEuclid, gcd} from 'xen-dev-utils';
 
 /**
- * Distribute subsequences as evenly as possible using Björklund's algorithm.
+ * Distribute subsequences as evenly as possible using Björklund's algorithm;
+ * modified as to always return the brightest mode.
  */
-export function bjorklund<T>(subsequences: T[][]) {
-  while (true) {
-    const remainder = subsequences[subsequences.length - 1];
-    const distributed: T[][] = [];
-    while (
-      subsequences.length &&
-      arraysEqual(subsequences[subsequences.length - 1], remainder)
-    ) {
-      distributed.push(subsequences.pop()!);
+export function bjorklund<T>(a: number, b: number, first: T, second: T): T[] {
+  return Array.from(bjorklund_str(a, b)).map(x => (x === '1' ? second : first));
+}
+
+/**
+ * Using this function so that we don't have to replace `first' and `second`
+ * with `true` and `false` every time the algorithm does an array comparison.
+ */
+export function bjorklund_str(a: number, b: number): string {
+  if (isNaN(a) || isNaN(b)) {
+    throw new Error('Invalid input');
+  }
+  const d = gcd(a, b);
+  if (d === 1) {
+    let [countFirst, countSecond] = [a, b];
+    // '0' is brighter; '0' < '1' in js.
+    let first = '0';
+    let second = '1';
+    while (countSecond !== 1) {
+      // Possibly after switching, are there more copies of `first` than `second`?
+      // Then all the `second`s go below the first `countSecond` copies of `first`s.
+      if (countFirst > countSecond) {
+        [countFirst, countSecond] = [countSecond, countFirst - countSecond];
+        [first, second] = [first.concat(second), first];
+      }
+      // Otherwise, there are strictly fewer `first`s than `second`s,
+      // and all the `first`s get modified, whereas `second` is unchanged.
+      // `countFirst` is unchanged.
+      else {
+        countSecond = countSecond - countFirst;
+        first = first.concat(second);
+      }
+      // At the current step we have `countFirst` `first` substrings and `countSecond` `second` substrings,
+      // where we must guarantee that `first` is lexicographically greater than `second`.
+      // Thus if first > second, then switch them and the count variables.
+      // Do this step before checking the while condition; we know the desired lex. ordering holds for the first step,
+      // and our stopping condition requires that `first` < `second` actually hold to really behave correctly.
+      if (first > second) {
+        [countFirst, countSecond] = [countSecond, countFirst];
+        [first, second] = [second, first];
+      }
     }
-    if (!subsequences.length || distributed.length <= 1) {
-      return subsequences.concat(distributed);
-    }
-    for (let i = 0; distributed.length && i < subsequences.length; ++i) {
-      subsequences[i] = subsequences[i].concat(distributed.pop()!);
-    }
-    subsequences = subsequences.concat(distributed);
+    return first.repeat(countFirst).concat(second);
+  } else {
+    return bjorklund_str(a / d, b / d).repeat(d);
   }
 }
 
