@@ -1,7 +1,7 @@
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
-import {bresenham, modInv} from './helpers';
+import {bjorklund, modInv} from './helpers';
 import {Fraction, fareyInterior, gcd, mmod} from 'xen-dev-utils';
 
 export * from './hardness';
@@ -60,7 +60,7 @@ export interface MosWithDaughterOptions extends MosOptions {
  * @returns The array of evenly mixed booleans
  */
 export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
-  return bresenham(numberOfTrue, numberOfFalse, true, false);
+  return bjorklund(numberOfTrue, numberOfFalse, true, false);
 }
 
 const BRIGHT_GENERATORS: {[key: string]: [number, number]} = {
