@@ -8,14 +8,14 @@ import {extendedEuclid, gcd} from 'xen-dev-utils';
  * modified as to always return the brightest mode.
  */
 export function bjorklund<T>(a: number, b: number, first: T, second: T): T[] {
-  return Array.from(bjorklund_str(a, b)).map(x => (x === '1' ? second : first));
+  return Array.from(bjorklundStr(a, b)).map(x => (x === '1' ? second : first));
 }
 
 /**
  * Using this function so that we don't have to replace `first' and `second`
  * with `true` and `false` every time the algorithm does an array comparison.
  */
-export function bjorklund_str(a: number, b: number): string {
+export function bjorklundStr(a: number, b: number): string {
   if (isNaN(a) || isNaN(b)) {
     throw new Error('Invalid input');
   }
@@ -32,7 +32,7 @@ export function bjorklund_str(a: number, b: number): string {
         [countFirst, countSecond] = [countSecond, countFirst - countSecond];
         [first, second] = [first.concat(second), first];
       }
-      // Otherwise, there are strictly fewer `first`s than `second`s,
+      // Otherwise, there are strictly fewer `first`s than `second`s (as gcd(a, b) === 1),
       // and all the `first`s get modified, whereas `second` is unchanged.
       // `countFirst` is unchanged.
       else {
@@ -40,7 +40,7 @@ export function bjorklund_str(a: number, b: number): string {
         first = first.concat(second);
       }
       // At the current step we have `countFirst` `first` substrings and `countSecond` `second` substrings,
-      // where we must guarantee that `first` is lexicographically greater than `second`.
+      // where we must guarantee that `first < second`.
       // Thus if first > second, then switch them and the count variables.
       // Do this step before checking the while condition; we know the desired lex. ordering holds for the first step,
       // and our stopping condition requires that `first` < `second` actually hold to really behave correctly.
@@ -51,7 +51,7 @@ export function bjorklund_str(a: number, b: number): string {
     }
     return first.repeat(countFirst).concat(second);
   } else {
-    return bjorklund_str(a / d, b / d).repeat(d);
+    return bjorklundStr(a / d, b / d).repeat(d);
   }
 }
 
