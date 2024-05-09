@@ -138,4 +138,8 @@ describe('Mode namer', () => {
   it('knows karakalian', () => {
     expect(modeName('LLLLLsL')).toBe('Karakalian');
   });
+
+  it('knows nightmare', () => {
+    expect(modeName('LLsLLLsL')).toBe('Nightmare');
+  });
 });
