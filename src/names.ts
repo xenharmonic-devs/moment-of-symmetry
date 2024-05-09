@@ -8,6 +8,8 @@ export type TamnamsInfo = {
   abbreviation?: string;
   /** Family tree prefix. */
   familyPrefix?: string;
+  /** Nickname. */
+  nickname?: string;
 };
 
 const TAMNAMS_MOS_NAMES: {

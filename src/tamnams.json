@@ -142,7 +142,8 @@
         "name": "tetrawood",
         "prefix": "tetwd",
         "abbreviation": "ttw",
-        "familyPrefix": "tetwood"
+        "familyPrefix": "tetwood",
+        "nickname": "diminished"
     },
     "5L 3s":
     {
@@ -199,7 +200,8 @@
     },
     "7L 2s":
     {
-        "name": "superdiatonic",
+        "name": "armotonic",
+        "nickname": "superdiatonic",
         "prefix": "arm",
         "familyPrefix": "armo"
     },
@@ -261,10 +263,44 @@
         "prefix": "sina",
         "abbreviation": "si"
     },
+    "1L 10s":
+    {
+        "name": "tanzanite",
+        "prefix": "tan",
+        "nickname": "tenorite"
+    },
+    "2L 9s":
+    {
+        "name": "antivillatonic",
+        "prefix": "anvil"
+    },
     "4L 7s":
     {
-        "name": "p-chro smitonic",
+        "name": "kleistonic",
         "prefix": "klei"
+    },
+    "7L 4s":
+    {
+        "nickname": "suprasmitonic",
+        "prefix": "susmi",
+        "name": "daemotonic"
+    },
+    "9L 2s":
+    {
+        "name": "villatonic",
+        "prefix": "vil",
+        "nickname": "superarmotonic"
+    },
+    "10L 1s":
+    {
+        "name": "antitanzanite",
+        "prefix": "antan",
+        "nickname": "antitenorite"
+    },
+    "1L 11s":
+    {
+        "name": "helenite",
+        "prefix": "hel"
     },
     "5L 7s":
     {
@@ -282,6 +318,31 @@
     {
         "name": "m-chromatic",
         "prefix": "mellow"
+    },
+    "11L 1s":
+    {
+        "name": "antihelenite",
+        "prefix": "anhel"
+    },
+    "1L 12s":
+    {
+        "name": "zircon",
+        "prefix": "zir"
+    },
+    "2L 11s":
+    {
+        "name": "antihendecoid",
+        "prefix": "anhen"
+    },
+    "11L 2s":
+    {
+        "name": "hendecoid",
+        "prefix": "hen"
+    },
+    "12L 1s":
+    {
+        "name": "antizircon",
+        "prefix": "anzir"
     },
     "1L 13s":
     {
@@ -324,12 +385,28 @@
         "abbreviation": "nw",
         "familyPrefix": "nonwood"
     },
+    "3L 16s":
+    {
+        "name": "magicaltonic"
+    },
+    "16L 3s":
+    {
+        "name": "muggletonic"
+    },
     "10L 10s":
     {
         "name": "decawood",
         "prefix": "decwd",
         "abbreviation": "dw",
         "familyPrefix": "decwood"
+    },
+    "10L 11s":
+    {
+        "name": "miracloid"
+    },
+    "11L 10s":
+    {
+        "name": "antimiracloid"
     },
     "19L 3s":
     {
@@ -340,6 +417,22 @@
     {
         "name": "zheligowskic",
         "prefix": "zheli"
+    },
+    "21L 1s":
+    {
+        "name": "escapist"
+    },
+    "1L 21s":
+    {
+        "name": "antiescapist"
+    },
+    "22L 1s":
+    {
+        "name": "quartismoid"
+    },
+    "1L 22s":
+    {
+        "name": "antiquartismoid"
     },
     "5L 12s":
     {

@@ -79,11 +79,11 @@ describe('MOS pattern namer', () => {
     expect(6 * 2 + 5).toBe(5 * 3 + 2);
   });
 
-  it('has a consistent scheme for asina-enharmics', () => {
-    expect(tamnamsInfo('1L 11s')!.name).toBe('s-enhar antisinatonic');
-    expect(tamnamsInfo('11L 1s')!.name).toBe('p-enhar antisinatonic');
-    expect(tamnamsInfo('10L 11s')!.name).toBe('f-enhar antisinatonic');
-    expect(tamnamsInfo('11L 10s')!.name).toBe('m-enhar antisinatonic');
+  it('has new names for asina-enharmics', () => {
+    expect(tamnamsInfo('1L 11s')!.name).toBe('helenite');
+    expect(tamnamsInfo('11L 1s')!.name).toBe('antihelenite');
+    expect(tamnamsInfo('10L 11s')!.name).toBe('miracloid');
+    expect(tamnamsInfo('11L 10s')!.name).toBe('antimiracloid');
 
     expect(1 * 2 + 11).toBe(1 * 4 + 9 * 1);
     expect(11 * 2 + 1).toBe(1 * 5 + 9 * 2);
@@ -108,6 +108,17 @@ describe('MOS pattern namer', () => {
     expect(tamnamsInfo('31L 19s')!.name).toBe('fauxomani');
     expect(tamnamsInfo('5L 22s')!.name).toBe('reinatonic');
     expect(tamnamsInfo('7L 26s')!.name).toBe('siskontyttonic');
+  });
+
+  it('calls 7L 2s armotonic', () => {
+    const {name, nickname} = tamnamsInfo('7L 2s')!;
+    expect(name).toBe('armotonic');
+    expect(nickname).toBe('superdiatonic');
+  });
+
+  it('knows about antiescapist', () => {
+    const {name} = tamnamsInfo('1L 21s')!;
+    expect(name).toBe('antiescapist');
   });
 });
 
