@@ -1,13 +1,14 @@
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
-import {bjorklund, modInv} from './helpers';
+import {bjorklund, mosGeneratorMonzo} from './helpers';
 import {Fraction, fareyInterior, gcd, mmod} from 'xen-dev-utils';
 
 export * from './hardness';
 export * from './names';
 export * from './generator-ratio';
 export * from './info';
+export * from './notation';
 
 /**
  * Parameters for various function.
@@ -61,84 +62,6 @@ export interface MosWithDaughterOptions extends MosOptions {
  */
 export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
   return bjorklund(numberOfTrue, numberOfFalse, true, false);
-}
-
-const BRIGHT_GENERATORS: {[key: string]: [number, number]} = {
-  '2,5': [1, 2],
-  '5,2': [3, 1],
-  '2,9': [1, 4],
-  '3,8': [2, 5],
-  '4,7': [3, 5],
-  '7,4': [2, 1],
-  '8,3': [3, 1],
-  '9,2': [5, 1],
-  '3,5': [2, 3],
-  '5,3': [2, 1],
-  '2,7': [1, 3],
-  '7,2': [4, 1],
-  '3,7': [1, 2],
-  '7,3': [5, 2],
-  '5,7': [3, 4],
-  '7,5': [3, 2],
-};
-
-/**
- * Find the bright generator for a MOS pattern.
- * @param l Number of large steps.
- * @param s Number of small steps.
- * @returns [generator's number of large steps, generator's number of small steps]
- */
-function mosGeneratorMonzo(l: number, s: number): [number, number] {
-  // Shortcuts
-  if (s === 1) {
-    return [1, 0];
-  }
-  if (l === 1) {
-    return [1, s - 1];
-  }
-  if (l === s - 1) {
-    return [1, 1];
-  }
-  if (l === s + 1) {
-    return [l - 1, s - 1];
-  }
-
-  // Pre-calculated
-  const key = `${l},${s}`;
-  if (key in BRIGHT_GENERATORS) {
-    return BRIGHT_GENERATORS[key];
-  }
-
-  // Degenerate cases
-  if (l === 0) {
-    return [0, 1];
-  }
-  if (s === 0) {
-    return [1, 0];
-  }
-
-  // General algorithm
-
-  // https://en.xen.wiki/w/UDP
-  // "The bright generator will always be s⁻¹ mod T...",
-  const t = l + s;
-  const brightGeneratorSteps = modInv(s, t);
-
-  // Obtain some MOS pattern
-  const pattern = euclid(l, s);
-  const current: [number, number] = [0, 0];
-  const euclidScale: [number, number][] = [current];
-  pattern.forEach(e => {
-    if (e) {
-      current[0] += 1;
-    } else {
-      current[1] += 1;
-    }
-    euclidScale.push([...current]);
-  });
-
-  // Take the bright generator
-  return euclidScale[brightGeneratorSteps];
 }
 
 /**
