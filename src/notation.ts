@@ -66,6 +66,10 @@ export type DiamondMosNotation = {
    * Interval of repetition.
    */
   period: MosMonzo;
+  /**
+   * Bright generator of the scale.
+   */
+  brightGenerator: MosMonzo;
 };
 
 /**
@@ -133,5 +137,6 @@ export function generateNotation(mode: string): DiamondMosNotation {
     degrees,
     equave,
     period: [equave[0] / numPeriods, equave[1] / numPeriods],
+    brightGenerator: gen,
   };
 }

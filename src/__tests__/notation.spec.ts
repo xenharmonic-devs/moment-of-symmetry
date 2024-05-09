@@ -6,7 +6,7 @@ describe('Diamond mos notation generator', () => {
   it('generates the config for diatonic major', () => {
     const notation = generateNotation('LLsLLLs');
     const basic = [2, 1];
-    const {scale, degrees, equave, period} = notation;
+    const {scale, degrees, equave, period, brightGenerator} = notation;
     expect(dot(basic, scale.get('J')!)).toBe(0);
     expect(dot(basic, scale.get('K')!)).toBe(2);
     expect(dot(basic, scale.get('L')!)).toBe(4);
@@ -46,10 +46,12 @@ describe('Diamond mos notation generator', () => {
 
     expect(dot(basic, equave)).toBe(12); // P8
     expect(dot(basic, period)).toBe(12); // P8
+    expect(dot(basic, brightGenerator)).toBe(7); // P5
   });
 
   it('generates the config for subaric 4|2(2)', () => {
-    const {scale, degrees, equave, period} = generateNotation('sLsssLss');
+    const {scale, degrees, equave, period, brightGenerator} =
+      generateNotation('sLsssLss');
     expect(scale.get('J')).toEqual([0, 0]);
     expect(scale.get('K')).toEqual([0, 1]);
     expect(scale.get('L')).toEqual([1, 1]);
@@ -68,5 +70,6 @@ describe('Diamond mos notation generator', () => {
 
     expect(equave).toEqual([2, 6]);
     expect(period).toEqual([1, 3]);
+    expect(brightGenerator).toEqual([1, 2]);
   });
 });
