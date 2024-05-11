@@ -83,15 +83,24 @@ export function generateNotation(mode: string): DiamondMosNotation {
   const scale = new Map<DiamondMosNominal, MosMonzo>();
   let code = 'J'.charCodeAt(0);
   const monzo: MosMonzo = [0, 0];
+  let hasLarge = false;
+  let hasSmall = false;
   for (const character of mode) {
     scale.set(String.fromCharCode(code++) as DiamondMosNominal, [...monzo]);
     if (character === 'L') {
       monzo[0]++;
+      hasLarge = true;
     } else if (character === 's') {
       monzo[1]++;
+      hasSmall = true;
+    } else {
+      throw new Error(`Invalid abstract step '${character}'.`);
     }
   }
-  if (code >= 'Z'.charCodeAt(0)) {
+  if (!hasLarge || !hasSmall) {
+    throw new Error("The scale must contain both 'L' and 's' steps.");
+  }
+  if (code > 'Z'.charCodeAt(0) + 1) {
     throw new Error('Out of Diamond mos nominals.');
   }
   const equave: MosMonzo = [...monzo];
@@ -102,30 +111,36 @@ export function generateNotation(mode: string): DiamondMosNotation {
   const basic: [number, MosMonzo, boolean, MosMonzo?][] = [
     [0, [0, 0], true, undefined],
   ];
-  // Dark mid
-  basic.push([
-    period - 2 * gen[0] - gen[1],
-    [equave[0] - gen[0], equave[1] - gen[1]],
-    true,
-    [equave[0] - gen[0] + 0.5, equave[1] - gen[1] - 0.5],
-  ]);
-  let edostep = 2 * gen[0] + gen[1];
-  // Bright mid
-  basic.push([edostep, [...gen], true, [gen[0] - 0.5, gen[1] + 0.5]]);
-  monzo[0] = gen[0];
-  monzo[1] = gen[1];
-  for (let i = 2; i < numUnique - 1; ++i) {
-    edostep += 2 * gen[0] + gen[1];
-    monzo[0] += gen[0];
-    monzo[1] += gen[1];
-    while (edostep >= period) {
-      edostep -= period;
-      monzo[0] -= equave[0];
-      monzo[1] -= equave[1];
+  // Exception for nL ns
+  if (numUnique === 2) {
+    basic.push([2, [gen[0] - 0.5, gen[1] + 0.5], false, undefined]);
+  } else {
+    // Dark mid
+    basic.push([
+      period - 2 * gen[0] - gen[1],
+      [equave[0] - gen[0], equave[1] - gen[1]],
+      true,
+      [equave[0] - gen[0] + 0.5, equave[1] - gen[1] - 0.5],
+    ]);
+    let edostep = 2 * gen[0] + gen[1];
+    // Bright mid
+    basic.push([edostep, [...gen], true, [gen[0] - 0.5, gen[1] + 0.5]]);
+    monzo[0] = gen[0];
+    monzo[1] = gen[1];
+    for (let i = 2; i < numUnique - 1; ++i) {
+      edostep += 2 * gen[0] + gen[1];
+      monzo[0] += gen[0];
+      monzo[1] += gen[1];
+      while (edostep >= period) {
+        edostep -= period;
+        monzo[0] -= equave[0];
+        monzo[1] -= equave[1];
+      }
+      // Imperfect central
+      basic.push([edostep, [monzo[0] - 0.5, monzo[1] + 0.5], false, undefined]);
     }
-    // Imperfect central
-    basic.push([edostep, [monzo[0] - 0.5, monzo[1] + 0.5], false, undefined]);
   }
+
   basic.sort((a, b) => a[0] - b[0]);
   const degrees: DiamondMosDegree[] = [];
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

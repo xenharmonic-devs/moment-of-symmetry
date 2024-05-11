@@ -72,4 +72,82 @@ describe('Diamond mos notation generator', () => {
     expect(period).toEqual([1, 3]);
     expect(brightGenerator).toEqual([1, 2]);
   });
+
+  it('generates a broken config given "LLLss"', () => {
+    const {scale, degrees} = generateNotation('LLLss');
+
+    // As specified
+    expect(scale.get('J')).toEqual([0, 0]);
+    expect(scale.get('K')).toEqual([1, 0]);
+    expect(scale.get('L')).toEqual([2, 0]);
+    expect(scale.get('M')).toEqual([3, 0]);
+    expect(scale.get('N')).toEqual([3, 1]);
+
+    // For the actual 3L 2s
+    expect(degrees).toEqual([
+      {center: [0, 0], perfect: true, mid: undefined},
+      {center: [0.5, 0.5], perfect: false, mid: undefined},
+      {center: [1, 1], perfect: true, mid: [1.5, 0.5]},
+      {center: [2, 1], perfect: true, mid: [1.5, 1.5]},
+      {center: [2.5, 1.5], perfect: false, mid: undefined},
+    ]);
+  });
+
+  it('makes the exception for nL ns i.e. not fully perfect', () => {
+    const {scale, degrees} = generateNotation('LsLsLs');
+    expect(scale.get('J')).toEqual([0, 0]);
+    expect(scale.get('K')).toEqual([1, 0]);
+    expect(scale.get('L')).toEqual([1, 1]);
+    expect(scale.get('M')).toEqual([2, 1]);
+    expect(scale.get('N')).toEqual([2, 2]);
+    expect(scale.get('O')).toEqual([3, 2]);
+
+    expect(degrees).toEqual([
+      {center: [0, 0], perfect: true, mid: undefined},
+      {center: [0.5, 0.5], perfect: false, mid: undefined},
+    ]);
+
+    const basic = [2, 1];
+    expect(dot(basic, degrees[0].center)).toBe(0); // P0trwds
+
+    expect(dot(basic, degrees[1].center) - 0.5).toBe(1); // m1trwds
+    expect(dot(basic, degrees[1].center) + 0.5).toBe(2); // M1trwds
+  });
+
+  it('accepts up to nominal Z', () => {
+    const {scale} = generateNotation('LsLsLsLsLsLsLsLsL');
+    expect(scale.has('J')).toBe(true);
+    expect(scale.has('K')).toBe(true);
+    expect(scale.has('L')).toBe(true);
+    expect(scale.has('M')).toBe(true);
+    expect(scale.has('N')).toBe(true);
+    expect(scale.has('O')).toBe(true);
+    expect(scale.has('P')).toBe(true);
+    expect(scale.has('Q')).toBe(true);
+    expect(scale.has('R')).toBe(true);
+    expect(scale.has('S')).toBe(true);
+    expect(scale.has('T')).toBe(true);
+    expect(scale.has('U')).toBe(true);
+    expect(scale.has('V')).toBe(true);
+    expect(scale.has('W')).toBe(true);
+    expect(scale.has('X')).toBe(true);
+    expect(scale.has('Y')).toBe(true);
+    expect(scale.has('Z')).toBe(true);
+  });
+
+  it('rejects above nominal Z', () => {
+    expect(() => generateNotation('LsLsLsLsLsLsLsLsLs')).toThrow();
+  });
+
+  it('it rejects all L', () => {
+    expect(() => generateNotation('LLLL')).toThrow();
+  });
+
+  it('it rejects all s', () => {
+    expect(() => generateNotation('ss')).toThrow();
+  });
+
+  it('it rejects foreign steps', () => {
+    expect(() => generateNotation('LMsL')).toThrow();
+  });
 });
