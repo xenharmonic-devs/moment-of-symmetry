@@ -63,10 +63,16 @@ describe('Diamond mos notation generator', () => {
 
     expect(degrees).toEqual([
       {center: [0, 0], perfect: true, mid: undefined},
+      {center: [0, 1], perfect: true, mid: [0.5, 0.5]},
+      {center: [0.5, 1.5], perfect: false, mid: undefined},
       {center: [1, 2], perfect: true, mid: [0.5, 2.5]},
-      {center: [1, 4], perfect: true, mid: [1.5, 3.5]},
-      {center: [1.5, 4.5], perfect: false, mid: undefined},
     ]);
+
+    const basic = [2, 1];
+    expect(dot(basic, degrees[0].center)).toBe(0); // P0subars
+    expect(dot(basic, degrees[1].center)).toBe(1); // P1subars
+    expect(dot(basic, degrees[2].center)).toBe(2.5); // n2subars
+    expect(dot(basic, degrees[3].center)).toBe(4); // P3subars
 
     expect(equave).toEqual([2, 6]);
     expect(period).toEqual([1, 3]);

@@ -105,9 +105,10 @@ export function generateNotation(mode: string): DiamondMosNotation {
   }
   const equave: MosMonzo = [...monzo];
   const numPeriods = gcd(equave[0], equave[1]);
-  const gen = mosGeneratorMonzo(equave[0] / numPeriods, equave[1] / numPeriods);
-  const numUnique = (equave[0] + equave[1]) / numPeriods;
-  const period = 2 * equave[0] + equave[1];
+  const period: MosMonzo = [equave[0] / numPeriods, equave[1] / numPeriods];
+  const gen = mosGeneratorMonzo(period[0], period[1]);
+  const numUnique = period[0] + period[1];
+  const edoperiod = 2 * period[0] + period[1];
   const basic: [number, MosMonzo, boolean, MosMonzo?][] = [
     [0, [0, 0], true, undefined],
   ];
@@ -117,10 +118,10 @@ export function generateNotation(mode: string): DiamondMosNotation {
   } else {
     // Dark mid
     basic.push([
-      period - 2 * gen[0] - gen[1],
-      [equave[0] - gen[0], equave[1] - gen[1]],
+      edoperiod - 2 * gen[0] - gen[1],
+      [period[0] - gen[0], period[1] - gen[1]],
       true,
-      [equave[0] - gen[0] + 0.5, equave[1] - gen[1] - 0.5],
+      [period[0] - gen[0] + 0.5, period[1] - gen[1] - 0.5],
     ]);
     let edostep = 2 * gen[0] + gen[1];
     // Bright mid
@@ -131,10 +132,10 @@ export function generateNotation(mode: string): DiamondMosNotation {
       edostep += 2 * gen[0] + gen[1];
       monzo[0] += gen[0];
       monzo[1] += gen[1];
-      while (edostep >= period) {
-        edostep -= period;
-        monzo[0] -= equave[0];
-        monzo[1] -= equave[1];
+      while (edostep >= edoperiod) {
+        edostep -= edoperiod;
+        monzo[0] -= period[0];
+        monzo[1] -= period[1];
       }
       // Imperfect central
       basic.push([edostep, [monzo[0] - 0.5, monzo[1] + 0.5], false, undefined]);
@@ -151,7 +152,7 @@ export function generateNotation(mode: string): DiamondMosNotation {
     scale,
     degrees,
     equave,
-    period: [equave[0] / numPeriods, equave[1] / numPeriods],
+    period,
     brightGenerator: gen,
   };
 }
