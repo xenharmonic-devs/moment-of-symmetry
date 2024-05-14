@@ -49,6 +49,9 @@ describe('Moment of Symmetry step generator', () => {
       )
     );
   });
+  it('works for 5L 8s', () => {
+    expect(mos(5, 8)).toEqual([2, 3, 5, 6, 7, 9, 10, 12, 13, 14, 16, 17, 18]);
+  });
 });
 
 describe('Moment of Symmetry step generator with parent MOS', () => {

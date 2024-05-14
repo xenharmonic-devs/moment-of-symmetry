@@ -8,7 +8,7 @@ import {extendedEuclid, gcd} from 'xen-dev-utils';
  * modified as to always return the brightest mode.
  */
 export function bjorklund<T>(a: number, b: number, first: T, second: T): T[] {
-  return Array.from(bjorklundStr(a, b)).map(x => (x === '1' ? second : first));
+  return Array.from(bjorklundStr(a, b)).map(x => (x === 's' ? second : first));
 }
 
 /**
@@ -26,9 +26,9 @@ export function bjorklundStr(a: number, b: number): string {
     // The algorithm uses two subwords at each step, iteratively appending the
     // lexicographically second subword to the lexicographically first subword to ensure
     // that the lexicographically first mode is returned.
-    // Note that '0' is brighter; '0' < '1' in js.
-    let first = '0';
-    let second = '1';
+    // Note that 'L' is brighter; 'L' < 's' in js.
+    let first = 'L';
+    let second = 's';
     while (countSecond !== 1) {
       // Possibly after switching, are there more copies of `first` than `second`?
       // Then all the `second`s get appended to the first `countSecond` copies of `first`s,
@@ -190,7 +190,7 @@ export function mosGeneratorMonzo(l: number, s: number): [number, number] {
   const current: [number, number] = [0, 0];
   const euclidScale: [number, number][] = [current];
   for (const character of pattern) {
-    if (character === '1') {
+    if (character === 'L') {
       current[0] += 1;
     } else {
       current[1] += 1;

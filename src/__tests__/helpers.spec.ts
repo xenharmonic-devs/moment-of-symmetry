@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {bjorklund, modInv, bresenham, cumsum} from '../helpers';
+import {bjorklund, modInv, bresenham, cumsum, bjorklundStr} from '../helpers';
 import {gcd, mmod} from 'xen-dev-utils';
 
 describe('Modular inverse', () => {
@@ -40,6 +40,9 @@ describe("Björklund's algorithm", () => {
       }
     }
   });
+  it('works for 5L 8s', () => {
+    expect(bjorklundStr(5, 8)).toBe('LsLssLsLssLss');
+  });
 });
 
 describe('Bresenham line algorithm', () => {
@@ -68,5 +71,9 @@ describe('Bresenham line algorithm', () => {
         }
       }
     }
+  });
+
+  it('works for 5L 8s', () => {
+    expect(bresenham(5, 8, 'L', 's').join('')).toBe('LsLssLsLssLss');
   });
 });
