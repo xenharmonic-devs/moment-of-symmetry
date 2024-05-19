@@ -2,7 +2,7 @@ import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
 import {bjorklund, mosGeneratorMonzo} from './helpers';
-import {Fraction, fareyInterior, gcd, mmod} from 'xen-dev-utils';
+import {Fraction, dot, fareyInterior, gcd, mmod} from 'xen-dev-utils';
 
 export * from './hardness';
 export * from './names';
@@ -426,6 +426,45 @@ export function parentMos(
   return info;
 }
 
+export function mosScaleInfo(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number,
+  sizeOfLargeStep = 2,
+  sizeOfSmallStep = 1
+) {
+  const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+  const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+  const edo =
+    numberOfLargeSteps * sizeOfLargeStep + numberOfSmallSteps * sizeOfSmallStep;
+  const period = edo / numberOfPeriods;
+  const periodMonzo: [number, number] = [
+    numberOfLargeSteps / numberOfPeriods,
+    numberOfSmallSteps / numberOfPeriods,
+  ];
+  const brightGeneratorMonzo = mosGeneratorMonzo(...periodMonzo);
+  const brightGenerator = dot(brightGeneratorMonzo, [
+    sizeOfLargeStep,
+    sizeOfSmallStep,
+  ]);
+  const info: MosScaleInfo = {
+    numberOfLargeSteps,
+    numberOfSmallSteps,
+    sizeOfLargeStep,
+    sizeOfSmallStep,
+    edo,
+    numberOfPeriods,
+    period,
+    brightGenerator,
+    darkGenerator: period - brightGenerator,
+    periodMonzo,
+    brightGeneratorMonzo,
+    mosPattern,
+    hardness: getHardness(sizeOfLargeStep, sizeOfSmallStep),
+  };
+  Object.assign(info, tamnamsInfo(mosPattern));
+  return info;
+}
+
 export function daughterMos(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
@@ -443,18 +482,12 @@ export function daughterMos(
     sizeOfSmallStep = sizeOfLargeStep - sizeOfSmallStep;
     sizeOfLargeStep = temp;
   }
-
-  const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
-  const info = {
+  return mosScaleInfo(
     numberOfLargeSteps,
     numberOfSmallSteps,
     sizeOfLargeStep,
-    sizeOfSmallStep,
-    mosPattern,
-    hardness: getHardness(sizeOfLargeStep, sizeOfSmallStep),
-  };
-  Object.assign(info, tamnamsInfo(mosPattern));
-  return info;
+    sizeOfSmallStep
+  );
 }
 
 // One entry in the EDO map for each hardness class
@@ -560,6 +593,13 @@ export function anyForEdo(edo: number): MosScaleInfo {
       numberOfSmallSteps: 1,
       sizeOfLargeStep: 1,
       sizeOfSmallStep: 1,
+      edo,
+      numberOfPeriods: 1,
+      period: edo,
+      brightGenerator: 1,
+      darkGenerator: 1,
+      periodMonzo: [1, 1],
+      brightGeneratorMonzo: [1, 0],
       hardness: 'equalized',
       name: 'trivial',
       subset: false,
@@ -583,12 +623,30 @@ export function anyForEdo(edo: number): MosScaleInfo {
         ) {
           const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
           const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
-          const info = {
+          const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+          const period = edo / numberOfPeriods;
+          const periodMonzo: [number, number] = [
+            numberOfLargeSteps / numberOfPeriods,
+            numberOfSmallSteps / numberOfPeriods,
+          ];
+          const brightGeneratorMonzo = mosGeneratorMonzo(...periodMonzo);
+          const brightGenerator = dot(brightGeneratorMonzo, [
+            sizeOfLargeStep,
+            sizeOfSmallStep,
+          ]);
+          const info: MosScaleInfo = {
             mosPattern,
             numberOfLargeSteps,
             numberOfSmallSteps,
             sizeOfLargeStep,
             sizeOfSmallStep,
+            edo,
+            numberOfPeriods,
+            period,
+            brightGenerator,
+            darkGenerator: period - brightGenerator,
+            periodMonzo,
+            brightGeneratorMonzo,
             hardness,
           };
           Object.assign(info, tamnamsInfo(mosPattern));
@@ -647,13 +705,31 @@ export function allForEdo(
         ) {
           const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
           const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
-          const info = {
+          const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+          const period = edo / numberOfPeriods;
+          const periodMonzo: [number, number] = [
+            numberOfLargeSteps / numberOfPeriods,
+            numberOfSmallSteps / numberOfPeriods,
+          ];
+          const brightGeneratorMonzo = mosGeneratorMonzo(...periodMonzo);
+          const brightGenerator = dot(brightGeneratorMonzo, [
+            sizeOfLargeStep,
+            sizeOfSmallStep,
+          ]);
+          const info: MosScaleInfo = {
             mosPattern,
             numberOfLargeSteps,
             numberOfSmallSteps,
             sizeOfLargeStep,
             sizeOfSmallStep,
             hardness,
+            edo,
+            numberOfPeriods,
+            period,
+            brightGenerator,
+            darkGenerator: period - brightGenerator,
+            periodMonzo,
+            brightGeneratorMonzo,
           };
           Object.assign(info, tamnamsInfo(mosPattern));
           result.push(info);

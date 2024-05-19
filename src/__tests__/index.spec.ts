@@ -14,6 +14,7 @@ import {
   allForEdo,
   brightGeneratorMonzo,
   generatorRanges,
+  mosScaleInfo,
 } from '../index';
 
 describe('Bright generator calculator', () => {
@@ -428,6 +429,54 @@ describe('Daughter MOS finder', () => {
     const info = daughterMos(5, 2, 2, 1);
     expect(info.name).toBe('p-chromatic');
     expect(info.hardness).toBe('equalized');
+  });
+});
+
+describe('MOS scale information', () => {
+  it('knows everything about basic diatonic', () => {
+    const info = mosScaleInfo(5, 2);
+    expect(info).toEqual({
+      numberOfLargeSteps: 5,
+      numberOfSmallSteps: 2,
+      sizeOfLargeStep: 2,
+      sizeOfSmallStep: 1,
+      edo: 12,
+      numberOfPeriods: 1,
+      period: 12,
+      brightGenerator: 7,
+      darkGenerator: 5,
+      periodMonzo: [5, 2],
+      brightGeneratorMonzo: [3, 1],
+      mosPattern: '5L 2s',
+      hardness: 'basic',
+      name: 'diatonic',
+      prefix: 'dia',
+      abbreviation: 'dia',
+      familyPrefix: 'dia',
+    });
+  });
+
+  it('knows everything about semisoft ekic', () => {
+    const info = mosScaleInfo(6, 2, 5, 3);
+    expect(info).toEqual({
+      numberOfLargeSteps: 6,
+      numberOfSmallSteps: 2,
+      sizeOfLargeStep: 5,
+      sizeOfSmallStep: 3,
+      edo: 36,
+      numberOfPeriods: 2,
+      period: 18,
+      brightGenerator: 5,
+      darkGenerator: 13,
+      periodMonzo: [3, 1],
+      brightGeneratorMonzo: [1, 0],
+      mosPattern: '6L 2s',
+      hardness: 'semisoft',
+      name: 'ekic',
+      prefix: 'ek',
+      familyPrefix: 'eki',
+      abbreviation: 'ek',
+    });
   });
 });
 

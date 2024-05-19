@@ -48,6 +48,20 @@ export type MosScaleInfo = {
   sizeOfSmallStep: number;
   /** Name of the step size ratio or the name of the hardness range it belongs to. */
   hardness: string;
+  /** Octave/equave of the scale in EDO steps. */
+  edo: number;
+  /** Numper of periods per octave. */
+  numberOfPeriods: number;
+  /** Period of the scale in EDO steps. */
+  period: number;
+  /** Bright generator of the scale in EDO steps. */
+  brightGenerator: number;
+  /** Dark generator of the scale in EDO steps. */
+  darkGenerator: number;
+  /** Number of large and small steps in the period. */
+  periodMonzo: [number, number];
+  /** Number of large and small steps in the bright generator. */
+  brightGeneratorMonzo: [number, number];
   /** TAMNAMS name of the pattern. */
   name?: string;
   /** True if the pattern is a subset of a larger MOS pattern. */
