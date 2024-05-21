@@ -4,7 +4,7 @@ import {mosGeneratorMonzo} from './helpers';
 /**
  * Valid nominals for absolute pitches in [Diamond mos notation](https://en.xen.wiki/w/Diamond-mos_notation).
  */
-export type DiamondMosNominal =
+export type DiamondMosAlphabet =
   | 'J'
   | 'K'
   | 'L'
@@ -53,7 +53,7 @@ export type DiamondMosNotation = {
   /**
    * Counts of [L, s] steps for every available nominal with J at unison. Add equaves to reach other octaves.
    */
-  scale: Map<DiamondMosNominal, MosMonzo>;
+  scale: Map<string, MosMonzo>;
   /**
    * Interval of equivalence / octave.
    */
@@ -72,6 +72,45 @@ export type DiamondMosNotation = {
   brightGenerator: MosMonzo;
 };
 
+/** Single characters of valid nominals. */
+export const DIAMOND_MOS_ALPHABET: DiamondMosAlphabet[] = [
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
+];
+
+/**
+ * Obtain the 0-indexed nth generalized Diamond-mos nominal.
+ * @param n Index of the nominal.
+ * @returns A single character from J through Z or a multi-character string like 'JJ' starting from n = 17.
+ */
+export function nthNominal(n: number): string {
+  if (n < 0 || !Number.isInteger(n)) {
+    throw new Error('Invalid nominal index');
+  }
+  if (n >= DIAMOND_MOS_ALPHABET.length) {
+    return (
+      nthNominal(Math.floor(n / DIAMOND_MOS_ALPHABET.length) - 1) +
+      DIAMOND_MOS_ALPHABET[n % DIAMOND_MOS_ALPHABET.length]
+    );
+  }
+  return DIAMOND_MOS_ALPHABET[n];
+}
+
 /**
  * Generate configuration for [Diamond mos notation](https://en.xen.wiki/w/Diamond-mos_notation).
  *
@@ -80,13 +119,13 @@ export type DiamondMosNotation = {
  * @returns Configuration for notation software.
  */
 export function generateNotation(mode: string): DiamondMosNotation {
-  const scale = new Map<DiamondMosNominal, MosMonzo>();
-  let code = 'J'.charCodeAt(0);
+  const scale = new Map<string, MosMonzo>();
+  let i = 0;
   const monzo: MosMonzo = [0, 0];
   let hasLarge = false;
   let hasSmall = false;
   for (const character of mode) {
-    scale.set(String.fromCharCode(code++) as DiamondMosNominal, [...monzo]);
+    scale.set(nthNominal(i++), [...monzo]);
     if (character === 'L') {
       monzo[0]++;
       hasLarge = true;
@@ -99,9 +138,6 @@ export function generateNotation(mode: string): DiamondMosNotation {
   }
   if (!hasLarge || !hasSmall) {
     throw new Error("The scale must contain both 'L' and 's' steps.");
-  }
-  if (code > 'Z'.charCodeAt(0) + 1) {
-    throw new Error('Out of Diamond mos nominals.');
   }
   const equave: MosMonzo = [...monzo];
   const numPeriods = gcd(equave[0], equave[1]);

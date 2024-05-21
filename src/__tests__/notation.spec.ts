@@ -1,8 +1,24 @@
 import {describe, expect, it} from 'vitest';
-import {generateNotation} from '../notation';
+import {generateNotation, nthNominal} from '../notation';
 import {dot} from 'xen-dev-utils';
 
-describe('Diamond mos notation generator', () => {
+describe('Generalized Diamond-mos nominals', () => {
+  it('has 17 standard nominals', () => {
+    expect([...Array(17).keys()].map(nthNominal).join('')).toBe(
+      'JKLMNOPQRSTUVWXYZ'
+    );
+  });
+  it('has 289 two-character nominals', () => {
+    for (let i = 0; i < 289; ++i) {
+      expect(nthNominal(17 + i)).toHaveLength(2);
+    }
+  });
+  it('has JJJ as the first three-character nominal', () => {
+    expect(nthNominal(17 + 17 * 17)).toBe('JJJ');
+  });
+});
+
+describe('Diamond-mos notation generator', () => {
   it('generates the config for diatonic major', () => {
     const notation = generateNotation('LLsLLLs');
     const basic = [2, 1];
@@ -141,8 +157,13 @@ describe('Diamond mos notation generator', () => {
     expect(scale.has('Z')).toBe(true);
   });
 
-  it('rejects above nominal Z', () => {
-    expect(() => generateNotation('LsLsLsLsLsLsLsLsLs')).toThrow();
+  it('accepts above nominal Z', () => {
+    const {scale} = generateNotation('LsLsLsLsLsLsLsLsLs');
+    expect(scale.has('J')).toBe(true);
+    expect(scale.has('Z')).toBe(true);
+    expect(scale.has('JJ')).toBe(true);
+    expect(scale.has('JK')).toBe(false);
+    expect(scale.has('KJ')).toBe(false);
   });
 
   it('it rejects all L', () => {
