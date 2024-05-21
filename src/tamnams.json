@@ -553,5 +553,15 @@
     "41L 12s":
     {
         "name": "pythomerc"
+    },
+    "420L 69s":
+    {
+        "name": "memic",
+        "prefix": "meme"
+    },
+    "69L 420s":
+    {
+        "name": "antimemic",
+        "prefix": "funi"
     }
 }
