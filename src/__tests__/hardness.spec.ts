@@ -24,4 +24,26 @@ describe('Hardness namer', () => {
     expect(getHardness(3.1, 1.0)).toBe('parahard');
     expect(getHardness(4.1, 1.0)).toBe('ultrahard');
   });
+
+  it('has a non-standard name for 0:0', () => {
+    expect(getHardness(0, 0)).toBe('stationary');
+  });
+
+  it('ignores scale direction', () => {
+    expect(getHardness(-2, -1)).toBe('basic');
+  });
+
+  it('has a prefix for 0 < hardness < 1', () => {
+    expect(getHardness(1, 2)).toBe('anti-basic');
+  });
+
+  it('has a prefix for -1 < hardness < 0', () => {
+    expect(getHardness(-1, 2)).toBe('trans-anti-basic');
+    expect(getHardness(1, -2)).toBe('trans-anti-basic');
+  });
+
+  it('has a prefix for hardness < -1', () => {
+    expect(getHardness(-2, 1)).toBe('trans-basic');
+    expect(getHardness(2, -1)).toBe('trans-basic');
+  });
 });

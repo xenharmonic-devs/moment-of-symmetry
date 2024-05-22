@@ -28,23 +28,22 @@ const HARDNESS_RANGES: [string, number, number][] = [
  * @returns Name of the step ratio or the name of the hardness range it belongs to.
  */
 export function getHardness(sizeOfLargeStep: number, sizeOfSmallStep: number) {
-  let l = sizeOfLargeStep;
-  let s = sizeOfSmallStep;
+  // Non-standard
+  if (!sizeOfLargeStep && !sizeOfSmallStep) {
+    return 'stationary';
+  }
+  const sign = sizeOfLargeStep * sizeOfSmallStep;
+  let l = Math.abs(sizeOfLargeStep);
+  let s = Math.abs(sizeOfSmallStep);
   let prefix = '';
-  // Non-standard
-  if (l < 0) {
-    prefix = 'quasi-' + prefix;
-    l = -l;
-  }
-  // Non-standard
-  if (s < 0) {
-    prefix = 'pseudo-' + prefix;
-    s = -s;
-  }
   // Standard
   if (s > l) {
     prefix = 'anti-' + prefix;
     [l, s] = [s, l];
+  }
+  // Non-standard
+  if (sign < 0) {
+    prefix = 'trans-' + prefix;
   }
   for (let i = 0; i < HARDNESS_RATIOS.length; ++i) {
     const [name, large, small] = HARDNESS_RATIOS[i];
