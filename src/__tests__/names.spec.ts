@@ -120,6 +120,11 @@ describe('MOS pattern namer', () => {
     const {name} = tamnamsInfo('1L 21s')!;
     expect(name).toBe('antiescapist');
   });
+
+  it('knows about p-chro escapist', () => {
+    const {name} = tamnamsInfo('21L 22s')!;
+    expect(name).toBe('p-chro escapist');
+  });
 });
 
 describe('Mode namer', () => {

@@ -28,22 +28,7 @@ function isRootScale(countL: number, countS: number) {
     return true;
   }
 
-  if (countL < countS) {
-    [countL, countS] = [countS, countL];
-  }
-
-  if (
-    (countL === 7 && countS === 5) || // mellow / pychro
-    (countL === 12 && countS === 5) || // pyen / supen
-    (countL === 12 && countS === 7) || // flaen / meen
-    (countL === 13 && countS === 1) || // tro / antro
-    (countL === 15 && countS === 2) || // alisa / lisa
-    (countL === 19 && countS === 3) // kai / zheli
-  ) {
-    return true;
-  }
-
-  return false;
+  return `${countL}L ${countS}s` in TAMNAMS_MOS_NAMES;
 }
 
 /**
