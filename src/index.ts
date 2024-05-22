@@ -1,7 +1,7 @@
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
-import {bjorklund, mosGeneratorMonzo} from './helpers';
+import {bjorklund, bjorklundStr, mosGeneratorMonzo} from './helpers';
 import {Fraction, dot, fareyInterior, gcd, mmod} from 'xen-dev-utils';
 
 export * from './hardness';
@@ -106,6 +106,45 @@ function getDown(options: ModeInfoOptions, period: number, numPeriods: number) {
 }
 
 /**
+ * Obtain an abstract string like 'LLsLLLs' corresponding to the mode specified.
+ * @param numberOfLargeSteps Number of large steps in the MOS pattern.
+ * @param numberOfSmallSteps Number of small steps in the MOS pattern.
+ * @param options Options for brightness of the scale.
+ * @returns String with the given number of 'L' and 's' characters in the specified mode.
+ */
+export function stepString(
+  numberOfLargeSteps: number,
+  numberOfSmallSteps: number,
+  options?: BaseOptions
+) {
+  if (!numberOfLargeSteps) {
+    return 's'.repeat(numberOfSmallSteps);
+  }
+  if (!numberOfSmallSteps) {
+    return 'L'.repeat(numberOfLargeSteps);
+  }
+  options ??= {};
+  const brightest = bjorklundStr(numberOfLargeSteps, numberOfSmallSteps);
+  let mode = brightest;
+  const modes = [];
+  while (true) {
+    modes.push(mode);
+    mode = mode.slice(1) + mode[0];
+    if (mode === brightest) {
+      break;
+    }
+  }
+  // Lexicographic order corresponds to brightness.
+  modes.sort();
+
+  const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
+  const period = (numberOfLargeSteps + numberOfSmallSteps) / numPeriods;
+
+  const brightGeneratorsDown = getDown(options, period, numPeriods);
+  return modes[brightGeneratorsDown / numPeriods];
+}
+
+/**
  * Generate MOS pattern as a subset of an EDO.
  * @param numberOfLargeSteps Number of large steps in the MOS pattern.
  * @param numberOfSmallSteps Number of small steps in the MOS pattern.
@@ -117,35 +156,20 @@ export function mos(
   numberOfSmallSteps: number,
   options?: MosOptions
 ) {
-  options ??= {};
-  const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
-  const period = (numberOfLargeSteps + numberOfSmallSteps) / numPeriods;
+  const abstract = stepString(numberOfLargeSteps, numberOfSmallSteps, options);
+  const sizeOfLargeStep = options?.sizeOfLargeStep ?? 2;
+  const sizeOfSmallStep = options?.sizeOfSmallStep ?? 1;
 
-  const sizeOfLargeStep = options.sizeOfLargeStep ?? 2;
-  const sizeOfSmallStep = options.sizeOfSmallStep ?? 1;
-
-  const brightGeneratorsDown = getDown(options, period, numPeriods);
-
-  const l = numberOfLargeSteps / numPeriods;
-  const s = numberOfSmallSteps / numPeriods;
-  const d = brightGeneratorsDown / numPeriods;
-  const p = l * sizeOfLargeStep + s * sizeOfSmallStep;
-
-  const gMonzo = mosGeneratorMonzo(l, s);
-  const g = gMonzo[0] * sizeOfLargeStep + gMonzo[1] * sizeOfSmallStep;
-
-  const base: number[] = [];
-  for (let i = 0; i < period; ++i) {
-    base.push(mmod((i - d) * g, p));
+  let step = 0;
+  const result: number[] = [];
+  for (const character of abstract) {
+    if (character === 'L') {
+      step += sizeOfLargeStep;
+    } else {
+      step += sizeOfSmallStep;
+    }
+    result.push(step);
   }
-  base.sort((a, b) => a - b);
-  let result = base;
-  for (let i = 1; i < numPeriods; ++i) {
-    result = result.concat(base.map(s => s + i * p));
-  }
-  result.shift();
-  result.push(numPeriods * p);
-
   return result;
 }
 

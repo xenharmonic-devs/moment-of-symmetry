@@ -53,6 +53,6 @@
     "bench": "vitest bench"
   },
   "dependencies": {
-    "xen-dev-utils": "^0.7.0"
+    "xen-dev-utils": "^0.8.0"
   }
 }

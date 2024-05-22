@@ -15,6 +15,7 @@ import {
   brightGeneratorMonzo,
   generatorRanges,
   mosScaleInfo,
+  stepString,
 } from '../index';
 
 describe('Bright generator calculator', () => {
@@ -23,6 +24,20 @@ describe('Bright generator calculator', () => {
     expect(numLarge).toBe(3);
     expect(numSmall).toBe(1);
     expect(2 * numLarge + 1 * numSmall).toBe(7);
+  });
+});
+
+describe('Abstract step string generator', () => {
+  it('produces lydian for 5L 2s', () => {
+    expect(stepString(5, 2)).toBe('LLLsLLs');
+  });
+
+  it("produces lemon's second brightest", () => {
+    expect(stepString(6, 4, {down: 2})).toBe('LsLLsLsLLs');
+  });
+
+  it('is resistant to bad inputs', () => {
+    expect(stepString(5, 0)).toBe('LLLLL');
   });
 });
 
@@ -52,6 +67,19 @@ describe('Moment of Symmetry step generator', () => {
   });
   it('works for 5L 8s', () => {
     expect(mos(5, 8)).toEqual([2, 3, 5, 6, 7, 9, 10, 12, 13, 14, 16, 17, 18]);
+  });
+  it('works with collapsed hardness', () => {
+    expect(mos(5, 2, {sizeOfLargeStep: 1, sizeOfSmallStep: 0})).toEqual([
+      1, 2, 3, 3, 4, 5, 5,
+    ]);
+  });
+  it('works with negative hardness', () => {
+    expect(mos(5, 2, {sizeOfSmallStep: -1})).toEqual([2, 4, 6, 5, 7, 9, 8]);
+  });
+  it('works with a descending scale', () => {
+    expect(
+      mos(5, 2, {sizeOfLargeStep: -2, sizeOfSmallStep: -1, down: 1})
+    ).toEqual([-2, -4, -5, -7, -9, -11, -12]);
   });
 });
 
