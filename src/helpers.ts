@@ -1,7 +1,7 @@
 /**
  * Internal helper functions not intended to be published.
  */
-import {extendedEuclid, gcd} from 'xen-dev-utils';
+import {gcd, modInv} from 'xen-dev-utils';
 
 /**
  * Distribute subsequences as evenly as possible using Björklund's algorithm;
@@ -90,21 +90,6 @@ export function bresenham<T>(a: number, b: number, first: T, second: T): T[] {
     return Array(d)
       .fill(bresenham(a / d, b / d, first, second))
       .flat();
-  }
-}
-
-/**
- * Find the modular inverse of a mod b, provided gcd(a,b) == 1.
- */
-export function modInv(a: number, b: number): number {
-  const ee = extendedEuclid(a, b);
-  const {gcd, coefA} = ee;
-  if (gcd === 1) {
-    return ((coefA % b) + b) % b; // to ensure remainder is always in {0, 1, ..., b-1}
-  } else {
-    throw new Error(
-      '`a` does not have a modular inverse mod `b` since `a` and `b` are not coprime'
-    );
   }
 }
 
