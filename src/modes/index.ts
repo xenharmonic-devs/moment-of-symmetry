@@ -1,7 +1,5 @@
-import {ModeInfo, ModeInfoOptions, MosPattern} from '../types';
-import {createMosPattern} from '../core/pattern';
-import {tamnamsInfo, modeName} from '../names';
-import {gcd} from 'xen-dev-utils';
+import { MosPattern, ModeInfo } from '../types';
+import { tamnamsInfo, modeName } from '../names';
 
 /**
  * Get information about a mode
@@ -9,7 +7,10 @@ import {gcd} from 'xen-dev-utils';
  * @param options Optional configuration
  * @returns Information about the mode
  */
-export function getModeInfo(pattern: MosPattern, options?: { extraNames?: boolean }): ModeInfo {
+export function getModeInfo(
+  pattern: MosPattern,
+  options?: {extraNames?: boolean}
+): ModeInfo {
   const info = tamnamsInfo(pattern.pattern) ?? {};
   const name = modeName(pattern.pattern, options?.extraNames) ?? pattern.pattern;
   
@@ -26,7 +27,10 @@ export function getModeInfo(pattern: MosPattern, options?: { extraNames?: boolea
  * @param options Optional configuration
  * @returns Array of mode information
  */
-export function getAllModes(pattern: MosPattern, options?: { extraNames?: boolean }): ModeInfo[] {
+export function getAllModes(
+  pattern: MosPattern,
+  options?: {extraNames?: boolean}
+): ModeInfo[] {
   const modes: ModeInfo[] = [];
   const patternStr = pattern.pattern;
   
@@ -51,11 +55,13 @@ export function getAllModes(pattern: MosPattern, options?: { extraNames?: boolea
  * @returns The parent MOS pattern
  */
 export function getParentPattern(pattern: MosPattern): MosPattern {
-  const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+  const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
   const periods = gcd(pattern.largeSteps, pattern.smallSteps);
   
   if (periods === 1) {
-    throw new Error('Pattern has no parent (it is already a single-period MOS)');
+    throw new Error(
+      'Pattern has no parent (it is already a single-period MOS)'
+    );
   }
 
   const parentLargeSteps = pattern.largeSteps / periods;
@@ -78,8 +84,15 @@ export function getDaughterPatterns(pattern: MosPattern): MosPattern[] {
   const daughters: MosPattern[] = [];
 
   // For each possible number of periods
-  for (let periods = 2; periods <= Math.min(pattern.largeSteps, pattern.smallSteps); periods++) {
-    if (pattern.largeSteps % periods === 0 && pattern.smallSteps % periods === 0) {
+  for (
+    let periods = 2;
+    periods <= Math.min(pattern.largeSteps, pattern.smallSteps);
+    periods++
+  ) {
+    if (
+      pattern.largeSteps % periods === 0 &&
+      pattern.smallSteps % periods === 0
+    ) {
       const daughterLargeSteps = pattern.largeSteps / periods;
       const daughterSmallSteps = pattern.smallSteps / periods;
       

@@ -1,11 +1,10 @@
 import {gcd} from 'xen-dev-utils';
-import {bjorklund, bjorklundStr} from './bjorklund';
+import {bjorklundStr} from './bjorklund';
 import {
   BaseOptions,
   MosPattern,
   MosScale,
-  InvalidParametersError,
-  InvalidModeError
+  InvalidParametersError
 } from '../types';
 
 /**
