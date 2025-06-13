@@ -110,22 +110,3 @@ export function getDaughterPatterns(pattern: MosPattern): MosPattern[] {
 
   return daughters;
 }
-
-/**
- * Split a MOS pattern string into large and small steps
- * @param pattern The MOS pattern string
- * @returns Object containing the number of large and small steps
- */
-function splitMosPattern(pattern: string): {
-  largeSteps: number;
-  smallSteps: number;
-} {
-  const largeSteps = (pattern.match(/L/g) || []).length;
-  const smallSteps = (pattern.match(/s/g) || []).length;
-
-  if (largeSteps + smallSteps !== pattern.length) {
-    throw new Error('Invalid MOS pattern: must only contain L and s');
-  }
-
-  return {largeSteps, smallSteps};
-}
