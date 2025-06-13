@@ -166,17 +166,6 @@ describe('EDO Scale Generation', () => {
     const invalidScales = scales.filter(
       s => !allowedHardness.includes(s.hardness)
     );
-    if (invalidScales.length > 0) {
-      console.log(
-        'Invalid scales:',
-        invalidScales.map(s => ({
-          pattern: s.mosPattern,
-          hardness: s.hardness,
-          largeStep: s.sizeOfLargeStep,
-          smallStep: s.sizeOfSmallStep,
-        }))
-      );
-    }
     expect(invalidScales.length).toBe(0);
   });
 });
