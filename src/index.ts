@@ -1,14 +1,27 @@
+// Re-export types
+export * from './types';
+
+// Re-export core functionality
+export * from './core/pattern';
+export * from './core/bjorklund';
+
+// Re-export EDO functionality
+export * from './edo';
+
+// Re-export mode functionality
+export * from './modes';
+
+// Re-export other modules
+export * from './hardness';
+export * from './names';
+export * from './generator-ratio';
+export * from './notation';
+
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
 import {bjorklund, bjorklundStr, mosGeneratorMonzo} from './helpers';
 import {Fraction, dot, fareyInterior, gcd, mmod} from 'xen-dev-utils';
-
-export * from './hardness';
-export * from './names';
-export * from './generator-ratio';
-export * from './info';
-export * from './notation';
 
 /**
  * Parameters for various function.
