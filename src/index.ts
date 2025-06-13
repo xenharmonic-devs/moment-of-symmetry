@@ -17,55 +17,16 @@ export * from './names';
 export * from './generator-ratio';
 export * from './notation';
 
+// Explicitly export types for documentation
+export type { MosScaleInfo, RangeInfo, ModeInfo as InfoModeInfo, MosInfo, ScaleInfo } from './info';
+export type { BaseOptions, ModeInfo } from './types';
+
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
 import {bjorklund, bjorklundStr, mosGeneratorMonzo} from './helpers';
 import {Fraction, dot, fareyInterior, gcd, mmod} from 'xen-dev-utils';
-
-/**
- * Parameters for various function.
- */
-export type BaseOptions = {
-  /** How many bright generators to go downwards. Also the number of small/minor intervals in the resulting scale. Default = 0. */
-  down?: number;
-  /** How many bright generators to go upwards. Also the number of large/major intervals in the resulting scale. Defaults to the maximum possible. */
-  up?: number;
-};
-
-/**
- * Parameters for the {@link modeInfo} function.
- */
-export interface ModeInfoOptions extends BaseOptions {
-  /** If true adds extra mode names in parenthesis such as Ionian (Major). */
-  extraNames?: boolean;
-}
-
-/**
- * Parameters for the {@link mos} function.
- */
-export interface MosOptions extends BaseOptions {
-  /** Size of the large step. Default = 2.*/
-  sizeOfLargeStep?: number;
-  /** Size of small step. Default = 1. */
-  sizeOfSmallStep?: number;
-}
-
-/**
- * Parameters for the {@link mosWithParent} function.
- */
-export interface MosWithParentOptions extends MosOptions {
-  /** How the main scale relates to the parent. Defaults to 'sharp'. */
-  accidentals?: 'flat' | 'sharp';
-}
-
-/**
- * Parameters for the {@link mosWithDaughter} function.
- */
-export interface MosWithDaughterOptions extends MosOptions {
-  /** How the daughter scale(s) relates to the main scale. Defaults to 'sharp'. */
-  accidentals?: 'flat' | 'sharp' | 'both';
-}
+import { ModeInfoOptions, MosOptions, MosWithParentOptions, MosWithDaughterOptions, BaseOptions } from './types';
 
 /**
  * Produce an array of booleans that is mixed as evenly as possible.

@@ -47,7 +47,7 @@
     "pretest": "npm run compile",
     "posttest": "npm run lint",
     "test": "vitest",
-    "doc": "typedoc src/index.ts . --name moment-of-symmetry",
+    "doc": "typedoc --entryPointStrategy expand src/index.ts --name moment-of-symmetry",
     "pretamnams-extension": "npm run compile",
     "tamnams-extension": "node dist/scripts/tamnams-extension",
     "bench": "vitest bench"
