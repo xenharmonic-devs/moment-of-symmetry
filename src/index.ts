@@ -18,15 +18,27 @@ export * from './generator-ratio';
 export * from './notation';
 
 // Explicitly export types for documentation
-export type { MosScaleInfo, RangeInfo, ModeInfo as InfoModeInfo, MosInfo, ScaleInfo } from './info';
-export type { BaseOptions, ModeInfo } from './types';
+export type {
+  MosScaleInfo,
+  RangeInfo,
+  ModeInfo as InfoModeInfo,
+  MosInfo,
+  ScaleInfo,
+} from './info';
+export type {BaseOptions, ModeInfo} from './types';
 
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
 import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
 import {bjorklund, bjorklundStr, mosGeneratorMonzo} from './helpers';
 import {Fraction, dot, fareyInterior, gcd, mmod} from 'xen-dev-utils';
-import { ModeInfoOptions, MosOptions, MosWithParentOptions, MosWithDaughterOptions, BaseOptions } from './types';
+import {
+  ModeInfoOptions,
+  MosOptions,
+  MosWithParentOptions,
+  MosWithDaughterOptions,
+  BaseOptions,
+} from './types';
 
 /**
  * Produce an array of booleans that is mixed as evenly as possible.
