@@ -22,13 +22,15 @@ export function mosInEdo(
     throw new Error('Number of steps must be non-negative');
   }
 
-  const sizeOfLargeStep = options?.sizeOfLargeStep ?? Math.floor(edo / (largeSteps + smallSteps));
-  const sizeOfSmallStep = options?.sizeOfSmallStep ?? Math.floor(edo / (largeSteps + smallSteps));
+  const sizeOfLargeStep =
+    options?.sizeOfLargeStep ?? Math.floor(edo / (largeSteps + smallSteps));
+  const sizeOfSmallStep =
+    options?.sizeOfSmallStep ?? Math.floor(edo / (largeSteps + smallSteps));
 
   return createMosScale(largeSteps, smallSteps, {
     ...options,
     sizeOfLargeStep,
-    sizeOfSmallStep
+    sizeOfSmallStep,
   });
 }
 
@@ -58,7 +60,7 @@ export function mosInEdoWithParent(
 
   return {
     ...scale,
-    parentMap
+    parentMap,
   };
 }
 
@@ -88,7 +90,7 @@ export function mosInEdoWithDaughter(
 
   return {
     ...scale,
-    daughterMap
+    daughterMap,
   };
 }
 
@@ -119,7 +121,10 @@ export function findAllMosInEdo(
 
       try {
         const scale = mosInEdo(edo, largeSteps, smallSteps);
-        if (!maxHardness || scale.sizeOfLargeStep / scale.sizeOfSmallStep <= maxHardness) {
+        if (
+          !maxHardness ||
+          scale.sizeOfLargeStep / scale.sizeOfSmallStep <= maxHardness
+        ) {
           result.push(scale);
         }
       } catch (error) {
@@ -130,4 +135,4 @@ export function findAllMosInEdo(
   }
 
   return result;
-} 
+}

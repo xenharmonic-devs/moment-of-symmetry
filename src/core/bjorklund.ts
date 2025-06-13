@@ -30,7 +30,7 @@ export function bjorklund<T>(
   const groups: number[][] = [];
   const counts: number[] = [];
   let remaining = numberOfTrue + numberOfFalse;
-  let groupSize = Math.ceil(remaining / numberOfTrue);
+  const groupSize = Math.ceil(remaining / numberOfTrue);
 
   while (remaining > 0) {
     const currentGroup = Math.min(groupSize, remaining);
@@ -87,6 +87,9 @@ export function bjorklund<T>(
  * @param numberOfSmall Number of small steps
  * @returns String of evenly distributed 'L' and 's' characters
  */
-export function bjorklundStr(numberOfLarge: number, numberOfSmall: number): string {
+export function bjorklundStr(
+  numberOfLarge: number,
+  numberOfSmall: number
+): string {
   return bjorklund(numberOfLarge, numberOfSmall, 'L', 's').join('');
-} 
+}

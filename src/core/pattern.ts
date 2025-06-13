@@ -4,20 +4,26 @@ import {
   BaseOptions,
   MosPattern,
   MosScale,
-  InvalidParametersError
+  InvalidParametersError,
 } from '../types';
 
 /**
  * Calculate the number of periods in a MOS pattern
  */
-export function calculatePeriods(largeSteps: number, smallSteps: number): number {
+export function calculatePeriods(
+  largeSteps: number,
+  smallSteps: number
+): number {
   return gcd(largeSteps, smallSteps);
 }
 
 /**
  * Calculate the period size of a MOS pattern
  */
-export function calculatePeriodSize(largeSteps: number, smallSteps: number): number {
+export function calculatePeriodSize(
+  largeSteps: number,
+  smallSteps: number
+): number {
   const periods = calculatePeriods(largeSteps, smallSteps);
   return (largeSteps + smallSteps) / periods;
 }
@@ -25,17 +31,23 @@ export function calculatePeriodSize(largeSteps: number, smallSteps: number): num
 /**
  * Get the number of bright generators to go down based on options
  */
-export function getDown(options: BaseOptions, period: number, numPeriods: number): number {
+export function getDown(
+  options: BaseOptions,
+  period: number,
+  numPeriods: number
+): number {
   let down = 0;
   if (options.up !== undefined) {
     down = period * numPeriods - numPeriods - options.up;
     if (options.down !== undefined && down !== options.down) {
-      throw new InvalidParametersError('Incompatible up and down with the scale size');
+      throw new InvalidParametersError(
+        'Incompatible up and down with the scale size'
+      );
     }
   } else if (options.down !== undefined) {
     down = options.down;
   }
-  
+
   if (down < 0) {
     throw new InvalidParametersError('Down must not be negative');
   }
@@ -43,9 +55,11 @@ export function getDown(options: BaseOptions, period: number, numPeriods: number
     throw new InvalidParametersError('Up must not be negative');
   }
   if (down % numPeriods !== 0) {
-    throw new InvalidParametersError('Up/down must be divisible by the number of periods');
+    throw new InvalidParametersError(
+      'Up/down must be divisible by the number of periods'
+    );
   }
-  
+
   return down;
 }
 
@@ -67,7 +81,7 @@ export function generatePattern(
   const brightest = bjorklundStr(largeSteps, smallSteps);
   const modes: string[] = [];
   let mode = brightest;
-  
+
   while (true) {
     modes.push(mode);
     mode = mode.slice(1) + mode[0];
@@ -75,14 +89,14 @@ export function generatePattern(
       break;
     }
   }
-  
+
   // Lexicographic order corresponds to brightness
   modes.sort();
 
   const numPeriods = calculatePeriods(largeSteps, smallSteps);
   const period = calculatePeriodSize(largeSteps, smallSteps);
   const brightGeneratorsDown = getDown(options ?? {}, period, numPeriods);
-  
+
   return modes[brightGeneratorsDown / numPeriods];
 }
 
@@ -96,7 +110,7 @@ export function generateScale(
 ): number[] {
   let step = 0;
   const result: number[] = [];
-  
+
   for (const character of pattern) {
     if (character === 'L') {
       step += sizeOfLargeStep;
@@ -105,7 +119,7 @@ export function generateScale(
     }
     result.push(step);
   }
-  
+
   return result;
 }
 
@@ -119,12 +133,12 @@ export function createMosPattern(
 ): MosPattern {
   const periods = calculatePeriods(largeSteps, smallSteps);
   const pattern = generatePattern(largeSteps, smallSteps, options);
-  
+
   return {
     largeSteps,
     smallSteps,
     pattern,
-    periods
+    periods,
   };
 }
 
@@ -142,11 +156,15 @@ export function createMosScale(
   const mosPattern = createMosPattern(largeSteps, smallSteps, options);
   const sizeOfLargeStep = options?.sizeOfLargeStep ?? 2;
   const sizeOfSmallStep = options?.sizeOfSmallStep ?? 1;
-  
+
   return {
     ...mosPattern,
-    degrees: generateScale(mosPattern.pattern, sizeOfLargeStep, sizeOfSmallStep),
+    degrees: generateScale(
+      mosPattern.pattern,
+      sizeOfLargeStep,
+      sizeOfSmallStep
+    ),
     sizeOfLargeStep,
-    sizeOfSmallStep
+    sizeOfSmallStep,
   };
-} 
+}

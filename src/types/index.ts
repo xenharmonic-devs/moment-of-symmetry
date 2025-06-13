@@ -124,4 +124,4 @@ export interface ModeInfo {
   familyPrefix?: string;
   /** Optional subset flag */
   subset?: boolean;
-} 
+}
