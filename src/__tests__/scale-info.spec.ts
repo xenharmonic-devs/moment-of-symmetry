@@ -142,20 +142,40 @@ describe('EDO Scale Generation', () => {
 
   it('respects size constraints in allForEdo', () => {
     const scales = allForEdo(12, 5, 7);
-    expect(scales.every(s => s.numberOfLargeSteps + s.numberOfSmallSteps >= 5 && s.numberOfLargeSteps + s.numberOfSmallSteps <= 7)).toBe(true);
+    expect(
+      scales.every(
+        s =>
+          s.numberOfLargeSteps + s.numberOfSmallSteps >= 5 &&
+          s.numberOfLargeSteps + s.numberOfSmallSteps <= 7
+      )
+    ).toBe(true);
   });
 
   it('respects hardness constraints in allForEdo', () => {
     const scales = allForEdo(12, 2, 12, 2);
-    const allowedHardness = ['equalized', 'supersoft', 'soft', 'semisoft', 'basic', 'semihard', 'hard', 'parasoft'];
-    const invalidScales = scales.filter(s => !allowedHardness.includes(s.hardness));
+    const allowedHardness = [
+      'equalized',
+      'supersoft',
+      'soft',
+      'semisoft',
+      'basic',
+      'semihard',
+      'hard',
+      'parasoft',
+    ];
+    const invalidScales = scales.filter(
+      s => !allowedHardness.includes(s.hardness)
+    );
     if (invalidScales.length > 0) {
-      console.log('Invalid scales:', invalidScales.map(s => ({
-        pattern: s.mosPattern,
-        hardness: s.hardness,
-        largeStep: s.sizeOfLargeStep,
-        smallStep: s.sizeOfSmallStep
-      })));
+      console.log(
+        'Invalid scales:',
+        invalidScales.map(s => ({
+          pattern: s.mosPattern,
+          hardness: s.hardness,
+          largeStep: s.sizeOfLargeStep,
+          smallStep: s.sizeOfSmallStep,
+        }))
+      );
     }
     expect(invalidScales.length).toBe(0);
   });
@@ -164,21 +184,29 @@ describe('EDO Scale Generation', () => {
 describe('Generator Ranges', () => {
   it('generates valid ranges for size 7', () => {
     const ranges = generatorRanges(7);
-    const has52 = ranges.some(r => r.numberOfLargeSteps === 5 && r.numberOfSmallSteps === 2);
-    const has43 = ranges.some(r => r.numberOfLargeSteps === 4 && r.numberOfSmallSteps === 3);
+    const has52 = ranges.some(
+      r => r.numberOfLargeSteps === 5 && r.numberOfSmallSteps === 2
+    );
+    const has43 = ranges.some(
+      r => r.numberOfLargeSteps === 4 && r.numberOfSmallSteps === 3
+    );
     expect(has52).toBe(true);
     expect(has43).toBe(true);
   });
 
   it('includes multi-period scales when requested', () => {
     const ranges = generatorRanges(6, true);
-    const has42 = ranges.some(r => r.numberOfLargeSteps === 4 && r.numberOfSmallSteps === 2);
+    const has42 = ranges.some(
+      r => r.numberOfLargeSteps === 4 && r.numberOfSmallSteps === 2
+    );
     expect(has42).toBe(true);
   });
 
   it('excludes multi-period scales by default', () => {
     const ranges = generatorRanges(6);
-    const has42 = ranges.some(r => r.numberOfLargeSteps === 4 && r.numberOfSmallSteps === 2);
+    const has42 = ranges.some(
+      r => r.numberOfLargeSteps === 4 && r.numberOfSmallSteps === 2
+    );
     expect(has42).toBe(false);
   });
-}); 
+});
