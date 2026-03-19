@@ -26,11 +26,15 @@ mos(3, 4);  // [2, 3,  5, 6, 8, 9, 10]
 
 Generate a diatonic (5L 2s) scale as a subset of 31edo. The large step is 5 edo-steps while the small step is 3 edo-steps.
 ```typescript
+import {mos} from 'moment-of-symmetry';
+
 mos(5, 2, {sizeOfLargeStep: 5, sizeOfSmallStep: 3, down: 1});  // [5, 10, 13, 18, 23, 28, 31]
 ```
 
 Generate the whole chromatic scale in 12edo with a diatonic scale marked by `'parent'` values.
 ```typescript
+import {mosWithDaughter} from 'moment-of-symmetry';
+
 mosWithDaughter(5, 2);
 /*
   Map(12) {
@@ -52,6 +56,8 @@ mosWithDaughter(5, 2);
 
 Generate the whole chromatic scale in 17edo.
 ```typescript
+import {mosWithDaughter} from 'moment-of-symmetry';
+
 mosWithDaughter(5, 2, {sizeOfLargeStep: 3, accidentals: 'both'});
 /*
   Map(17) {
@@ -78,6 +84,8 @@ mosWithDaughter(5, 2, {sizeOfLargeStep: 3, accidentals: 'both'});
 
 Get information about the modes of smitonic (4L 3s).
 ```typescript
+import {mosModes} from 'moment-of-symmetry';
+
 mosModes(4, 3);
 /*
   [
@@ -102,6 +110,8 @@ mosModes(4, 3);
 
 Get an array of the MOS patterns of the Pythagorean temperament.
 ```typescript
+import {mosPatterns} from 'moment-of-symmetry';
+
 mosPatterns(Math.log2(3/2));
 /*
   [
