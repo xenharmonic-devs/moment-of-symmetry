@@ -32,11 +32,11 @@
   ],
   "types": "dist/src/index.d.ts",
   "devDependencies": {
-    "@types/node": "^20.19.37",
-    "gts": "^5.3.1",
-    "typedoc": "^0.25.13",
-    "typescript": "^5.4.5",
-    "vitest": "^3.2.4"
+    "@types/node": "^25.5.0",
+    "gts": "^7.0.0",
+    "typedoc": "^0.28.17",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
   },
   "scripts": {
     "lint": "gts lint",
@@ -47,7 +47,7 @@
     "pretest": "npm run compile",
     "posttest": "npm run lint",
     "test": "vitest",
-    "doc": "typedoc src/index.ts . --name moment-of-symmetry",
+    "doc": "typedoc src/index.ts --name moment-of-symmetry",
     "pretamnams-extension": "npm run compile",
     "tamnams-extension": "node dist/scripts/tamnams-extension",
     "bench": "vitest bench"

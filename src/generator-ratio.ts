@@ -21,7 +21,7 @@ function wrapGeneratorPerPeriod(x: number | Fraction) {
 export function mosForms(
   generatorPerPeriod: number | Fraction,
   maxSize?: number,
-  maxLength?: number
+  maxLength?: number,
 ) {
   if (maxLength !== undefined) {
     maxLength += 2;
@@ -32,7 +32,7 @@ export function mosForms(
     maxSize,
     maxLength,
     true,
-    true
+    true,
   );
   // Get rid of the first two
   convergents.shift();
@@ -50,10 +50,10 @@ export function mosForms(
 export function mosSizes(
   generatorPerPeriod: number | Fraction,
   maxSize?: number,
-  maxLength?: number
+  maxLength?: number,
 ) {
   return mosForms(generatorPerPeriod, maxSize, maxLength).map(
-    convergent => convergent.d
+    convergent => convergent.d,
   );
 }
 
@@ -99,15 +99,15 @@ export function isBright(generatorPerPeriod: number | Fraction, size: number) {
  */
 export function toBrightGeneratorPerPeriod(
   generatorPerPeriod: number,
-  size: number
+  size: number,
 ): number;
 export function toBrightGeneratorPerPeriod(
   generatorPerPeriod: Fraction,
-  size: number
+  size: number,
 ): Fraction;
 export function toBrightGeneratorPerPeriod(
   generatorPerPeriod: number | Fraction,
-  size: number
+  size: number,
 ): number | Fraction {
   const generator = wrapGeneratorPerPeriod(generatorPerPeriod);
   if (isBright(generatorPerPeriod, size)) {
@@ -136,7 +136,7 @@ export function mosPatterns(
   generatorPerPeriod: number | Fraction,
   numberOfPeriods = 1,
   maxSize?: number,
-  maxLength?: number
+  maxLength?: number,
 ) {
   if (maxLength !== undefined) {
     maxLength += 1;
@@ -244,14 +244,14 @@ export function scaleInfo(
   generatorPerPeriod: number | Fraction,
   size: number,
   generatorsDown: number,
-  numberOfPeriods = 1
+  numberOfPeriods = 1,
 ): ScaleInfo {
   if (size % numberOfPeriods) {
     throw new Error('Size must be divisible by the number of periods');
   }
   if (generatorsDown % numberOfPeriods) {
     throw new Error(
-      'Number of generators must be divisible by the number of periods'
+      'Number of generators must be divisible by the number of periods',
     );
   }
   size /= numberOfPeriods;
@@ -261,7 +261,7 @@ export function scaleInfo(
 
   const g = generatorPerPeriod.clone();
   const scale = [...Array(size).keys()].map(i =>
-    g.mul(i - generatorsDown).mmod(ONE)
+    g.mul(i - generatorsDown).mmod(ONE),
   );
   scale.push(new Fraction(1));
   scale.sort((a, b) => a.compare(b));

@@ -12,7 +12,7 @@ for (let size = 11; size <= 24; ++size) {
       `| [[${l}L ${size - l}s]] ||`,
       info?.name || "''none''",
       '||',
-      info?.prefix || "''none''"
+      info?.prefix || "''none''",
     );
     console.log('|-');
   }

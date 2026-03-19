@@ -1,10 +1,6 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "dist",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
     "lib": [
       "es2020"
     ],
@@ -12,15 +8,13 @@
     "moduleResolution": "node",
     "types": [
       "node"
-    ]
+    ],
+    "noEmit": true
   },
   "include": [
     "scripts/tamnams-extension.ts",
+    "benchmarks/**/*.ts",
     "src/**/*.ts",
     "src/**/*.json"
-  ],
-  "exclude": [
-    "src/__tests__/**",
-    "src/__benchmarks__/**"
   ]
 }
