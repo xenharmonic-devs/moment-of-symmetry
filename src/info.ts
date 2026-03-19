@@ -72,6 +72,34 @@ export type MosScaleInfo = {
   abbreviation?: string;
 };
 
+/** Lightweight information stored in the EDO support map. */
+export type EdoMapEntry = {
+  /** MOS pattern such as "5L 2s". */
+  mosPattern: string;
+  /** Number of large steps in the pattern. */
+  numberOfLargeSteps: number;
+  /** Number of small steps in the pattern. */
+  numberOfSmallSteps: number;
+  /** Size of the large step in EDO steps. */
+  sizeOfLargeStep: number;
+  /** Size of the small step in EDO steps. */
+  sizeOfSmallStep: number;
+  /** Name of the step size ratio or the name of the hardness range it belongs to. */
+  hardness: string;
+  /** TAMNAMS name of the pattern. */
+  name?: string;
+  /** True if the pattern is a subset of a larger MOS pattern. */
+  subset?: boolean;
+  /** Interval prefix. */
+  prefix?: string;
+  /** TAMNAMS name abbreviation. */
+  abbreviation?: string;
+  /** Family tree prefix. */
+  familyPrefix?: string;
+  /** Nickname. */
+  nickname?: string;
+};
+
 /** Information about a scale. */
 export type ScaleInfo = {
   /** Steps of the scale L = large, M = medium, s = small */

@@ -1,6 +1,6 @@
 import {getHardness} from './hardness';
 import {tamnamsInfo, modeName} from './names';
-import {ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
+import {EdoMapEntry, ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
 import {bjorklund, bjorklundStr, mosGeneratorMonzo} from './helpers';
 import {Fraction, dot, fareyInterior, gcd, mmod} from 'xen-dev-utils';
 
@@ -557,9 +557,10 @@ const STEP_SIZES: [number, number][] = [
  * @param maxSize Maximum size of the MOS patterns to include.
  * @returns A mapping from EDO size to an array of information about the supported MOS scales.
  */
-export function makeEdoMap(maxSize = 12): Map<number, MosScaleInfo[]> {
+export function makeEdoMap(maxSize = 12): Map<number, EdoMapEntry[]> {
   const result = new Map();
   STEP_SIZES.forEach(([sizeOfLargeStep, sizeOfSmallStep]) => {
+    const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
     for (let size = 2; size <= maxSize; ++size) {
       for (
         let numberOfLargeSteps = 1;
@@ -567,13 +568,19 @@ export function makeEdoMap(maxSize = 12): Map<number, MosScaleInfo[]> {
         ++numberOfLargeSteps
       ) {
         const numberOfSmallSteps = size - numberOfLargeSteps;
-        const info = mosScaleInfo(
+        const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
+        const edo =
+          numberOfLargeSteps * sizeOfLargeStep +
+          numberOfSmallSteps * sizeOfSmallStep;
+        const info: EdoMapEntry = {
+          mosPattern,
           numberOfLargeSteps,
           numberOfSmallSteps,
           sizeOfLargeStep,
           sizeOfSmallStep,
-        );
-        const edo = info.edo;
+          hardness,
+        };
+        Object.assign(info, tamnamsInfo(mosPattern));
         const infos = result.get(edo) || [];
         infos.push(info);
         result.set(edo, infos);
