@@ -32,13 +32,13 @@ function isRootScale(countL: number, countS: number) {
 }
 
 /**
- * Retreive TAMNAMS information about a MOS pattern.
+ * Retrieve TAMNAMS information about a MOS pattern.
  * @param {string} mosPattern MOS pattern such as "5L 2s".
  * @returns {TamnamsInfo} Information about the MOS pattern.
  */
 export function tamnamsInfo(mosPattern: string): TamnamsInfo | undefined;
 /**
- * Retreive TAMNAMS information about a MOS pattern.
+ * Retrieve TAMNAMS information about a MOS pattern.
  * @param numberOfLargeSteps Number of large steps in the MOS pattern.
  * @param numberOfSmallSteps Number of small steps in the MOS pattern.
  * @returns {TamnamsInfo} Information about the MOS pattern.

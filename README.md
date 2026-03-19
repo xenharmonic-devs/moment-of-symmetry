@@ -1,5 +1,5 @@
 # moment-of-symmetry
-Moment of Symmetry (MOS) musical scale generation and analysis for Javascript
+Moment of Symmetry (MOS) musical scale generation and analysis for JavaScript.
 
 MOS scales consist of two intervals that are distributed as evenly as possible
 
@@ -9,7 +9,7 @@ npm i moment-of-symmetry
 ```
 
 ## Documentation ##
-Documentation is hosted at the project [Github pages](https://xenharmonic-devs.github.io/moment-of-symmetry).
+Documentation is hosted on the project's [GitHub Pages site](https://xenharmonic-devs.github.io/moment-of-symmetry).
 
 To generate documentation locally run:
 ```bash
