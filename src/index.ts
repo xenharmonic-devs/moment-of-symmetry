@@ -11,7 +11,7 @@ export * from './info';
 export * from './notation';
 
 /**
- * Parameters for various function.
+ * Shared parameters for functions that select a MOS mode by brightness.
  */
 export type BaseOptions = {
   /** How many bright generators to go downwards. Also the number of small/minor intervals in the resulting scale. Default = 0. */
@@ -50,7 +50,7 @@ export interface MosWithParentOptions extends MosOptions {
  * Parameters for the {@link mosWithDaughter} function.
  */
 export interface MosWithDaughterOptions extends MosOptions {
-  /** How the daughter scale(s) relates to the main scale. Defaults to 'sharp'. */
+  /** How daughter notes that are outside the parent scale are labeled. Defaults to 'sharp'. */
   accidentals?: 'flat' | 'sharp' | 'both';
 }
 
@@ -230,11 +230,11 @@ export function mosWithParent(
 }
 
 /**
- * Generate the daughter MOS pattern as a subset of an EDO with parent MOS relationship indicated.
+ * Generate a daughter MOS as a subset of an EDO while labeling each degree by its relationship to the parent MOS.
  * @param numberOfLargeSteps Number of large steps in the parent MOS.
  * @param numberOfSmallSteps Number of small steps in the parent MOS.
- * @param options Options for sizes of the steps, brightness of the scale and flat/sharp relationship.
- * @returns A map of integers representing the EDO subset to booleans indicating if the scale degree belongs to the parent MOS or not.
+ * @param options Options for sizes of the steps, brightness of the scale, and daughter accidental labeling.
+ * @returns A map of EDO degrees to labels indicating whether a degree is in the parent MOS (`'parent'`) or belongs to the daughter as `'flat'`, `'sharp'`, or `'both'`.
  * The 0 degree is not included, but the final degree representing the size of the EDO is.
  */
 export function mosWithDaughter(
@@ -296,7 +296,7 @@ export function mosWithDaughter(
  * @param numberOfLargeSteps Number of large steps in the MOS pattern.
  * @param numberOfSmallSteps Number of small steps in the MOS pattern.
  * @param extraNames If true adds extra mode names in parenthesis such as Ionian (Major).
- * @returns An array of mode information.
+ * @returns An array of mode information, ordered from darkest to brightest.
  */
 export function mosModes(
   numberOfLargeSteps: number,
@@ -355,7 +355,7 @@ export function mosModes(
  * @param numberOfLargeSteps Number of large steps in the MOS pattern.
  * @param numberOfSmallSteps Number of small steps in the MOS pattern.
  * @param options Options for brightness of the scale and for adding extra names like Ionian (Major).
- * @returns An array of mode information.
+ * @returns Information about the selected mode.
  */
 export function modeInfo(
   numberOfLargeSteps: number,
@@ -396,7 +396,7 @@ export function modeInfo(
 /**
  * Split a string like "5L 2s" into [5, 2].
  * @param mosPattern MOS pattern such as "5L 2s".
- * @returns A pair of intergers representing the number of large and small steps.
+ * @returns A pair of integers representing the number of large and small steps.
  */
 export function splitMosPattern(mosPattern: string): [number, number] {
   const [l, s] = mosPattern.split('L');
@@ -450,6 +450,14 @@ export function parentMos(
   return info;
 }
 
+/**
+ * Obtain detailed information about a MOS scale embedded in an EDO.
+ * @param numberOfLargeSteps Number of large steps in the MOS pattern.
+ * @param numberOfSmallSteps Number of small steps in the MOS pattern.
+ * @param sizeOfLargeStep Size of the large step in EDO steps.
+ * @param sizeOfSmallStep Size of the small step in EDO steps.
+ * @returns Information about the MOS scale, including generators, period data, and hardness.
+ */
 export function mosScaleInfo(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
@@ -489,6 +497,14 @@ export function mosScaleInfo(
   return info;
 }
 
+/**
+ * Calculate the daughter MOS implied by a parent MOS and its step sizes.
+ * @param numberOfLargeSteps Number of large steps in the parent MOS.
+ * @param numberOfSmallSteps Number of small steps in the parent MOS.
+ * @param sizeOfLargeStep Size of the parent MOS large step in EDO steps.
+ * @param sizeOfSmallStep Size of the parent MOS small step in EDO steps.
+ * @returns Information about the daughter MOS scale.
+ */
 export function daughterMos(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,

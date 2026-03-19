@@ -50,7 +50,7 @@ export type MosScaleInfo = {
   hardness: string;
   /** Octave/equave of the scale in EDO steps. */
   edo: number;
-  /** Numper of periods per octave. */
+  /** Number of periods per equave. */
   numberOfPeriods: number;
   /** Period of the scale in EDO steps. */
   period: number;
