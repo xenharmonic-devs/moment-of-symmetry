@@ -343,6 +343,28 @@ describe('EDO mapper', () => {
       'antidiatonic, antipentic, antisinatonic, antisubneutralic, antitanzanite, archeotonic, balzano, checkertonic, diatonic, dicoid, gramitonic, m-chromatic, manual, mosh, oneirotonic, onyx, p-chro checkertonic, p-chro machinoid, pentic, pine, villatonic'
     );
   });
+
+  it('returns full MOS scale information for each mapped entry', () => {
+    const info = makeEdoMap()
+      .get(12)!
+      .find(
+        scale =>
+          scale.mosPattern === '5L 2s' &&
+          scale.sizeOfLargeStep === 2 &&
+          scale.sizeOfSmallStep === 1
+      );
+    expect(info).toMatchObject({
+      edo: 12,
+      numberOfPeriods: 1,
+      period: 12,
+      brightGenerator: 7,
+      darkGenerator: 5,
+      periodMonzo: [5, 2],
+      brightGeneratorMonzo: [3, 1],
+      hardness: 'basic',
+      name: 'diatonic',
+    });
+  });
 });
 
 describe('MOS finder for EDO', () => {
