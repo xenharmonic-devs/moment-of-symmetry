@@ -344,7 +344,7 @@ describe('EDO mapper', () => {
     );
   });
 
-  it('returns full MOS scale information for each mapped entry', () => {
+  it('returns lightweight EDO map entries', () => {
     const info = makeEdoMap()
       .get(12)!
       .find(
@@ -353,16 +353,17 @@ describe('EDO mapper', () => {
           scale.sizeOfLargeStep === 2 &&
           scale.sizeOfSmallStep === 1
       );
-    expect(info).toMatchObject({
-      edo: 12,
-      numberOfPeriods: 1,
-      period: 12,
-      brightGenerator: 7,
-      darkGenerator: 5,
-      periodMonzo: [5, 2],
-      brightGeneratorMonzo: [3, 1],
+    expect(info).toEqual({
+      mosPattern: '5L 2s',
+      numberOfLargeSteps: 5,
+      numberOfSmallSteps: 2,
+      sizeOfLargeStep: 2,
+      sizeOfSmallStep: 1,
       hardness: 'basic',
       name: 'diatonic',
+      prefix: 'dia',
+      abbreviation: 'dia',
+      familyPrefix: 'dia',
     });
   });
 });
