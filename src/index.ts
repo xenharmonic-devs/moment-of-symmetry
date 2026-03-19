@@ -105,6 +105,23 @@ function getDown(options: ModeInfoOptions, period: number, numPeriods: number) {
   return down;
 }
 
+function mergeParentMembership(
+  existing: boolean | undefined,
+  incoming: boolean,
+): boolean {
+  return (existing ?? incoming) ? true : incoming;
+}
+
+function mergeDaughterLabel(
+  existing: 'parent' | 'flat' | 'sharp' | 'both' | undefined,
+  incoming: 'parent' | 'flat' | 'sharp' | 'both',
+): 'parent' | 'flat' | 'sharp' | 'both' {
+  if (existing === undefined || existing === incoming) {
+    return incoming;
+  }
+  return 'both';
+}
+
 /**
  * Obtain an abstract string like 'LLsLLLs' corresponding to the mode specified.
  * @param numberOfLargeSteps Number of large steps in the MOS pattern.
@@ -213,13 +230,18 @@ export function mosWithParent(
     } else {
       isParent = i < parentPeriod;
     }
-    base.set(mmod((i - d) * g, p), isParent);
+    const degree = mmod((i - d) * g, p);
+    base.set(degree, mergeParentMembership(base.get(degree), isParent));
   }
   const edoDegrees = [...base.keys()].sort((a, b) => a - b);
   let result: Map<number, boolean> = new Map();
   for (let i = 0; i < numPeriods; ++i) {
     edoDegrees.forEach(degree => {
-      result = result.set(degree + i * p, base.get(degree)!);
+      const key = degree + i * p;
+      result = result.set(
+        key,
+        mergeParentMembership(result.get(key), base.get(degree)!),
+      );
     });
   }
   const rootIsParent = result.get(0)!;
@@ -263,25 +285,32 @@ export function mosWithDaughter(
 
   const base: Map<number, 'parent' | 'flat' | 'sharp' | 'both'> = new Map();
   for (let i = 0; i < period; ++i) {
-    base.set(mmod((i - d) * g, p), 'parent');
+    const degree = mmod((i - d) * g, p);
+    base.set(degree, mergeDaughterLabel(base.get(degree), 'parent'));
   }
   const accs = options.accidentals ?? 'sharp';
   if (accs === 'flat' || (accs === 'both' && sizeOfLargeStep > 2)) {
     for (let i = period - daughterPeriod; i < 0; ++i) {
-      base.set(mmod((i - d) * g, p), 'flat');
+      const degree = mmod((i - d) * g, p);
+      base.set(degree, mergeDaughterLabel(base.get(degree), 'flat'));
     }
   }
   if (accs === 'sharp' || accs === 'both') {
     const acc = sizeOfLargeStep === 2 ? 'both' : 'sharp';
     for (let i = period; i < daughterPeriod; ++i) {
-      base.set(mmod((i - d) * g, p), acc);
+      const degree = mmod((i - d) * g, p);
+      base.set(degree, mergeDaughterLabel(base.get(degree), acc));
     }
   }
   const edoDegrees = [...base.keys()].sort((a, b) => a - b);
   let result: Map<number, 'parent' | 'flat' | 'sharp' | 'both'> = new Map();
   for (let i = 0; i < numPeriods; ++i) {
     edoDegrees.forEach(degree => {
-      result = result.set(degree + i * p, base.get(degree)!);
+      const key = degree + i * p;
+      result = result.set(
+        key,
+        mergeDaughterLabel(result.get(key), base.get(degree)!),
+      );
     });
   }
   const rootIsParent = result.get(0)!;

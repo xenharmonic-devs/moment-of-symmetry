@@ -150,6 +150,14 @@ describe('Moment of Symmetry step generator with parent MOS', () => {
       ])
     );
   });
+
+  it('preserves parent membership when collapsed degrees collide', () => {
+    const map = mosWithParent(1, 1, {
+      sizeOfLargeStep: 1,
+      sizeOfSmallStep: 0,
+    });
+    expect(map).toEqual(new Map([[1, true]]));
+  });
 });
 
 describe('Moment of Symmetry step generator with daughter MOS', () => {
@@ -241,6 +249,14 @@ describe('Moment of Symmetry step generator with daughter MOS', () => {
         pentatonic
       )
     ).toBeTruthy();
+  });
+
+  it('marks collapsed parent/daughter collisions as both', () => {
+    const map = mosWithDaughter(1, 1, {
+      sizeOfLargeStep: 1,
+      sizeOfSmallStep: 0,
+    });
+    expect(map).toEqual(new Map([[1, 'both']]));
   });
 });
 
