@@ -198,7 +198,7 @@ function scalePattern(scale: Fraction[]) {
     stepSizes.add(scale[i].sub(scale[i - 1]));
   }
   if (stepSizes.size === 1) {
-    return 'M'.repeat(scale.length);
+    return 'M'.repeat(scale.length - 1);
   }
   if (stepSizes.size === 2) {
     const sizes = [...stepSizes];

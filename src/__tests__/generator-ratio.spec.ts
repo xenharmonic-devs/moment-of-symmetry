@@ -110,6 +110,11 @@ describe('Scale describer', () => {
     expect(info.modeName).toBe('Mixolydian');
   });
 
+  it('returns one medium step per interval for equalized scales', () => {
+    const info = scaleInfo(new Fraction(1, 3), 3, 0);
+    expect(info.stepPattern).toBe('MMM');
+  });
+
   it('can calculate the step pattern of a non-MOS scales', () => {
     const info = scaleInfo(Math.log(3) / Math.LN2, 9, 2);
     expect(info.stepPattern).toBe('LLsMsLsMs');
