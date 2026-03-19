@@ -45,11 +45,11 @@ export function tamnamsInfo(mosPattern: string): TamnamsInfo | undefined;
  */
 export function tamnamsInfo(
   numberOfLargeSteps: number,
-  numberOfSmallSteps: number
+  numberOfSmallSteps: number,
 ): TamnamsInfo | undefined;
 export function tamnamsInfo(
   patternOrLarge: string | number,
-  numberOfSmallSteps?: number
+  numberOfSmallSteps?: number,
 ): TamnamsInfo | undefined {
   let numberOfLargeSteps;
   let pattern: string;
@@ -112,12 +112,12 @@ export function tamnamsInfo(
 
   const greatGrandparentCountL = Math.min(grandparentCountL, grandparentCountS);
   const greatGrandparentCountS = Math.abs(
-    grandparentCountL - grandparentCountS
+    grandparentCountL - grandparentCountS,
   );
   if (isRootScale(greatGrandparentCountL, greatGrandparentCountS)) {
     const greatGrandparentInfo = tamnamsInfo(
       greatGrandparentCountL,
-      greatGrandparentCountS
+      greatGrandparentCountS,
     );
     const name = greatGrandparentInfo!.name;
     if (grandparentCountL > grandparentCountS) {

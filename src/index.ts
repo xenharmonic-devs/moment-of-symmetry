@@ -72,13 +72,13 @@ export function euclid(numberOfTrue: number, numberOfFalse: number): boolean[] {
  */
 export function brightGeneratorMonzo(
   numberOfLargeSteps: number,
-  numberOfSmallSteps: number
+  numberOfSmallSteps: number,
 ): [number, number] {
   const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
   return [
     ...mosGeneratorMonzo(
       numberOfLargeSteps / numPeriods,
-      numberOfSmallSteps / numPeriods
+      numberOfSmallSteps / numPeriods,
     ),
   ];
 }
@@ -115,7 +115,7 @@ function getDown(options: ModeInfoOptions, period: number, numPeriods: number) {
 export function stepString(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  options?: BaseOptions
+  options?: BaseOptions,
 ) {
   if (!numberOfLargeSteps) {
     return 's'.repeat(numberOfSmallSteps);
@@ -154,7 +154,7 @@ export function stepString(
 export function mos(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  options?: MosOptions
+  options?: MosOptions,
 ) {
   const abstract = stepString(numberOfLargeSteps, numberOfSmallSteps, options);
   const sizeOfLargeStep = options?.sizeOfLargeStep ?? 2;
@@ -184,7 +184,7 @@ export function mos(
 export function mosWithParent(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  options?: MosWithParentOptions
+  options?: MosWithParentOptions,
 ) {
   options ??= {};
   const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
@@ -240,7 +240,7 @@ export function mosWithParent(
 export function mosWithDaughter(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  options?: MosWithDaughterOptions
+  options?: MosWithDaughterOptions,
 ) {
   options ??= {};
   const numPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
@@ -301,7 +301,7 @@ export function mosWithDaughter(
 export function mosModes(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  extraNames = false
+  extraNames = false,
 ): ModeInfo[] {
   const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
   const period = (numberOfLargeSteps + numberOfSmallSteps) / numberOfPeriods;
@@ -360,7 +360,7 @@ export function mosModes(
 export function modeInfo(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
-  options?: ModeInfoOptions
+  options?: ModeInfoOptions,
 ): ModeInfo {
   options ??= {};
   const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
@@ -419,11 +419,11 @@ export function parentMos(mosPattern: string): MosInfo;
  */
 export function parentMos(
   numberOfLargeSteps: number,
-  numberOfSmallSteps: number
+  numberOfSmallSteps: number,
 ): MosInfo;
 export function parentMos(
   patternOrLarge: string | number,
-  numberOfSmallSteps?: number
+  numberOfSmallSteps?: number,
 ): MosInfo {
   let numberOfLargeSteps: number;
   if (typeof patternOrLarge === 'string') {
@@ -454,7 +454,7 @@ export function mosScaleInfo(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
   sizeOfLargeStep = 2,
-  sizeOfSmallStep = 1
+  sizeOfSmallStep = 1,
 ) {
   const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
   const numberOfPeriods = gcd(numberOfLargeSteps, numberOfSmallSteps);
@@ -493,7 +493,7 @@ export function daughterMos(
   numberOfLargeSteps: number,
   numberOfSmallSteps: number,
   sizeOfLargeStep: number,
-  sizeOfSmallStep: number
+  sizeOfSmallStep: number,
 ): MosScaleInfo {
   const size = numberOfLargeSteps + numberOfSmallSteps;
   if (sizeOfLargeStep >= 2 * sizeOfSmallStep) {
@@ -510,7 +510,7 @@ export function daughterMos(
     numberOfLargeSteps,
     numberOfSmallSteps,
     sizeOfLargeStep,
-    sizeOfSmallStep
+    sizeOfSmallStep,
   );
 }
 
@@ -695,7 +695,7 @@ export function allForEdo(
   edo: number,
   minSize = 2,
   maxSize?: number,
-  maxHardness?: number
+  maxHardness?: number,
 ): MosScaleInfo[] {
   if (maxSize === undefined) {
     maxSize = edo;
@@ -789,7 +789,7 @@ export function generatorRanges(size: number, includeMultiPeriods = false) {
 
     const monzo = mosGeneratorMonzo(
       numberOfLargeSteps / numPeriods,
-      numberOfSmallSteps / numPeriods
+      numberOfSmallSteps / numPeriods,
     );
 
     // Collapsed endpoint
@@ -820,7 +820,7 @@ export function generatorRanges(size: number, includeMultiPeriods = false) {
     });
   }
   result.sort(
-    (a, b) => a.period.compare(b.period) || a.lowerBound.compare(b.lowerBound)
+    (a, b) => a.period.compare(b.period) || a.lowerBound.compare(b.lowerBound),
   );
   return result;
 }
