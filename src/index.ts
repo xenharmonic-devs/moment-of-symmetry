@@ -560,7 +560,6 @@ const STEP_SIZES: [number, number][] = [
 export function makeEdoMap(maxSize = 12): Map<number, MosScaleInfo[]> {
   const result = new Map();
   STEP_SIZES.forEach(([sizeOfLargeStep, sizeOfSmallStep]) => {
-    const hardness = getHardness(sizeOfLargeStep, sizeOfSmallStep);
     for (let size = 2; size <= maxSize; ++size) {
       for (
         let numberOfLargeSteps = 1;
@@ -568,19 +567,13 @@ export function makeEdoMap(maxSize = 12): Map<number, MosScaleInfo[]> {
         ++numberOfLargeSteps
       ) {
         const numberOfSmallSteps = size - numberOfLargeSteps;
-        const mosPattern = `${numberOfLargeSteps}L ${numberOfSmallSteps}s`;
-        const edo =
-          numberOfLargeSteps * sizeOfLargeStep +
-          numberOfSmallSteps * sizeOfSmallStep;
-        const info = {
-          mosPattern,
+        const info = mosScaleInfo(
           numberOfLargeSteps,
           numberOfSmallSteps,
           sizeOfLargeStep,
           sizeOfSmallStep,
-          hardness,
-        };
-        Object.assign(info, tamnamsInfo(mosPattern));
+        );
+        const edo = info.edo;
         const infos = result.get(edo) || [];
         infos.push(info);
         result.set(edo, infos);
