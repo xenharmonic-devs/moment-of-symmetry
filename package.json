@@ -32,11 +32,11 @@
   ],
   "types": "dist/src/index.d.ts",
   "devDependencies": {
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "gts": "^7.0.0",
-    "typedoc": "^0.28.17",
+    "typedoc": "^0.28.18",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.2"
   },
   "scripts": {
     "lint": "gts lint",
@@ -53,7 +53,7 @@
     "bench": "vitest bench"
   },
   "dependencies": {
-    "xen-dev-utils": "^0.12.0"
+    "xen-dev-utils": "^0.12.1"
   },
   "exports": {
     ".": {

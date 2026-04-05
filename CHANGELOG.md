@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `CHANGELOG.md` to track notable project changes.
+- Added exports fields to package.json.
+- Updated project dependencies.
 
 ## [0.9.0] - 2026-03-23
 
