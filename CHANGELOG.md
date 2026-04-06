@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2] - 2026-04-06
+
+### Fixed
+- Restored browser bundler compatibility by replacing Node-only JSON loading in `names` with ESM JSON imports.
+
 ## [0.9.1] - 2026-04-06
 
 ### Added
