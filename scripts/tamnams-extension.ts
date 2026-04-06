@@ -1,4 +1,4 @@
-import {tamnamsInfo} from '../src';
+import {tamnamsInfo} from '../src/index.js';
 
 for (let size = 11; size <= 24; ++size) {
   console.log(`!colspan=3| ${size}-note mosses`);

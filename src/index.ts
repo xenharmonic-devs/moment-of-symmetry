@@ -1,14 +1,20 @@
-import {getHardness} from './hardness';
-import {tamnamsInfo, modeName} from './names';
-import {EdoMapEntry, ModeInfo, MosInfo, MosScaleInfo, RangeInfo} from './info';
-import {bjorklund, bjorklundStr, mosGeneratorMonzo} from './helpers';
+import {getHardness} from './hardness.js';
+import {tamnamsInfo, modeName} from './names.js';
+import {
+  EdoMapEntry,
+  ModeInfo,
+  MosInfo,
+  MosScaleInfo,
+  RangeInfo,
+} from './info.js';
+import {bjorklund, bjorklundStr, mosGeneratorMonzo} from './helpers.js';
 import {Fraction, dot, fareyInterior, gcd, mmod} from 'xen-dev-utils';
 
-export * from './hardness';
-export * from './names';
-export * from './generator-ratio';
-export * from './info';
-export * from './notation';
+export * from './hardness.js';
+export * from './names.js';
+export * from './generator-ratio.js';
+export * from './info.js';
+export * from './notation.js';
 
 /**
  * Shared parameters for functions that select a MOS mode by brightness.

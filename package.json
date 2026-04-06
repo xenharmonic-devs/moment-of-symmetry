@@ -2,13 +2,14 @@
   "name": "moment-of-symmetry",
   "author": "Lumi Pakkanen",
   "version": "0.9.0",
+  "type": "module",
   "description": "Moment of Symmetry (MOS) musical scale generation and analysis for Javascript",
   "license": "MIT",
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/frostburn"
   },
-  "main": "dist/src/index",
+  "main": "dist/src/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xenharmonic-devs/moment-of-symmetry.git"
@@ -49,7 +50,7 @@
     "test": "vitest",
     "doc": "typedoc src/index.ts --name moment-of-symmetry",
     "pretamnams-extension": "npm run compile",
-    "tamnams-extension": "node dist/scripts/tamnams-extension",
+    "tamnams-extension": "node dist/scripts/tamnams-extension.js",
     "bench": "vitest bench"
   },
   "dependencies": {
