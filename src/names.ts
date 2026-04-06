@@ -1,3 +1,7 @@
+import {createRequire} from 'node:module';
+
+const require = createRequire(import.meta.url);
+
 /** TAMNAMS information about a MOS pattern. */
 export type TamnamsInfo = {
   /** TAMNAMS name of the MOS pattern. */

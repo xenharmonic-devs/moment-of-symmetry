@@ -1,5 +1,5 @@
 import {gcd} from 'xen-dev-utils';
-import {mosGeneratorMonzo} from './helpers';
+import {mosGeneratorMonzo} from './helpers.js';
 
 /**
  * Valid nominals for absolute pitches in [Diamond mos notation](https://en.xen.wiki/w/Diamond-mos_notation).

@@ -1,6 +1,6 @@
 import {Fraction, FractionSet, getConvergents, mmod} from 'xen-dev-utils';
-import {MosInfo, ScaleInfo} from './info';
-import {modeName, tamnamsInfo} from './names';
+import {MosInfo, ScaleInfo} from './info.js';
+import {modeName, tamnamsInfo} from './names.js';
 
 const ONE = new Fraction(1);
 

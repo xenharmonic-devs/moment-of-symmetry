@@ -1,4 +1,8 @@
-module.exports = [
+import {createRequire} from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+export default [
   ...require('gts'),
   {
     ignores: [
@@ -19,7 +23,7 @@ module.exports = [
     rules: {
       'no-constant-condition': 0,
       '@typescript-eslint/no-explicit-any': 0,
-      'no-restricted-syntax': ['error', 'SequenceExpression']
-    }
+      'no-restricted-syntax': ['error', 'SequenceExpression'],
+    },
   },
 ];
