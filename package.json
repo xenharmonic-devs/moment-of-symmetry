@@ -1,7 +1,7 @@
 {
   "name": "moment-of-symmetry",
   "author": "Lumi Pakkanen",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "type": "module",
   "description": "Moment of Symmetry (MOS) musical scale generation and analysis for Javascript",
   "license": "MIT",
