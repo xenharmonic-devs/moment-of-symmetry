@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-04-06
+
 ### Added
 - `CHANGELOG.md` to track notable project changes.
-- Added exports fields to package.json.
+- Added package `exports` entry points.
 - Updated project dependencies.
+
+### Changed
+- Migrated the package and TypeScript configuration to NodeNext ESM.
 
 ## [0.9.0] - 2026-03-23
 
