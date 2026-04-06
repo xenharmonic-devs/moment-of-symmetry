@@ -1,6 +1,5 @@
-import {createRequire} from 'node:module';
-
-const require = createRequire(import.meta.url);
+import modeNamesData from './modes.json' with {type: 'json'};
+import tamnamsNamesData from './tamnams.json' with {type: 'json'};
 
 /** TAMNAMS information about a MOS pattern. */
 export type TamnamsInfo = {
@@ -16,13 +15,9 @@ export type TamnamsInfo = {
   nickname?: string;
 };
 
-const TAMNAMS_MOS_NAMES: {
-  [key: string]: TamnamsInfo;
-} = require('./tamnams.json');
+const TAMNAMS_MOS_NAMES = tamnamsNamesData as Record<string, TamnamsInfo>;
 
-const MODE_NAMES: {
-  [key: string]: string;
-} = require('./modes.json');
+const MODE_NAMES = modeNamesData as Record<string, string>;
 
 function isRootScale(countL: number, countS: number) {
   if (countL + countS <= 10) {
