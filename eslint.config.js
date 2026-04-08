@@ -20,10 +20,5 @@ export default [
         project: './tsconfig.eslint.json',
       },
     },
-    rules: {
-      'no-constant-condition': 0,
-      '@typescript-eslint/no-explicit-any': 0,
-      'no-restricted-syntax': ['error', 'SequenceExpression'],
-    },
   },
 ];
