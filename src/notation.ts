@@ -1,4 +1,4 @@
-import {gcd} from 'xen-dev-utils';
+import {gcd} from 'xen-dev-utils/fraction';
 import {mosGeneratorMonzo} from './helpers.js';
 
 /**

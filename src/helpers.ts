@@ -1,7 +1,8 @@
 /**
  * Internal helper functions not intended to be published.
  */
-import {gcd, modInv} from 'xen-dev-utils';
+import {modInv} from 'xen-dev-utils/core';
+import {gcd} from 'xen-dev-utils/fraction';
 
 /**
  * Distribute subsequences as evenly as possible using Björklund's algorithm;

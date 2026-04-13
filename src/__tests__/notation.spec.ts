@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest';
 import {generateNotation, nthNominal} from '../notation';
-import {dot} from 'xen-dev-utils';
+import {dot} from 'xen-dev-utils/number-array';
 
 describe('Generalized Diamond-mos nominals', () => {
   it('has 17 standard nominals', () => {
