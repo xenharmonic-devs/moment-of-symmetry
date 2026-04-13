@@ -8,7 +8,9 @@ import {
   RangeInfo,
 } from './info.js';
 import {bjorklund, bjorklundStr, mosGeneratorMonzo} from './helpers.js';
-import {Fraction, dot, fareyInterior, gcd, mmod} from 'xen-dev-utils';
+import {fareyInterior} from 'xen-dev-utils/core';
+import {Fraction, gcd, mmod} from 'xen-dev-utils/fraction';
+import {dot} from 'xen-dev-utils/number-array';
 
 export * from './hardness.js';
 export * from './names.js';

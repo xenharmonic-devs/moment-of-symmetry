@@ -1,4 +1,4 @@
-import {Fraction} from 'xen-dev-utils';
+import {Fraction} from 'xen-dev-utils/fraction';
 
 /** Information about a MOS pattern. */
 export type MosInfo = {

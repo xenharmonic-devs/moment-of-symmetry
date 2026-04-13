@@ -1,4 +1,6 @@
-import {Fraction, FractionSet, getConvergents, mmod} from 'xen-dev-utils';
+import {getConvergents} from 'xen-dev-utils/approximation';
+import {FractionSet} from 'xen-dev-utils/core';
+import {Fraction, mmod} from 'xen-dev-utils/fraction';
 import {MosInfo, ScaleInfo} from './info.js';
 import {modeName, tamnamsInfo} from './names.js';
 

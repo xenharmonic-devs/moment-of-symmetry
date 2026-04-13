@@ -1,5 +1,6 @@
 import {describe, it, expect} from 'vitest';
-import {arraysEqual, Fraction} from 'xen-dev-utils';
+import {arraysEqual} from 'xen-dev-utils/core';
+import {Fraction} from 'xen-dev-utils/fraction';
 import {
   isBright,
   mosForms,
