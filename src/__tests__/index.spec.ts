@@ -356,7 +356,7 @@ describe('EDO mapper', () => {
     });
     supportedMosses.sort();
     expect(supportedMosses.join(', ')).toBe(
-      'antidiatonic, antipentic, antisinatonic, antisubneutralic, antitanzanite, archeotonic, balzano, checkertonic, diatonic, dicoid, gramitonic, m-chromatic, manual, mosh, oneirotonic, onyx, p-chro checkertonic, p-chro machinoid, pentic, pine, villatonic'
+      'antidiatonic, antipentic, antisinatonic, antisubneutralic, antitanzanite, archaeotonic, balzano, checkertonic, diatonic, dicoid, gramitonic, m-chromatic, manual, mosh, oneirotonic, onyx, p-chro checkertonic, p-chro machinoid, pentic, pine, villatonic'
     );
   });
 

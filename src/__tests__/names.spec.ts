@@ -16,6 +16,14 @@ describe('MOS pattern namer', () => {
     expect(tamnamsInfo('1L 6s')!.name).toBe('onyx');
   });
 
+  it('uses updated wiki-aligned abbreviations', () => {
+    expect(tamnamsInfo('1L 5s')!.abbreviation).toBe('amk');
+    expect(tamnamsInfo('6L 1s')!.abbreviation).toBe('arc');
+    expect(tamnamsInfo('2L 8s')!.abbreviation).toBe('ja');
+    expect(tamnamsInfo('5L 5s')!.prefix).toBe('pentawd');
+    expect(tamnamsInfo('7L 7s')!.name).toBe('heptawood');
+  });
+
   it('has a special names for diachromic', () => {
     const meantoneGeneratorRatio = 696.239 / 1200.0;
     const pythagoreanGeneratorRatio = Math.log(1.5) / Math.LN2;

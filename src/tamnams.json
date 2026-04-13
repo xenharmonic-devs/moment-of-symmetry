@@ -63,7 +63,8 @@
     "1L 5s":
     {
         "name": "antimachinoid",
-        "prefix": "amech"
+        "prefix": "amech",
+        "abbreviation": "amk"
     },
     "2L 4s":
     {
@@ -74,7 +75,7 @@
     {
         "name": "triwood",
         "prefix": "triwd",
-        "abbreviation": "trw",
+        "abbreviation": "tw",
         "familyPrefix": "triwood"
     },
     "4L 2s":
@@ -87,7 +88,8 @@
     {
         "name": "machinoid",
         "prefix": "mech",
-        "familyPrefix": "mecha"
+        "familyPrefix": "mecha",
+        "abbreviation": "mk"
     },
     "1L 6s":
     {
@@ -116,19 +118,22 @@
     },
     "6L 1s":
     {
-        "name": "archeotonic",
+        "name": "archaeotonic",
         "prefix": "arch",
-        "familyPrefix": "archeo"
+        "familyPrefix": "archeo",
+        "abbreviation": "arc"
     },
     "1L 7s":
     {
         "name": "antipine",
-        "prefix": "apine"
+        "prefix": "apine",
+        "abbreviation": "ap"
     },
     "2L 6s":
     {
         "name": "subaric",
-        "prefix": "subar"
+        "prefix": "subar",
+        "abbreviation": "sb"
     },
     "3L 5s":
     {
@@ -140,7 +145,7 @@
     "4L 4s":
     {
         "name": "tetrawood",
-        "prefix": "tetwd",
+        "prefix": "tetrawd",
         "abbreviation": "ttw",
         "familyPrefix": "tetwood",
         "nickname": "diminished"
@@ -160,7 +165,8 @@
     "7L 1s":
     {
         "name": "pine",
-        "prefix": "pine"
+        "prefix": "pine",
+        "abbreviation": "p"
     },
     "1L 8s":
     {
@@ -171,6 +177,7 @@
     {
         "name": "balzano",
         "prefix": "bal",
+        "abbreviation": "bz",
         "familyPrefix": "balo"
     },
     "3L 6s":
@@ -184,19 +191,21 @@
     {
         "name": "gramitonic",
         "prefix": "gram",
+        "abbreviation": "gm",
         "familyPrefix": "grami"
     },
     "5L 4s":
     {
         "name": "semiquartal",
         "prefix": "cthon",
-        "abbreviation": "cth",
+        "abbreviation": "ct",
         "familyPrefix": "chtono"
     },
     "6L 3s":
     {
         "name": "hyrulic",
-        "prefix": "hyru"
+        "prefix": "hyru",
+        "abbreviation": "hy"
     },
     "7L 2s":
     {
@@ -220,23 +229,25 @@
     {
         "name": "jaric",
         "prefix": "jara",
-        "abbreviation": "jar"
+        "abbreviation": "ja"
     },
     "3L 7s":
     {
         "name": "sephiroid",
         "prefix": "seph",
+        "abbreviation": "sp",
         "familyPrefix": "sephi"
     },
     "4L 6s":
     {
         "name": "lime",
-        "prefix": "lime"
+        "prefix": "lime",
+        "abbreviation": "lm"
     },
     "5L 5s":
     {
         "name": "pentawood",
-        "prefix": "penwd",
+        "prefix": "pentawd",
         "abbreviation": "pw",
         "familyPrefix": "penwood"
     },
@@ -244,18 +255,20 @@
     {
         "name": "lemon",
         "prefix": "lem",
+        "abbreviation": "le",
         "familyPrefix": "lemo"
     },
     "7L 3s":
     {
         "name": "dicoid",
-        "prefix": "dico"
+        "prefix": "dico",
+        "abbreviation": "di"
     },
     "8L 2s":
     {
         "name": "taric",
         "prefix": "tara",
-        "abbreviation": "tar"
+        "abbreviation": "ta"
     },
     "9L 1s":
     {
@@ -356,8 +369,8 @@
     },
     "7L 7s":
     {
-        "name": "septawood",
-        "prefix": "septwd",
+        "name": "heptawood",
+        "prefix": "heptwd",
         "abbreviation": "sw",
         "familyPrefix": "septwood"
     },
