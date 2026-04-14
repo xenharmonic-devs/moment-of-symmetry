@@ -16,7 +16,7 @@ import {
   generatorRanges,
   mosScaleInfo,
   stepString,
-} from '../index';
+} from '../core';
 
 describe('Bright generator calculator', () => {
   it('gives the perfect fifth for 5L 2s', () => {

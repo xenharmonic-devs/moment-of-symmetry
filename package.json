@@ -62,6 +62,42 @@
       "import": "./dist/src/index.js",
       "require": "./dist/src/index.js",
       "default": "./dist/src/index.js"
+    },
+    "./core": {
+      "types": "./dist/src/core.d.ts",
+      "import": "./dist/src/core.js",
+      "require": "./dist/src/core.js",
+      "default": "./dist/src/core.js"
+    },
+    "./hardness": {
+      "types": "./dist/src/hardness.d.ts",
+      "import": "./dist/src/hardness.js",
+      "require": "./dist/src/hardness.js",
+      "default": "./dist/src/hardness.js"
+    },
+    "./names": {
+      "types": "./dist/src/names.d.ts",
+      "import": "./dist/src/names.js",
+      "require": "./dist/src/names.js",
+      "default": "./dist/src/names.js"
+    },
+    "./generator-ratio": {
+      "types": "./dist/src/generator-ratio.d.ts",
+      "import": "./dist/src/generator-ratio.js",
+      "require": "./dist/src/generator-ratio.js",
+      "default": "./dist/src/generator-ratio.js"
+    },
+    "./info": {
+      "types": "./dist/src/info.d.ts",
+      "import": "./dist/src/info.js",
+      "require": "./dist/src/info.js",
+      "default": "./dist/src/info.js"
+    },
+    "./notation": {
+      "types": "./dist/src/notation.d.ts",
+      "import": "./dist/src/notation.js",
+      "require": "./dist/src/notation.js",
+      "default": "./dist/src/notation.js"
     }
   }
 }
